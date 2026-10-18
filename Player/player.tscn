@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://cf18jlswvd1h5"]
+
+[ext_resource type="Script" uid="uid://w53jll8j0rpq" path="res://Player/Scripts/player.gd" id="1_btcbx"]
+[ext_resource type="Script" uid="uid://drsh28p8wett8" path="res://Player/Scripts/animation_manager.gd" id="2_gwnis"]
+[ext_resource type="Texture2D" uid="uid://b4oulsmduu2l0" path="res://Sprites/PlayerSprites/rob-Sheet.png" id="2_od3ui"]
+[ext_resource type="Script" uid="uid://uf8d4o8uxiqo" path="res://Player/Scripts/StateMachine/state_machine.gd" id="3_k53q1"]
+[ext_resource type="Script" uid="uid://bjl5ibgfj8t7" path="res://Player/Scripts/StateMachine/idle.gd" id="4_gwnis"]
+[ext_resource type="Script" uid="uid://incw238830m1" path="res://Player/Scripts/StateMachine/run.gd" id="5_k53q1"]
+[ext_resource type="Script" uid="uid://db6mceyxlm145" path="res://Player/Scripts/StateMachine/jump.gd" id="6_fhl08"]
+[ext_resource type="Script" uid="uid://k2ndvcq0iwua" path="res://Player/Scripts/StateMachine/fall.gd" id="7_vtle1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1251945402]
+script = ExtResource("1_btcbx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
+root_node = NodePath("../Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1213862459]
+position = Vector2(0, -16)
+texture = ExtResource("2_od3ui")
+hframes = 4
+vframes = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1292503704]
+position = Vector2(0, -10)
+shape = SubResource("CircleShape2D_6673r")
+
+[node name="AnimationManager" type="Node" parent="." unique_id=679508389 node_paths=PackedStringArray("state_machine", "sprite", "animation_player")]
+script = ExtResource("2_gwnis")
+state_machine = NodePath("../StateMachine")
+sprite = NodePath("../Sprite2D")
+animation_player = NodePath("../AnimationPlayer")
+
+[node name="StateMachine" type="Node" parent="." unique_id=1316617588 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_k53q1")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" unique_id=1410326960]
+script = ExtResource("4_gwnis")
+
+[node name="Run" type="Node" parent="StateMachine" unique_id=870317096]
+script = ExtResource("5_k53q1")
+
+[node name="Jump" type="Node" parent="StateMachine" unique_id=1041259231]
+script = ExtResource("6_fhl08")
+
+[node name="Fall" type="Node" parent="StateMachine" unique_id=1547333856]
+script = ExtResource("7_vtle1")
