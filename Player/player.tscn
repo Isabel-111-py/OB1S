@@ -4,15 +4,37 @@
 [ext_resource type="Script" uid="uid://drsh28p8wett8" path="res://Player/Scripts/animation_manager.gd" id="2_gwnis"]
 [ext_resource type="Texture2D" uid="uid://b4oulsmduu2l0" path="res://Sprites/PlayerSprites/rob-Sheet.png" id="2_od3ui"]
 [ext_resource type="Script" uid="uid://uf8d4o8uxiqo" path="res://Player/Scripts/StateMachine/state_machine.gd" id="3_k53q1"]
+[ext_resource type="Texture2D" uid="uid://be6h7338xpjge" path="res://Sprites/PlayerSprites/MonkeySpriteSheet.png" id="3_p5o4e"]
 [ext_resource type="Script" uid="uid://bjl5ibgfj8t7" path="res://Player/Scripts/StateMachine/idle.gd" id="4_gwnis"]
 [ext_resource type="Script" uid="uid://incw238830m1" path="res://Player/Scripts/StateMachine/run.gd" id="5_k53q1"]
 [ext_resource type="Script" uid="uid://db6mceyxlm145" path="res://Player/Scripts/StateMachine/jump.gd" id="6_fhl08"]
 [ext_resource type="Script" uid="uid://k2ndvcq0iwua" path="res://Player/Scripts/StateMachine/fall.gd" id="7_vtle1"]
+[ext_resource type="Script" uid="uid://dupf2yx8eqdhv" path="res://Player/Scripts/camera_2d.gd" id="9_00tjw"]
+[ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
+[ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
+[ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_apfi5"]
+radius = 9.0
+
 [node name="Player" type="CharacterBody2D" unique_id=1251945402]
 script = ExtResource("1_btcbx")
+speed = null
+time_to_max_speed = null
+coast_distance = null
+coast_stop_speed = null
+time_to_brake = null
+air_time_to_max_speed = null
+air_time_to_stop = null
+jump_velocity = null
+jump_hold_time = null
+jump_cut_multiplier = null
+coyote_time = null
+jump_buffer_time = null
+fall_gravity_multiplier = null
+max_fall_speed = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
 root_node = NodePath("../Sprite2D")
@@ -22,6 +44,13 @@ position = Vector2(0, -16)
 texture = ExtResource("2_od3ui")
 hframes = 4
 vframes = 7
+
+[node name="Mono" type="Sprite2D" parent="." unique_id=461304380]
+position = Vector2(0, -36)
+texture = ExtResource("3_p5o4e")
+hframes = 7
+vframes = 2
+frame = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1292503704]
 position = Vector2(0, -10)
@@ -48,3 +77,28 @@ script = ExtResource("6_fhl08")
 
 [node name="Fall" type="Node" parent="StateMachine" unique_id=1547333856]
 script = ExtResource("7_vtle1")
+
+[node name="Hurt" type="Node" parent="StateMachine" unique_id=1184085384]
+script = ExtResource("9_apopc")
+
+[node name="Dead" type="Node" parent="StateMachine" unique_id=90749968]
+script = ExtResource("10_5htga")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2034993305]
+drag_horizontal_enabled = true
+drag_left_margin = 0.04
+drag_top_margin = 0.72
+drag_right_margin = 0.04
+drag_bottom_margin = 0.06
+editor_draw_drag_margin = true
+script = ExtResource("9_00tjw")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1827162679]
+collision_layer = 9
+collision_mask = 16
+script = ExtResource("10_x3vf3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1483058373]
+position = Vector2(0, -10)
+shape = SubResource("CircleShape2D_apfi5")
+debug_color = Color(0.8562831, 0.21506998, 0.73656285, 0.41960785)

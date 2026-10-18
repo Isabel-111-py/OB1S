@@ -4,10 +4,15 @@ extends CharacterBody2D
 ## La lógica de cada acción vive en los estados (nodos hijos de StateMachine)
 ## y las animaciones las gestiona el nodo AnimationManager.
 
+## Se emite cada vez que cambia la vida (útil para la barra de vida de la UI).
+signal health_changed(current: int, maximum: int)
+## Se emite una sola vez cuando la vida llega a 0.
+signal died
+
 @export_group("Movimiento")
-@export var speed: float = 250.0
+@export var speed: float = 220.0
 ## Segundos que tarda en llegar a la velocidad máxima desde parado (en suelo).
-@export var time_to_max_speed: float = 0.55
+@export var time_to_max_speed: float = 0.25
 ## Distancia aproximada (px) que avanza por inercia al soltar la dirección yendo a velocidad máxima.
 ## Es proporcional a la velocidad: a la mitad de velocidad desliza la mitad.
 @export var coast_distance: float = 40.0
@@ -16,12 +21,12 @@ extends CharacterBody2D
 ## Segundos que tarda en frenar desde velocidad máxima al presionar la dirección contraria.
 @export var time_to_brake: float = 0.08
 ## En el aire: segundos para llegar a velocidad máxima y para detenerse sin input.
-@export var air_time_to_max_speed: float = 0.25
-@export var air_time_to_stop: float = 0.3
+@export var air_time_to_max_speed: float = 0.35
+@export var air_time_to_stop: float = 0.6
 
 @export_group("Salto")
 ## Velocidad inicial del salto (negativa = hacia arriba).
-@export var jump_velocity: float = -280.0
+@export var jump_velocity: float = -380.0
 ## Tiempo máximo (s) que mantener el botón presionado sostiene la subida.
 ## Un toque rápido da un saltito; mantener hasta este tiempo da el salto completo.
 @export var jump_hold_time: float = 0.22
@@ -37,14 +42,26 @@ extends CharacterBody2D
 @export var fall_gravity_multiplier: float = 1.4
 @export var max_fall_speed: float = 700.0
 
+@export_group("Salud")
+@export var max_health: int = 5
+
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
 ## Hacia dónde mira el personaje: 1.0 derecha, -1.0 izquierda (útil para dash, ataques, etc.).
 var facing: float = 1.0
+var health: int = 0
+var is_dead: bool = false
 
 @onready var animator: AnimationManager = $AnimationManager
 @onready var state_machine: StateMachine = $StateMachine
+@onready var hurtbox: Hurtbox = $Hurtbox
+
+
+func _ready() -> void:
+	health = max_health
+	hurtbox.hit_received.connect(_on_hit_received)
+	health_changed.emit(health, max_health)
 
 
 func _physics_process(delta: float) -> void:
@@ -124,3 +141,40 @@ func face(direction: float) -> void:
 		return
 	facing = signf(direction)
 	animator.set_facing(facing)
+
+
+# ---------------------------------------------------------------------------
+# Salud y daño
+# ---------------------------------------------------------------------------
+
+## Resta vida y pasa al estado Hurt (o Dead si la vida llega a 0).
+## Puedes llamarla desde cualquier lugar (caída al vacío, scripts, etc.).
+func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
+	if is_dead:
+		return
+
+	health = maxi(health - amount, 0)
+	health_changed.emit(health, max_health)
+
+	var msg := {"knockback": knockback}
+	if health == 0:
+		is_dead = true
+		died.emit()
+		state_machine.transition_to("Dead", msg)
+	else:
+		state_machine.transition_to("Hurt", msg)
+
+
+func heal(amount: int) -> void:
+	if is_dead:
+		return
+	health = mini(health + amount, max_health)
+	health_changed.emit(health, max_health)
+
+
+func _on_hit_received(hitbox: Hitbox) -> void:
+	# El retroceso empuja al jugador en dirección contraria al atacante.
+	var direction := signf(global_position.x - hitbox.global_position.x)
+	if is_zero_approx(direction):
+		direction = -facing
+	take_damage(hitbox.damage, Vector2(direction * hitbox.knockback.x, hitbox.knockback.y))

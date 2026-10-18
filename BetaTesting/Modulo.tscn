@@ -2,23 +2,40 @@
 
 [ext_resource type="PackedScene" uid="uid://cf18jlswvd1h5" path="res://Player/player.tscn" id="1_juqpw"]
 [ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="2_67jxd"]
+[ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="3_dptxy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
-size = Vector2(126.617714, 121.904785)
+size = Vector2(699.99133, 109.71423)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
 [node name="Modulo" type="Node2D" unique_id=239381168]
 
 [node name="Player" parent="." unique_id=1251945402 instance=ExtResource("1_juqpw")]
-position = Vector2(72, 299)
+position = Vector2(66.5, 206)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1966907077]
-position = Vector2(251, 323)
-scale = Vector2(3.6171875, 0.1640625)
+position = Vector2(446.4999, 230)
+scale = Vector2(19.757813, 0.1640625)
 texture = ExtResource("2_67jxd")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1343238825]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1437054169]
-position = Vector2(249.99997, 322)
+position = Vector2(445.00003, 228)
 scale = Vector2(3.6171875, 0.1640625)
 shape = SubResource("RectangleShape2D_6673r")
+
+[node name="Danio" type="Area2D" parent="." unique_id=1911838399]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_dptxy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Danio" unique_id=1703098287]
+position = Vector2(133, 209)
+shape = SubResource("CircleShape2D_6673r")
+
+[node name="Icon" type="Sprite2D" parent="Danio" unique_id=79111610]
+position = Vector2(134.00002, 211)
+scale = Vector2(0.1171875, 0.124999955)
+texture = ExtResource("2_67jxd")
