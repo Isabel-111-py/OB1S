@@ -50,6 +50,8 @@ var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
 ## Hacia dónde mira el personaje: 1.0 derecha, -1.0 izquierda (útil para dash, ataques, etc.).
 var facing: float = 1.0
+## Si no es 0, fuerza hacia dónde mira el personaje (lo usa el arco mientras apunta).
+var facing_lock: float = 0.0
 var health: int = 0
 var is_dead: bool = false
 
@@ -137,6 +139,8 @@ func move_air(direction: float, delta: float) -> void:
 
 
 func face(direction: float) -> void:
+	if not is_zero_approx(facing_lock):
+		direction = facing_lock
 	if is_zero_approx(direction):
 		return
 	facing = signf(direction)

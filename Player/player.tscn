@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
 [ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
 [ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
+[ext_resource type="Script" uid="uid://c6y5cv0nac6it" path="res://Player/Scripts/Bow.gd" id="14_gu6f8"]
+[ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
@@ -21,20 +23,6 @@ radius = 9.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1251945402]
 script = ExtResource("1_btcbx")
-speed = null
-time_to_max_speed = null
-coast_distance = null
-coast_stop_speed = null
-time_to_brake = null
-air_time_to_max_speed = null
-air_time_to_stop = null
-jump_velocity = null
-jump_hold_time = null
-jump_cut_multiplier = null
-coyote_time = null
-jump_buffer_time = null
-fall_gravity_multiplier = null
-max_fall_speed = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
 root_node = NodePath("../Sprite2D")
@@ -102,3 +90,12 @@ script = ExtResource("10_x3vf3")
 position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_apfi5")
 debug_color = Color(0.8562831, 0.21506998, 0.73656285, 0.41960785)
+
+[node name="Bow" type="Node2D" parent="." unique_id=1260639363]
+script = ExtResource("14_gu6f8")
+arrow_scene = ExtResource("15_dkpta")
+
+[node name="Arrow" parent="." unique_id=533443133 instance=ExtResource("15_dkpta")]
+position = Vector2(-1.9073486e-06, -26)
+rotation = -0.7086037
+scale = Vector2(0.375, 0.375)
