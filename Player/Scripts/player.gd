@@ -42,6 +42,20 @@ signal died
 @export var fall_gravity_multiplier: float = 1.4
 @export var max_fall_speed: float = 700.0
 
+@export_group("Turbo")
+## Velocidad del impulso (dash) en px/s.
+@export var dash_speed: float = 520.0
+## Duración del impulso en segundos.
+@export var dash_time: float = 0.16
+## Espera (s) tras terminar un dash antes de poder usar otro.
+@export var dash_cooldown: float = 0.35
+## Dashes permitidos en el aire antes de volver a tocar el suelo.
+@export var max_air_dashes: int = 1
+## Mientras mantengas presionado el botón turbo, la velocidad máxima se multiplica por esto.
+@export var turbo_speed_multiplier: float = 1.3
+## Estados desde los que se puede iniciar un dash (nombres de los nodos).
+@export var dash_allowed_from: Array[StringName] = [&"Idle", &"Run", &"Jump", &"Fall"]
+
 @export_group("Salud")
 @export var max_health: int = 5
 
@@ -54,14 +68,19 @@ var facing: float = 1.0
 var facing_lock: float = 0.0
 var health: int = 0
 var is_dead: bool = false
+var turbo_held: bool = false
+var dash_cooldown_timer: float = 0.0
+var air_dashes_left: int = 0
 
 @onready var animator: AnimationManager = $AnimationManager
 @onready var state_machine: StateMachine = $StateMachine
 @onready var hurtbox: Hurtbox = $Hurtbox
+@onready var grapple: Grapple = get_node_or_null("Grapple") as Grapple
 
 
 func _ready() -> void:
 	health = max_health
+	air_dashes_left = max_air_dashes
 	hurtbox.hit_received.connect(_on_hit_received)
 	health_changed.emit(health, max_health)
 
@@ -70,12 +89,17 @@ func _physics_process(delta: float) -> void:
 	# El padre se procesa ANTES que sus hijos, así que los timers
 	# ya están actualizados cuando corre el estado actual.
 	_update_timers(delta)
+	_try_dash()
 
 
 func _update_timers(delta: float) -> void:
+	turbo_held = Input.is_action_pressed("turbo")
+	dash_cooldown_timer = maxf(dash_cooldown_timer - delta, 0.0)
+
 	# `velocity.y >= 0` evita que el coyote time se reinicie justo al saltar (doble salto accidental).
 	if is_on_floor() and velocity.y >= 0.0:
 		coyote_timer = coyote_time
+		air_dashes_left = max_air_dashes
 	else:
 		coyote_timer = maxf(coyote_timer - delta, 0.0)
 
@@ -121,11 +145,11 @@ func move_ground(direction: float, delta: float) -> void:
 		if absf(velocity.x) < coast_stop_speed:
 			velocity.x = 0.0
 	elif not is_zero_approx(velocity.x) and signf(direction) != signf(velocity.x):
-		var brake_decel := speed / maxf(time_to_brake, 0.001)
+		var brake_decel := get_max_speed() / maxf(time_to_brake, 0.001)
 		velocity.x = move_toward(velocity.x, 0.0, brake_decel * delta)
 	else:
-		var accel := speed / maxf(time_to_max_speed, 0.001)
-		velocity.x = move_toward(velocity.x, direction * speed, accel * delta)
+		var accel := get_max_speed() / maxf(time_to_max_speed, 0.001)
+		velocity.x = move_toward(velocity.x, direction * get_max_speed(), accel * delta)
 
 
 ## Aire: control reducido, sin rueda libre ni frenado especial.
@@ -134,8 +158,8 @@ func move_air(direction: float, delta: float) -> void:
 		var decel := speed / maxf(air_time_to_stop, 0.001)
 		velocity.x = move_toward(velocity.x, 0.0, decel * delta)
 	else:
-		var accel := speed / maxf(air_time_to_max_speed, 0.001)
-		velocity.x = move_toward(velocity.x, direction * speed, accel * delta)
+		var accel := get_max_speed() / maxf(air_time_to_max_speed, 0.001)
+		velocity.x = move_toward(velocity.x, direction * get_max_speed(), accel * delta)
 
 
 func face(direction: float) -> void:
@@ -182,3 +206,30 @@ func _on_hit_received(hitbox: Hitbox) -> void:
 	if is_zero_approx(direction):
 		direction = -facing
 	take_damage(hitbox.damage, Vector2(direction * hitbox.knockback.x, hitbox.knockback.y))
+
+
+# ---------------------------------------------------------------------------
+# Turbo
+# ---------------------------------------------------------------------------
+
+## Velocidad horizontal máxima actual: aumenta mientras mantienes el botón turbo.
+func get_max_speed() -> float:
+	return speed * (turbo_speed_multiplier if turbo_held else 1.0)
+
+
+## Al presionar "turbo" inicia el dash si el estado actual lo permite.
+## Se hace aquí (y no en cada estado) para poder agregar el dash sin modificar Idle/Run/Jump/Fall.
+func _try_dash() -> void:
+	if not Input.is_action_just_pressed("turbo"):
+		return
+	if is_dead or dash_cooldown_timer > 0.0 or state_machine.current_state == null:
+		return
+	if not dash_allowed_from.has(state_machine.current_state.name):
+		return
+
+	if not is_on_floor():
+		if air_dashes_left <= 0:
+			return
+		air_dashes_left -= 1
+
+	state_machine.transition_to("Dash")

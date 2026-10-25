@@ -7,6 +7,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
 size = Vector2(699.99133, 109.71423)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_apfi5"]
+size = Vector2(61, 228)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5pl1k"]
+size = Vector2(279.5, 50)
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
 [node name="Modulo" type="Node2D" unique_id=239381168]
@@ -25,6 +31,24 @@ texture = ExtResource("2_67jxd")
 position = Vector2(445.00003, 228)
 scale = Vector2(3.6171875, 0.1640625)
 shape = SubResource("RectangleShape2D_6673r")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=840310526]
+position = Vector2(494, 116)
+shape = SubResource("RectangleShape2D_apfi5")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=723116082]
+position = Vector2(385.25, 19)
+shape = SubResource("RectangleShape2D_5pl1k")
+
+[node name="Icon" type="Sprite2D" parent="StaticBody2D" unique_id=50558577]
+position = Vector2(494.20605, 109.65625)
+scale = Vector2(0.46553048, 1.8491212)
+texture = ExtResource("2_67jxd")
+
+[node name="Icon" type="Sprite2D" parent="StaticBody2D/Icon" unique_id=1928262664]
+position = Vector2(-235.65814, -48.756264)
+scale = Vector2(4.715722, 0.21547392)
+texture = ExtResource("2_67jxd")
 
 [node name="Danio" type="Area2D" parent="." unique_id=1911838399]
 collision_layer = 16

@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://bkb6v6kkxs5yr" path="res://Player/Scripts/Arrow.gd" id="1_3m281"]
 [ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="2_cvlai"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
-size = Vector2(14, 16)
+[sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
+radius = 3.0
 
 [node name="Arrow" type="Area2D" unique_id=533443133]
 collision_layer = 0
@@ -12,10 +12,10 @@ collision_mask = 33
 script = ExtResource("1_3m281")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1921884000]
-position = Vector2(0, 1)
-scale = Vector2(0.12499999, 0.140625)
+position = Vector2(2.9802322e-08, 0.9999998)
+scale = Vector2(0.046875004, 0.046874996)
 texture = ExtResource("2_cvlai")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=498283538]
 position = Vector2(0, 1)
-shape = SubResource("RectangleShape2D_6673r")
+shape = SubResource("CircleShape2D_dkpta")

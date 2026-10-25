@@ -19,6 +19,7 @@ var velocity: Vector2 = Vector2.ZERO
 var shooter: Node
 
 var _stuck: bool = false
+var _launched: bool = false
 
 
 func _ready() -> void:
@@ -26,17 +27,22 @@ func _ready() -> void:
 	# SÍ debe detectar cuerpos (paredes) para poder clavarse.
 	body_entered.connect(_on_body_entered)
 	hit_landed.connect(_on_hit_landed)
-	get_tree().create_timer(lifetime).timeout.connect(queue_free)
+	# Hasta que no se llame a launch(), la flecha se queda quieta e inofensiva
+	# (por ejemplo, si hay una colocada a mano en una escena).
+	active = false
 
 
 func launch(initial_velocity: Vector2, from: Node) -> void:
 	velocity = initial_velocity
 	shooter = from
 	rotation = velocity.angle()
+	_launched = true
+	active = true
+	get_tree().create_timer(lifetime).timeout.connect(queue_free)
 
 
 func _physics_process(delta: float) -> void:
-	if _stuck:
+	if not _launched or _stuck:
 		return
 	velocity.y = minf(velocity.y + arrow_gravity * delta, max_fall_speed)
 	global_position += velocity * delta
@@ -44,7 +50,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if _stuck or body == shooter:
+	if not _launched or _stuck or body == shooter:
 		return
 
 	_stuck = true

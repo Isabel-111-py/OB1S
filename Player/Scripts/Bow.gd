@@ -1,8 +1,9 @@
 class_name Bow
 extends Node2D
 ## Arco. Mantén presionada la acción "shoot" (clic derecho) para cargarlo:
-##  - Al soltar antes de tiempo, la flecha sale con menos velocidad (trayectoria más corta).
-##  - Al llegar a la carga máxima se dispara SOLO, con potencia máxima.
+##  - La flecha SOLO se lanza cuando sueltas el botón.
+##  - Cuanto menos tiempo cargues, menos velocidad y menos alcance tendrá la flecha.
+##  - Al llegar a la carga máxima el arco queda cargado a tope hasta que sueltes (potencia máxima).
 ## La flecha sale siempre hacia el mouse.
 ##
 ## Colócalo como hijo directo del Player, a la altura del pecho o del brazo.
@@ -11,6 +12,8 @@ extends Node2D
 signal charge_started
 ## Se emite cada frame mientras cargas. ratio va de 0.0 a 1.0 (útil para una barra de carga).
 signal charge_changed(ratio: float)
+## Se emite una vez al alcanzar la carga máxima (útil para un destello o un sonido de aviso).
+signal fully_charged
 signal arrow_fired(ratio: float)
 signal charge_cancelled
 
@@ -20,7 +23,7 @@ signal charge_cancelled
 @export var shoot_action: StringName = &"shoot"
 
 @export_group("Carga")
-## Segundos manteniendo el botón hasta alcanzar la carga máxima (y disparo automático).
+## Segundos manteniendo el botón hasta alcanzar la carga máxima (potencia máxima).
 @export var max_charge_time: float = 0.8
 ## Segundos de espera tras un disparo antes de poder cargar otra vez.
 @export var cooldown: float = 0.25
@@ -32,6 +35,9 @@ signal charge_cancelled
 @export var max_arrow_speed: float = 520.0
 ## Distancia desde el arco a la que aparece la flecha, en la dirección de apuntado.
 @export var muzzle_distance: float = 10.0
+## Si el arco quedó exactamente en el origen del Player (normalmente los pies), se sube
+## esta cantidad de px, a la altura del pecho. Si ya lo moviste tú en el editor, no se toca.
+@export var default_height: float = 16.0
 
 var is_charging: bool = false
 ## Carga actual de 0.0 a 1.0.
@@ -41,7 +47,7 @@ var charge_ratio: float:
 
 var _charge_time: float = 0.0
 var _cooldown_timer: float = 0.0
-var _needs_release: bool = false
+var _full_notified: bool = false
 var _player: Player
 
 
@@ -51,6 +57,9 @@ func _ready() -> void:
 		push_error("Bow: debe ser hijo directo del Player.")
 		set_physics_process(false)
 		return
+
+	if position.is_zero_approx():
+		position.y = -default_height
 	visible = false
 
 
@@ -58,17 +67,13 @@ func _physics_process(delta: float) -> void:
 	_cooldown_timer = maxf(_cooldown_timer - delta, 0.0)
 	var pressed := Input.is_action_pressed(shoot_action)
 
-	# Tras un disparo automático hay que soltar el botón antes de volver a cargar.
-	if not pressed:
-		_needs_release = false
-
 	if _player.is_dead:
 		if is_charging:
 			_cancel_charge()
 		return
 
 	if not is_charging:
-		if pressed and not _needs_release and _cooldown_timer <= 0.0:
+		if pressed and _cooldown_timer <= 0.0:
 			_start_charge()
 		else:
 			return
@@ -82,10 +87,10 @@ func _physics_process(delta: float) -> void:
 	_update_aim()
 	charge_changed.emit(charge_ratio)
 
-	# Carga máxima: se lanza sola con potencia máxima.
-	if _charge_time >= max_charge_time:
-		_fire()
-		_needs_release = true
+	# Carga máxima: el arco queda cargado a tope hasta que sueltes el botón.
+	if _charge_time >= max_charge_time and not _full_notified:
+		_full_notified = true
+		fully_charged.emit()
 
 
 ## Dirección normalizada desde el arco hacia el mouse (en coordenadas del mundo).
@@ -99,6 +104,7 @@ func get_aim_direction() -> Vector2:
 func _start_charge() -> void:
 	is_charging = true
 	_charge_time = 0.0
+	_full_notified = false
 	visible = true
 	charge_started.emit()
 

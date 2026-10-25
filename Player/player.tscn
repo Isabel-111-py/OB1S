@@ -13,8 +13,11 @@
 [ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
 [ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
 [ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
+[ext_resource type="Script" uid="uid://ctpilm781pw1e" path="res://Player/Scripts/dash.gd" id="12_lfmf2"]
+[ext_resource type="Script" uid="uid://cjlar54liudmr" path="res://Player/swing.gd" id="13_b1ygp"]
 [ext_resource type="Script" uid="uid://c6y5cv0nac6it" path="res://Player/Scripts/Bow.gd" id="14_gu6f8"]
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
+[ext_resource type="Script" uid="uid://drace0wc1sa3k" path="res://Player/Scripts/grapple.gd" id="17_pisgm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
@@ -72,6 +75,32 @@ script = ExtResource("9_apopc")
 [node name="Dead" type="Node" parent="StateMachine" unique_id=90749968]
 script = ExtResource("10_5htga")
 
+[node name="Dash" type="Node" parent="StateMachine" unique_id=688605515]
+script = ExtResource("12_lfmf2")
+
+[node name="Swing" type="Node" parent="StateMachine" unique_id=2125128284]
+script = ExtResource("13_b1ygp")
+grapple_action = null
+retract_action = null
+extend_action = null
+toggle_mode = null
+max_rope_length = null
+min_length = null
+reel_speed = null
+hook_speed = null
+hook_return_speed = null
+rope_collision_mask = null
+wrap_offset = null
+max_unresolved_time = null
+fire_cooldown = null
+default_height = null
+grapple_allowed_from = null
+max_rope_jumps = null
+rope_color = null
+rope_width = null
+debug_draw = null
+debug_log = null
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2034993305]
 drag_horizontal_enabled = true
 drag_left_margin = 0.04
@@ -99,3 +128,7 @@ arrow_scene = ExtResource("15_dkpta")
 position = Vector2(-1.9073486e-06, -26)
 rotation = -0.7086037
 scale = Vector2(0.375, 0.375)
+
+[node name="Grapple" type="Node2D" parent="." unique_id=135467788]
+position = Vector2(0, -10)
+script = ExtResource("17_pisgm")

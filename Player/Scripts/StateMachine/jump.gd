@@ -31,7 +31,7 @@ func physics_update(delta: float) -> void:
 			_sustaining = false
 		else:
 			# Sigue presionado: se mantiene la velocidad de subida.
-			player.velocity.y = player.jump_velocity
+			player.velocity.y = minf(player.velocity.y, player.jump_velocity)
 
 	if not _sustaining:
 		player.apply_gravity(delta)
