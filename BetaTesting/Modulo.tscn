@@ -50,8 +50,8 @@ scale = Vector2(0.46553048, 1.8491212)
 texture = ExtResource("2_67jxd")
 
 [node name="Icon" type="Sprite2D" parent="StaticBody2D/Icon" unique_id=1928262664]
-position = Vector2(-235.65814, -48.756264)
-scale = Vector2(4.715722, 0.21547392)
+position = Vector2(-234.5841, -48.756264)
+scale = Vector2(2.2823417, 0.21547392)
 texture = ExtResource("2_67jxd")
 
 [node name="Danio" type="Area2D" parent="." unique_id=1911838399]
