@@ -19,10 +19,12 @@
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://drace0wc1sa3k" path="res://Player/Scripts/grapple.gd" id="17_pisgm"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b1ygp"]
+radius = 8.0
+height = 32.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apfi5"]
-radius = 9.0
+radius = 8.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1251945402]
 script = ExtResource("1_btcbx")
@@ -30,6 +32,7 @@ script = ExtResource("1_btcbx")
 [node name="Grapple" type="Node2D" parent="." unique_id=135467788]
 position = Vector2(0, -10)
 script = ExtResource("17_pisgm")
+rope_collision_mask = 2
 rope_color = Color(0.116551645, 0.1663138, 0.25118446, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
@@ -49,8 +52,8 @@ vframes = 2
 frame = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1292503704]
-position = Vector2(0, -10)
-shape = SubResource("CircleShape2D_6673r")
+position = Vector2(0, -16)
+shape = SubResource("CapsuleShape2D_b1ygp")
 
 [node name="AnimationManager" type="Node" parent="." unique_id=679508389 node_paths=PackedStringArray("state_machine", "sprite", "animation_player")]
 script = ExtResource("2_gwnis")
