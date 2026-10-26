@@ -27,6 +27,8 @@ const MIN_SEGMENT_LENGTH: float = 0.5
 const UNWRAP_EPSILON: float = 0.5
 ## Sondeos alrededor de una esquina para saber hacia qué lado está libre.
 const CORNER_PROBES: int = 16
+## Rayos a cada lado de la dirección exacta para la asistencia de puntería.
+const AIM_ASSIST_RAYS: int = 12
 const CORNER_PROBE_RADIUS: float = 2.0
 
 @export_group("Controles")
@@ -65,6 +67,13 @@ const CORNER_PROBE_RADIUS: float = 2.0
 @export var default_height: float = 16.0
 ## Estados desde los que se puede lanzar el gancho (nombres de los nodos).
 @export var grapple_allowed_from: Array[StringName] = [&"Idle", &"Run", &"Jump", &"Fall"]
+
+@export_group("Asistencia de puntería")
+## Si donde apuntas no hay una superficie para enganchar, el gancho se dirige a la más cercana
+## al cursor, siempre que esté a menos de esta distancia (px) de él. 0 = sin asistencia.
+@export var aim_assist_radius: float = 24.0
+## Desvío máximo (grados) que la asistencia puede aplicar a la dirección del disparo.
+@export_range(0.0, 45.0) var aim_assist_max_angle: float = 20.0
 
 @export_group("Salto desde la cuerda")
 ## Cuántas veces puedes saltar desde la cuerda estando en el aire, hasta volver a tocar el suelo.
@@ -252,15 +261,55 @@ func _try_fire() -> void:
 		return
 
 	var origin := global_position
-	var direction := (get_global_mouse_position() - origin).normalized()
+	var mouse := get_global_mouse_position()
+	var direction := (mouse - origin).normalized()
 	if direction.is_zero_approx():
 		return
+	direction = _assisted_direction(origin, mouse, direction)
 
 	# La dirección se fija al disparar; el gancho viaja en línea recta desde el lanzador.
 	_hook_pos = origin
 	_hook_dir = direction
 	_hook_state = HookState.FLYING
 	hook_fired.emit(direction)
+
+
+## Asistencia de puntería: si donde apuntas no hay una superficie que enganchar, busca con un
+## abanico de rayos la más cercana al cursor (dentro de aim_assist_radius) y dirige el gancho hacia
+## ella. Si el rayo exacto ya toca algo cerca de donde apuntas, se respeta tal cual.
+func _assisted_direction(origin: Vector2, mouse: Vector2, direction: Vector2) -> Vector2:
+	if aim_assist_radius <= 0.0:
+		return direction
+
+	var mouse_distance := maxf(origin.distance_to(mouse), 1.0)
+
+	# El rayo exacto ya toca algo (como mucho 2 radios más allá del cursor): se respeta.
+	var exact := _raycast(origin, origin + direction * max_rope_length)
+	if not exact.is_empty():
+		var exact_position: Vector2 = exact.position
+		if origin.distance_to(exact_position) <= mouse_distance + 2.0 * aim_assist_radius:
+			return direction
+
+	# Si no, se busca la superficie más cercana al cursor. El abanico es más ancho cuanto más
+	# cerca esté el cursor, para que la tolerancia sea parecida (en px) a cualquier distancia.
+	var spread := minf(atan(aim_assist_radius / mouse_distance), deg_to_rad(aim_assist_max_angle))
+	var best_direction := direction
+	var best_distance := aim_assist_radius
+
+	for i in range(-AIM_ASSIST_RAYS, AIM_ASSIST_RAYS + 1):
+		var candidate := direction.rotated(spread * float(i) / float(AIM_ASSIST_RAYS))
+		var hit := _raycast(origin, origin + candidate * max_rope_length)
+		if hit.is_empty():
+			continue
+		var hit_position: Vector2 = hit.position
+		if origin.distance_to(hit_position) < min_attach_distance:
+			continue
+		var distance_to_cursor := mouse.distance_to(hit_position)
+		if distance_to_cursor <= best_distance:
+			best_distance = distance_to_cursor
+			best_direction = (hit_position - origin).normalized()
+
+	return best_direction
 
 
 func _process_flying(delta: float) -> void:
