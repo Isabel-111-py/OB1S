@@ -38,6 +38,10 @@ const CORNER_PROBE_RADIUS: float = 2.0
 ## false: mantén el botón (hasta que el gancho se clave y mientras quieras seguir colgado).
 ## true: un clic dispara y otro clic suelta o cancela.
 @export var toggle_mode: bool = false
+## Input buffer: tiempo (s) que se recuerda un clic del gancho que no se pudo usar en ese momento
+## (por la espera tras soltarte, o porque aún estabas saliendo del balanceo). El gancho se lanza
+## en cuanto es posible. Conviene que sea un poco mayor que fire_cooldown. 0 = sin buffer.
+@export var input_buffer_time: float = 0.25
 
 @export_group("Cuerda")
 ## Alcance máximo del gancho y largo máximo de la cuerda (px).
@@ -106,6 +110,7 @@ var _hook_dir: Vector2 = Vector2.RIGHT
 var _wrap_signs: Array[float] = []
 var _prev_hand: Vector2 = Vector2.ZERO
 var _cooldown_timer: float = 0.0
+var _buffer_timer: float = 0.0
 var _unresolved_time: float = 0.0
 var _failure: String = ""
 var _player: Player
@@ -135,6 +140,12 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	_cooldown_timer = maxf(_cooldown_timer - delta, 0.0)
+
+	# Input buffer: se recuerda el último clic durante un instante, por si aún no se puede usar.
+	if Input.is_action_just_pressed(grapple_action):
+		_buffer_timer = input_buffer_time
+	else:
+		_buffer_timer = maxf(_buffer_timer - delta, 0.0)
 
 	# Los saltos desde la cuerda en el aire se recargan al tocar el suelo.
 	if _player.is_on_floor():
@@ -238,14 +249,26 @@ func update_rope() -> void:
 # ---------------------------------------------------------------------------
 
 func _check_fire_input() -> void:
-	if Input.is_action_just_pressed(grapple_action):
-		_try_fire()
+	var requested := Input.is_action_just_pressed(grapple_action) or _buffer_timer > 0.0
+	if not requested:
+		return
+
+	# En modo mantener, si ya soltaste el botón el disparo se cancelaría al instante: se descarta.
+	if not toggle_mode and not Input.is_action_pressed(grapple_action):
+		_buffer_timer = 0.0
+		return
+
+	if _try_fire():
+		_buffer_timer = 0.0
 
 
 ## Soltar el botón (o volver a hacer clic en modo toggle).
 func _release_requested() -> bool:
 	if toggle_mode:
-		return Input.is_action_just_pressed(grapple_action)
+		var clicked := Input.is_action_just_pressed(grapple_action)
+		if clicked:
+			_buffer_timer = 0.0 # ese clic se usa para soltar o cancelar, no para disparar de nuevo
+		return clicked
 	return not Input.is_action_pressed(grapple_action)
 
 
@@ -256,15 +279,15 @@ func _can_use_hook() -> bool:
 	return current != null and grapple_allowed_from.has(current.name)
 
 
-func _try_fire() -> void:
+func _try_fire() -> bool:
 	if _cooldown_timer > 0.0 or not _can_use_hook():
-		return
+		return false
 
 	var origin := global_position
 	var mouse := get_global_mouse_position()
 	var direction := (mouse - origin).normalized()
 	if direction.is_zero_approx():
-		return
+		return false
 	direction = _assisted_direction(origin, mouse, direction)
 
 	# La dirección se fija al disparar; el gancho viaja en línea recta desde el lanzador.
@@ -272,6 +295,7 @@ func _try_fire() -> void:
 	_hook_dir = direction
 	_hook_state = HookState.FLYING
 	hook_fired.emit(direction)
+	return true
 
 
 ## Asistencia de puntería: si donde apuntas no hay una superficie que enganchar, busca con un

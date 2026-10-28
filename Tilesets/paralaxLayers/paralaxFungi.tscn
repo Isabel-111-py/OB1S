@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://ckuwfjfhs6bxi"]
+
+[ext_resource type="Texture2D" uid="uid://bsyyx8gfowm4h" path="res://Tilesets/paralaxLayers/bgfungi.png" id="1_d0x60"]
+
+[node name="ParalaxFungi" type="Parallax2D" unique_id=693711417]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1932667465]
+texture = ExtResource("1_d0x60")
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1079794150]

@@ -8,11 +8,11 @@ extends State
 ##  - Soltar el clic izquierdo (o clic de nuevo en modo toggle): te sueltas.
 
 ## Aceleración horizontal (px/s²) al presionar una dirección mientras estás en el aire.
-@export var swing_acceleration: float = 700.0
+@export var swing_acceleration: float = 800.0
 ## Fricción del aire (0 = ninguna). Evita que el balanceo sea eterno.
 @export var air_drag: float = 0.15
 ## Límite de velocidad durante el balanceo, para evitar que la física se desborde.
-@export var max_swing_speed: float = 900.0
+@export var max_swing_speed: float = 1000.0
 
 
 func enter(_msg: Dictionary = {}) -> void:
