@@ -27,6 +27,7 @@ window/stretch/scale_mode="integer"
 [file_customization]
 
 folder_colors={
+"res://Levels/": "teal",
 "res://Player/": "blue"
 }
 
