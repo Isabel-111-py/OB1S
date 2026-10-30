@@ -296,5 +296,3 @@ func _try_dash() -> void:
 		if air_dashes_left <= 0:
 			return
 		air_dashes_left -= 1
-
-	state_machine.transition_to("Dash")
