@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="OB1S"
-run/main_scene="uid://cim4e8m7ykvgc"
+run/main_scene="uid://dne1472byuweu"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SceneManager="*uid://qxjtpaioxm6r"
 
 [display]
 

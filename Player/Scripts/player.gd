@@ -24,6 +24,14 @@ signal died
 @export var air_time_to_max_speed: float = 0.35
 @export var air_time_to_stop: float = 0.6
 
+@export_group("Inercia")
+## Frenado (px/s²) de la velocidad que SOBREPASA la máxima en el aire (por ejemplo, al soltarte de
+## la cuerda). Más bajo = el impulso se conserva más tiempo. Cerca de la velocidad máxima el frenado
+## se acerca poco a poco al normal, para que no haya un cambio brusco.
+@export var air_momentum_decel: float = 120.0
+## Lo mismo en el suelo (al aterrizar manteniendo la dirección).
+@export var ground_momentum_decel: float = 350.0
+
 @export_group("Salto")
 ## Velocidad inicial del salto (negativa = hacia arriba).
 @export var jump_velocity: float = -380.0
@@ -79,6 +87,7 @@ var air_dashes_left: int = 0
 
 
 func _ready() -> void:
+	add_to_group("player")
 	health = max_health
 	air_dashes_left = max_air_dashes
 	hurtbox.hit_received.connect(_on_hit_received)
@@ -135,7 +144,8 @@ func apply_gravity(delta: float, multiplier: float = 1.0) -> void:
 ## Suelo (robot con ruedas):
 ##  - Sin input: rueda libre, avanza por inercia (la distancia depende de la velocidad que llevaba).
 ##  - Input contrario al movimiento: frenado fuerte, sin deslizar, y luego arranca al otro lado.
-##  - Input en el mismo sentido: aceleración progresiva hasta `speed`.
+##  - Input en el mismo sentido: aceleración progresiva hasta `speed`. Si ya ibas más rápido
+##    (por ejemplo, al aterrizar tras soltarte de la cuerda), el exceso se frena suavemente.
 func move_ground(direction: float, delta: float) -> void:
 	if is_zero_approx(direction):
 		# Rueda libre: la velocidad decae de forma exponencial (como una rueda con poca fricción).
@@ -149,17 +159,38 @@ func move_ground(direction: float, delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, brake_decel * delta)
 	else:
 		var accel := get_max_speed() / maxf(time_to_max_speed, 0.001)
+		# Si ya vas más rápido que el máximo en esa dirección, el exceso se frena suavemente.
+		if absf(velocity.x) > get_max_speed() and signf(direction) == signf(velocity.x):
+			accel = _overspeed_decel(accel, ground_momentum_decel)
 		velocity.x = move_toward(velocity.x, direction * get_max_speed(), accel * delta)
 
 
-## Aire: control reducido, sin rueda libre ni frenado especial.
+## Aire: control reducido, sin rueda libre. La velocidad que sobrepasa la máxima (impulso de la
+## cuerda, dash...) se conserva: solo se frena el exceso, y suavemente (air_momentum_decel).
+## Presionar la dirección contraria sí frena con normalidad.
 func move_air(direction: float, delta: float) -> void:
+	var max_speed := get_max_speed()
+	var has_momentum := absf(velocity.x) > max_speed
+
 	if is_zero_approx(direction):
 		var decel := speed / maxf(air_time_to_stop, 0.001)
+		if has_momentum:
+			decel = _overspeed_decel(decel, air_momentum_decel)
 		velocity.x = move_toward(velocity.x, 0.0, decel * delta)
 	else:
-		var accel := get_max_speed() / maxf(air_time_to_max_speed, 0.001)
-		velocity.x = move_toward(velocity.x, direction * get_max_speed(), accel * delta)
+		var accel := max_speed / maxf(air_time_to_max_speed, 0.001)
+		if has_momentum and signf(direction) == signf(velocity.x):
+			accel = _overspeed_decel(accel, air_momentum_decel)
+		velocity.x = move_toward(velocity.x, direction * max_speed, accel * delta)
+
+
+## Frenado a aplicar cuando se va más rápido que la velocidad máxima: con mucho exceso es
+## `momentum_decel` (suave) y, a medida que la velocidad baja hacia el máximo, se acerca a
+## `normal_decel`. Así no hay un cambio brusco al "nivelarse" con la velocidad máxima.
+func _overspeed_decel(normal_decel: float, momentum_decel: float) -> float:
+	var max_speed := get_max_speed()
+	var excess_ratio := clampf((absf(velocity.x) - max_speed) / maxf(max_speed, 0.001), 0.0, 1.0)
+	return lerpf(normal_decel, momentum_decel, excess_ratio)
 
 
 func face(direction: float) -> void:
@@ -206,6 +237,40 @@ func _on_hit_received(hitbox: Hitbox) -> void:
 	if is_zero_approx(direction):
 		direction = -facing
 	take_damage(hitbox.damage, Vector2(direction * hitbox.knockback.x, hitbox.knockback.y))
+
+
+# ---------------------------------------------------------------------------
+# Respawn / cambio de nivel
+# ---------------------------------------------------------------------------
+
+## Recoloca al jugador y lo devuelve a un estado limpio (respawn o entrada a un nivel).
+func respawn_at(pos: Vector2, dir: float = 1.0, full_heal: bool = false) -> void:
+	global_position = pos
+	velocity = Vector2.ZERO
+
+	if full_heal:
+		health = max_health
+		health_changed.emit(health, max_health)
+	is_dead = false
+
+	facing_lock = 0.0
+	coyote_timer = 0.0
+	jump_buffer_timer = 0.0
+	dash_cooldown_timer = 0.0
+	air_dashes_left = max_air_dashes
+	hurtbox.active = true
+
+	if grapple:
+		grapple.detach()
+
+	face(dir)
+	state_machine.transition_to("Idle")
+
+	# Evita que la cámara "viaje" desde la posición anterior.
+	var camera := get_node_or_null("Camera2D") as Camera2D
+	if camera:
+		camera.reset_smoothing()
+		camera.force_update_scroll()
 
 
 # ---------------------------------------------------------------------------

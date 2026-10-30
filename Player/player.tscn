@@ -90,7 +90,7 @@ script = ExtResource("12_lfmf2")
 script = ExtResource("13_b1ygp")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2034993305]
-position = Vector2(0, -90)
+position = Vector2(-1, -64)
 drag_horizontal_enabled = true
 drag_left_margin = 0.04
 drag_top_margin = 0.33

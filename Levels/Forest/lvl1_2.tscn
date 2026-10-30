@@ -1,0 +1,27 @@
+[gd_scene format=4 uid="uid://ygc61pfvrkqe"]
+
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="1_8h13f"]
+[ext_resource type="PackedScene" uid="uid://dhdiiyb8380v2" path="res://Tilesets/tileset.tscn" id="1_38j3y"]
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_vtyg3"]
+[ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="2_vtyg3"]
+
+[node name="Lvl12" type="Node2D" unique_id=2146761774]
+script = ExtResource("1_vtyg3")
+default_spawn = &"1"
+fall_limit_y = 1000.0
+
+[node name="Tileset" parent="." unique_id=1844630578 instance=ExtResource("1_38j3y")]
+tile_map_data = PackedByteArray("AAD0/wwAAAABAAgAAAD1/wwAAAABAAgAAAD2/wwAAAABAAgAAAD3/wwAAAABAAgAAAD4/wwAAAABAAgAAAD5/wwAAAABAAgAAAD6/wwAAAABAAgAAAD7/wwAAAABAAgAAAD8/wwAAAABAAgAAAD9/wwAAAABAAgAAAD+/wwAAAABAAgAAAD//wwAAAABAAgAAAAAAAwAAAABAAgAAAABAAwAAAABAAgAAAACAAwAAAABAAgAAAADAAwAAAABAAgAAAAEAAwAAAABAAgAAAAFAAwAAAABAAgAAAAGAAwAAAABAAgAAAAHAAwAAAABAAgAAAAIAAwAAAABAAgAAAAJAAwAAAABAAgAAAAKAAwAAAABAAgAAAALAAwAAAABAAgAAAAMAAwAAAABAAgAAAANAAwAAAABAAgAAAAOAAwAAAABAAgAAAAPAAwAAAABAAgAAAAQAAwAAAABAAgAAAARAAwAAAABAAgAAAASAAwAAAABAAgAAAATAAwAAAABAAgAAAAUAAwAAAABAAgAAAAVAAwAAAABAAgAAAAWAAwAAAABAAgAAAAXAAwAAAABAAgAAAAYAAwAAAABAAgAAAAZAAwAAAABAAgAAAAaAAwAAAABAAgAAAAbAAwAAAABAAgAAAAcAAwAAAABAAgAAAAdAAwAAAABAAgAAAAeAAwAAAABAAgAAAAfAAwAAAABAAgAAAAgAAwAAAABAAgAAAAhAAwAAAABAAgAAAAiAAwAAAABAAgAAAAjAAwAAAABAAgAAAAkAAwAAAABAAgAAAAlAAwAAAABAAgAAAAmAAwAAAABAAgAAAAnAAwAAAABAAgAAAAoAAwAAAABAAgAAAApAAwAAAABAAgAAAAqAAwAAAABAAgAAAArAAwAAAABAAgAAAAsAAwAAAABAAgAAAAtAAwAAAABAAgAAAAuAAwAAAABAAgAAAAvAAwAAAABAAgAAAAwAAwAAAABAAgAAAAxAAwAAAABAAgAAAAyAAwAAAABAAgAAAAzAAwAAAABAAgAAAA0AAwAAAABAAgAAAA1AAwAAAABAAgAAAA2AAwAAAABAAgAAAA3AAwAAAABAAgAAAA4AAwAAAABAAgAAAD//wsAAAANAAgAAAAAAAsAAAANAAgAAAABAAsAAAANAAgAAAAJAAkAAAANAAgAAAAJAAoAAAANAAgAAAAJAAsAAAANAAgAAAAIAAgAAAANAAgAAAAJAAgAAAANAAgAAAAHAAgAAAANAAgAAAA=")
+
+[node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("2_vtyg3")]
+position = Vector2(129, 181)
+target_level = "uid://dne1472byuweu"
+target_spawn = &"2"
+
+[node name="Marker" parent="." unique_id=298895395 instance=ExtResource("1_8h13f")]
+position = Vector2(8, 164)
+id = &"1"
+
+[node name="Marker2" parent="." unique_id=884472643 instance=ExtResource("1_8h13f")]
+position = Vector2(107, 182)
+id = &"2"
