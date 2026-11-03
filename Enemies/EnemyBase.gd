@@ -4,25 +4,30 @@ extends CharacterBody2D
 enum BTState { SUCCESS, FAILURE, RUNNING }
 
 @export_group("Estadísticas")
+@export var max_health: int = 3
 @export var attack_range: float = 40.0
 @export var chase_speed: float = 120.0
 
 var target_player: Node2D = null
 var is_awake: bool = false # Controla si el enemigo ya terminó su animación de despertar
-
+var current_health: int      # <--- NUEVO
+var is_dead: bool = false    # <--- NUEVO para saber si debe detenerse
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var detection_zone: Area2D = $DetectionZone
 
 func _ready() -> void:
-	pass
+	current_health = max_health
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 func _physics_process(delta: float) -> void:
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		if is_dead:
+			move_and_slide()
+			return
+		_run_behavior_tree(delta)
+		_update_facing()
 	
-	if not is_on_floor():
-		velocity.y += gravity * delta
-	_run_behavior_tree(delta)
-	_update_facing()
-	move_and_slide()
+		move_and_slide()
 	
 	
 # ==============================================================================
@@ -54,11 +59,10 @@ func _sequence_chase(delta: float) -> int:
 	if _condition_can_see_player() == BTState.FAILURE:
 		return BTState.FAILURE
 		
-	# Si lo ve pero no está despierto, ejecuta la acción de despertar
+	# ¡Volvemos a activar el despertar!
 	if not is_awake:
 		return _action_wake_up(delta)
 		
-	# Si ya despertó (is_awake == true), entonces persigue
 	return _action_chase_2d(delta)
 
 
@@ -81,6 +85,7 @@ func _condition_can_see_player() -> int:
 # ==============================================================================
 # Acciones (BTAction)
 # ==============================================================================
+@warning_ignore("unused_parameter")
 func _action_attack_2d(delta: float) -> int:
 	velocity.x = 0
 	anim_sprite.play("attack")
@@ -89,24 +94,36 @@ func _action_attack_2d(delta: float) -> int:
 func _action_wake_up(delta: float) -> int:
 	velocity.x = 0
 	
-	# Asegúrate de que la animación "wake_up" en el AnimatedSprite2D 
-	# tenga el botón de "Bucle" (Loop) DESACTIVADO.
-	anim_sprite.play("wake_up")
+	# Solo le damos play si no estaba ya reproduciéndose
+	if anim_sprite.animation != "wake_up":
+		anim_sprite.play("wake_up")
 	
-	# Si la animación de despertar ya terminó
-	if not anim_sprite.is_playing() or anim_sprite.animation != "wake_up":
+	# Obtenemos el número total de frames de esta animación
+	var total_frames = anim_sprite.sprite_frames.get_frame_count("wake_up")
+	
+	# Si ya llegó al último frame, terminamos la acción
+	if anim_sprite.frame == total_frames - 1:
 		is_awake = true
-		return BTState.SUCCESS # Termina esta acción y permite que el BT pase a Chase2D
+		return BTState.SUCCESS
 		
-	# Mientras se reproduce la animación de despertar, bloquea la persecución
 	return BTState.RUNNING
 
+# Añade esta nueva función justo debajo:
+func _on_wake_up_finished() -> void:
+	if anim_sprite.animation == "wake_up":
+		is_awake = true
+		# Desconectamos la señal para que no interfiera después
+		anim_sprite.animation_finished.disconnect(_on_wake_up_finished)
+
+@warning_ignore("unused_parameter")
 func _action_chase_2d(delta: float) -> int:
 	var direction := global_position.direction_to(target_player.global_position)
 	velocity.x = sign(direction.x) * chase_speed
 	anim_sprite.play("run")
+	print("Velocidad X: ", velocity.x)
 	return BTState.RUNNING
 
+@warning_ignore("unused_parameter")
 func _action_standby(delta: float) -> int:
 	velocity.x = 0
 	is_awake = false # Si el jugador escapa, se vuelve a dormir
@@ -134,3 +151,28 @@ func _update_facing() -> void:
 		anim_sprite.flip_h = false
 	elif velocity.x < 0:
 		anim_sprite.flip_h = true
+# ==============================================================================
+# SALUD Y DAÑO
+# ==============================================================================
+
+func take_damage(amount: int) -> void:
+	if is_dead:
+		return # Si ya está muerto, ignorar
+		
+	current_health -= amount
+	print("Enemigo recibió daño. Vida restante: ", current_health)
+	
+	if current_health <= 0:
+		die()
+
+func die() -> void:
+	is_dead = true
+	velocity.x = 0 # Detenemos su movimiento horizontal
+	
+	# OPCIÓN 1: Si TIENES animación de muerte:
+	# anim_sprite.play("die")
+	# await anim_sprite.animation_finished # Espera a que termine la animación
+	# queue_free() # Destruye el nodo del enemigo
+	
+	# OPCIÓN 2: Si NO tienes animación de muerte, lo destruimos de inmediato:
+	queue_free()

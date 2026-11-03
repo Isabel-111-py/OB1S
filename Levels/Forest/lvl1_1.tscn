@@ -71,4 +71,4 @@ id = &"2"
 position = Vector2(300, 354)
 
 [node name="Jabali" parent="." unique_id=326541478 instance=ExtResource("10_n8ow5")]
-position = Vector2(564, 349)
+position = Vector2(148, 288)
