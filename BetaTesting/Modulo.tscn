@@ -10,8 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dla2oroxgh6s8" path="res://Tilesets/paralaxLayers/bgfungi5.png" id="5_72nc4"]
 [ext_resource type="Texture2D" uid="uid://bsyyx8gfowm4h" path="res://Tilesets/paralaxLayers/bgfungi.png" id="5_wvuof"]
 [ext_resource type="Texture2D" uid="uid://bwjt8tvtwl8du" path="res://Enemies/dino.png" id="10_xg13r"]
-[ext_resource type="PackedScene" uid="uid://iuedjqbrw4qb" path="res://Enemies/jabali.tscn" id="11_bpo84"]
-[ext_resource type="PackedScene" uid="uid://cvoocwuuhrfhi" path="res://Enemies/Lizzard.tscn" id="12_72nc4"]
+[ext_resource type="PackedScene" uid="uid://df5gd8k6dl4y8" path="res://Enemies/jabali.tscn" id="11_bpo84"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
 
@@ -88,8 +87,5 @@ tile_map_data = PackedByteArray("AADb/wwAAAATAAgAAADc/wwAAAATAAgAAADd/wwAAAATAAg
 position = Vector2(462, 143)
 texture = ExtResource("10_xg13r")
 
-[node name="Jabali" parent="." unique_id=604315010 instance=ExtResource("11_bpo84")]
-position = Vector2(-175, 169)
-
-[node name="Lizzard" parent="." unique_id=317193235 instance=ExtResource("12_72nc4")]
-position = Vector2(-493, 134)
+[node name="Jabali" parent="." unique_id=912664407 instance=ExtResource("11_bpo84")]
+position = Vector2(-31, 195)

@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="7_3pc40"]
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="8_bebpw"]
 [ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="9_m1glj"]
+[ext_resource type="PackedScene" uid="uid://iuedjqbrw4qb" path="res://Enemies/jabali.tscn" id="10_n8ow5"]
 
 [node name="Lvl11" type="Node2D" unique_id=696506894]
 script = ExtResource("1_red0v")
@@ -68,3 +69,6 @@ id = &"2"
 
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("9_m1glj")]
 position = Vector2(300, 354)
+
+[node name="Jabali" parent="." unique_id=326541478 instance=ExtResource("10_n8ow5")]
+position = Vector2(564, 349)
