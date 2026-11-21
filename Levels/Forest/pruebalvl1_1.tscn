@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="8_bebpw"]
 [ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="9_m1glj"]
 [ext_resource type="PackedScene" uid="uid://iuedjqbrw4qb" path="res://Enemies/jabali.tscn" id="10_n8ow5"]
+[ext_resource type="PackedScene" uid="uid://cvoocwuuhrfhi" path="res://Enemies/Lizzard.tscn" id="11_fdsp1"]
 
 [node name="Lvl11" type="Node2D" unique_id=696506894]
 script = ExtResource("1_red0v")
@@ -22,7 +23,7 @@ scroll_offset = Vector2(-570, 1)
 repeat_size = Vector2(640, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=876613187]
-position = Vector2(328, 180)
+position = Vector2(325, 175)
 texture = ExtResource("2_3pc40")
 
 [node name="Parallax2D2" type="Parallax2D" parent="." unique_id=1174032016]
@@ -71,4 +72,7 @@ id = &"2"
 position = Vector2(300, 354)
 
 [node name="Jabali" parent="." unique_id=326541478 instance=ExtResource("10_n8ow5")]
-position = Vector2(148, 288)
+position = Vector2(153, 345)
+
+[node name="Lizzard" parent="." unique_id=331477245 instance=ExtResource("11_fdsp1")]
+position = Vector2(536, 339)

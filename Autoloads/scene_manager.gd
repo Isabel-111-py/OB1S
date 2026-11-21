@@ -66,6 +66,26 @@ func change_level(path: String, spawn_id: StringName = &"default") -> void:
 	# El resto ocurre en on_level_ready(), que llama el _ready() del nuevo Level.
 
 
+## Cambia al menú principal u otra escena que no sea un Level (sin requerir SpawnPoint).
+func change_to_menu(path: String = "res://UI/MainMenu/main_menu.tscn") -> void:
+	if _transitioning:
+		return
+	if not ResourceLoader.exists(path):
+		push_error("SceneManager: no existe la escena de menú '%s'." % path)
+		return
+	_transitioning = true
+	if is_instance_valid(player):
+		player.queue_free()
+		player = null
+	current_level = null
+	_has_pending_spawn = false
+	_saved_health = -1
+	await _fade(1.0)
+	get_tree().change_scene_to_file(path)
+	await _fade(0.0)
+	_transitioning = false
+
+
 ## Guarda el punto donde reaparecerá el jugador.
 func set_checkpoint(pos: Vector2, facing: float = 1.0) -> void:
 	_checkpoint_pos = pos

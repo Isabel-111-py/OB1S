@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://c1xedowhvtj4r"]
+
+[ext_resource type="Texture2D" uid="uid://dyls21ld2c66u" path="res://NPC/Sprites/hongosIdle.png" id="1_v6sxq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
+size = Vector2(20, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_twmnf"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(0, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6gq80"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(64, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02d2x"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(128, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbr3x"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(192, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m5nus"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(256, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_krunh"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(320, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8rlv"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(384, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gr7m5"]
+atlas = ExtResource("1_v6sxq")
+region = Rect2(448, 48, 64, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twmnf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6gq80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_02d2x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbr3x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m5nus")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_krunh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8rlv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gr7m5")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="MiniMushroom2" type="CharacterBody2D" unique_id=2004828564]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=412014939]
+position = Vector2(0, 9)
+shape = SubResource("RectangleShape2D_iivr6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=912348712]
+sprite_frames = SubResource("SpriteFrames_jso0p")
+frame_progress = 0.7178286

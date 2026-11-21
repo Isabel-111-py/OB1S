@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bx41ljrswm7mj"]
+
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_slvlw"]
+[ext_resource type="PackedScene" uid="uid://dhdiiyb8380v2" path="res://Tilesets/tileset.tscn" id="2_uvd1k"]
+
+[node name="Lvl2Mushrooms" type="Node2D" unique_id=1973074192]
+script = ExtResource("1_slvlw")
+
+[node name="Tileset" parent="." unique_id=1844630578 instance=ExtResource("2_uvd1k")]

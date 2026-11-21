@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cvoocwuuhrfhi"]
+
+[ext_resource type="Script" uid="uid://drx0exnr76wgf" path="res://Enemies/fisicas.gd" id="1_hue7o"]
+[ext_resource type="Script" uid="uid://yfrnyjwkofcs" path="res://missions/missiond.gd" id="3_qfhyk"]
+[ext_resource type="Script" uid="uid://bfytpq8l8u02w" path="res://missions/quest.gd" id="4_co05p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jso0p"]
+size = Vector2(64, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
+
+[sub_resource type="Resource" id="Resource_8kp8b"]
+resource_local_to_scene = true
+script = ExtResource("4_co05p")
+title = "Traeme una manzana"
+description = "Debes traerle una manzana a Lizzard, y así te dejara pasar"
+metadata/_custom_type_script = "uid://bfytpq8l8u02w"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jso0p"]
+radius = 70.837845
+
+[node name="Lizzard" type="CharacterBody2D" unique_id=331477245]
+script = ExtResource("1_hue7o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=32610223]
+position = Vector2(8, 16)
+shape = SubResource("RectangleShape2D_jso0p")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=626173458]
+sprite_frames = SubResource("SpriteFrames_jso0p")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=533185980]
+script = ExtResource("3_qfhyk")
+quest_to_give = SubResource("Resource_8kp8b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1949401829]
+shape = SubResource("CircleShape2D_jso0p")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]

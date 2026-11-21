@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="OB1S"
-run/main_scene="uid://dne1472byuweu"
+run/main_scene="res://UI/MainMenu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 SceneManager="*uid://qxjtpaioxm6r"
+QuestManager="*uid://cfvkiftdbwu57"
 
 [display]
 
@@ -32,7 +33,9 @@ window/stretch/scale_mode="integer"
 
 folder_colors={
 "res://Levels/": "teal",
-"res://Player/": "blue"
+"res://NPC/": "pink",
+"res://Player/": "blue",
+"res://UI/": "yellow"
 }
 
 [input]

@@ -1,0 +1,688 @@
+[gd_scene load_steps=19 format=3 uid="uid://dmqm7uynw5d4l"]
+
+[ext_resource type="Script" path="res://UI/MainMenu/main_menu.gd" id="1_menu_script"]
+[ext_resource type="Texture2D" uid="uid://bsyyx8gfowm4h" path="res://Tilesets/paralaxLayers/bgfungi.png" id="2_bg1"]
+[ext_resource type="Texture2D" uid="uid://o4taixl6r0dh" path="res://Tilesets/paralaxLayers/bgfungi2.png" id="3_bg2"]
+[ext_resource type="Texture2D" uid="uid://b617i2xx73qrn" path="res://Tilesets/paralaxLayers/bgfungi3.png" id="4_bg3"]
+[ext_resource type="Texture2D" uid="uid://ds8qsms503s6v" path="res://Tilesets/paralaxLayers/bgfungi4.png" id="5_bg4"]
+[ext_resource type="Texture2D" uid="uid://dla2oroxgh6s8" path="res://Tilesets/paralaxLayers/bgfungi5.png" id="6_bg5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.098, 0.157, 0.204, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.235, 0.38, 0.439, 0.85)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.157, 0.278, 0.322, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.306, 0.886, 0.659, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.078, 0.122, 0.153, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22, 0.718, 0.533, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_focus"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.306, 0.886, 0.659, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_separator"]
+color = Color(0.251, 0.447, 0.518, 0.6)
+thickness = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+bg_color = Color(0.051, 0.082, 0.11, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.224, 0.38, 0.439, 0.75)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 8
+
+[sub_resource type="Theme" id="Theme_menu"]
+Button/colors/font_color = Color(0.851, 0.91, 0.941, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(0.651, 0.784, 0.824, 1)
+Button/font_sizes/font_size = 11
+Button/styles/disabled = SubResource("StyleBoxFlat_btn_normal")
+Button/styles/focus = SubResource("StyleBoxFlat_btn_focus")
+Button/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+Button/styles/normal = SubResource("StyleBoxFlat_btn_normal")
+Button/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+HSeparator/styles/separator = SubResource("StyleBoxLine_separator")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_sidebar")
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 36
+font_color = Color(0.98, 0.933, 0.824, 1)
+outline_size = 5
+outline_color = Color(0.059, 0.09, 0.122, 1)
+shadow_size = 3
+shadow_color = Color(0.02, 0.031, 0.039, 0.8)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_subtitle"]
+font_size = 10
+font_color = Color(0.306, 0.886, 0.659, 1)
+outline_size = 2
+outline_color = Color(0.051, 0.071, 0.098, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_cursor"]
+font_size = 13
+font_color = Color(0.306, 0.886, 0.659, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_footer"]
+font_size = 9
+font_color = Color(0.549, 0.682, 0.741, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+bg_color = Color(0.059, 0.09, 0.122, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.306, 0.549, 0.62, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_modal_title"]
+font_size = 16
+font_color = Color(0.98, 0.933, 0.824, 1)
+outline_size = 3
+outline_color = Color(0.059, 0.09, 0.122, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_controls_action"]
+font_size = 11
+font_color = Color(0.702, 0.82, 0.882, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_controls_key"]
+font_size = 11
+font_color = Color(0.98, 0.933, 0.824, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_quit_confirm"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.42, 0.149, 0.149, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.851, 0.333, 0.333, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+script = ExtResource("1_menu_script")
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="BgLayer1" type="Parallax2D" parent="Background"]
+unique_name_in_owner = true
+repeat_size = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/BgLayer1"]
+position = Vector2(320, 180)
+texture = ExtResource("2_bg1")
+
+[node name="BgLayer2" type="Parallax2D" parent="Background"]
+unique_name_in_owner = true
+repeat_size = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/BgLayer2"]
+position = Vector2(320, 180)
+texture = ExtResource("3_bg2")
+
+[node name="BgLayer3" type="Parallax2D" parent="Background"]
+unique_name_in_owner = true
+repeat_size = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/BgLayer3"]
+position = Vector2(320, 180)
+texture = ExtResource("4_bg3")
+
+[node name="BgLayer4" type="Parallax2D" parent="Background"]
+unique_name_in_owner = true
+repeat_size = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/BgLayer4"]
+position = Vector2(320, 180)
+texture = ExtResource("5_bg4")
+
+[node name="BgLayer5" type="Parallax2D" parent="Background"]
+unique_name_in_owner = true
+repeat_size = Vector2(640, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/BgLayer5"]
+position = Vector2(320, 180)
+texture = ExtResource("6_bg5")
+
+[node name="DarkOverlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.039, 0.071, 0.098, 0.35)
+
+[node name="LeftSidebarCard" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 22.0
+offset_right = 232.0
+offset_bottom = -22.0
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="LeftSidebarCard"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleBox" type="VBoxContainer" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="TitleLabel" type="Label" parent="LeftSidebarCard/VBox/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "OB1S"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="SubtitleLabel" type="Label" parent="LeftSidebarCard/VBox/TitleBox"]
+layout_mode = 2
+text = "AVENTURA EN EL BOSQUE"
+label_settings = SubResource("LabelSettings_subtitle")
+
+[node name="HSeparator1" type="HSeparator" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+
+[node name="ButtonBox" type="VBoxContainer" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PlayButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../ControlsButton")
+focus_next = NodePath("../ControlsButton")
+focus_previous = NodePath("../QuitButton")
+text = "JUGAR"
+
+[node name="ControlsButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../PlayButton")
+focus_neighbor_bottom = NodePath("../OptionsButton")
+focus_next = NodePath("../OptionsButton")
+focus_previous = NodePath("../PlayButton")
+text = "CONTROLES"
+
+[node name="OptionsButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../ControlsButton")
+focus_neighbor_bottom = NodePath("../CreditsButton")
+focus_next = NodePath("../CreditsButton")
+focus_previous = NodePath("../ControlsButton")
+text = "OPCIONES"
+
+[node name="CreditsButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../OptionsButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+focus_next = NodePath("../QuitButton")
+focus_previous = NodePath("../OptionsButton")
+text = "CRÉDITOS"
+
+[node name="QuitButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../CreditsButton")
+focus_neighbor_bottom = NodePath("../PlayButton")
+focus_next = NodePath("../PlayButton")
+focus_previous = NodePath("../CreditsButton")
+text = "SALIR"
+
+[node name="Spacer" type="Control" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSeparator2" type="HSeparator" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+
+[node name="FooterLabel" type="Label" parent="LeftSidebarCard/VBox"]
+layout_mode = 2
+text = "v1.0  •  Godot 4"
+label_settings = SubResource("LabelSettings_footer")
+horizontal_alignment = 1
+
+[node name="CursorIndicator" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 110.0
+offset_right = 32.0
+offset_bottom = 129.0
+text = "▶"
+label_settings = SubResource("LabelSettings_cursor")
+
+[node name="HintLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -24.0
+offset_right = -14.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "[ENTER / ESPACIO] Seleccionar   [ESC] Menú"
+label_settings = SubResource("LabelSettings_footer")
+horizontal_alignment = 2
+
+[node name="ControlsModal" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.039, 0.059, 0.78)
+
+[node name="Center" type="CenterContainer" parent="ControlsModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="ControlsModal/Center"]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="ControlsModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="ControlsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "CONTROLES"
+label_settings = SubResource("LabelSettings_modal_title")
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="ControlsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="Grid" type="GridContainer" parent="ControlsModal/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="Act1" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Moverse:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key1" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[A] / [D]  o  [◄] [►]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act2" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Saltar:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key2" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[Espacio]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act3" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Turbo / Correr:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key3" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[Shift]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act4" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Disparar Arco:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key4" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[Clic Izquierdo]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act5" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Gancho (Grapple):"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key5" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[Clic Derecho]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act6" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "Ajustar Cuerda:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key6" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid"]
+layout_mode = 2
+text = "[W] / [S]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Sep2" type="HSeparator" parent="ControlsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="CloseControlsButton" type="Button" parent="ControlsModal/Center/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(100, 0)
+text = "VOLVER"
+
+[node name="OptionsModal" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.039, 0.059, 0.78)
+
+[node name="Center" type="CenterContainer" parent="OptionsModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="OptionsModal/Center"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="OptionsModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="OptionsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "OPCIONES"
+label_settings = SubResource("LabelSettings_modal_title")
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="OptionsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="HBoxFullscreen" type="HBoxContainer" parent="OptionsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="LblFullscreen" type="Label" parent="OptionsModal/Center/Panel/VBox/HBoxFullscreen"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pantalla Completa"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="FullscreenCheckBox" type="CheckBox" parent="OptionsModal/Center/Panel/VBox/HBoxFullscreen"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxVolume" type="VBoxContainer" parent="OptionsModal/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HBoxVolHeader" type="HBoxContainer" parent="OptionsModal/Center/Panel/VBox/VBoxVolume"]
+layout_mode = 2
+
+[node name="LblVolume" type="Label" parent="OptionsModal/Center/Panel/VBox/VBoxVolume/HBoxVolHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Volumen General"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="VolumeValueLabel" type="Label" parent="OptionsModal/Center/Panel/VBox/VBoxVolume/HBoxVolHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="VolumeSlider" type="HSlider" parent="OptionsModal/Center/Panel/VBox/VBoxVolume"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Sep2" type="HSeparator" parent="OptionsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="CloseOptionsButton" type="Button" parent="OptionsModal/Center/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(100, 0)
+text = "VOLVER"
+
+[node name="CreditsModal" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.039, 0.059, 0.78)
+
+[node name="Center" type="CenterContainer" parent="CreditsModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CreditsModal/Center"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="CreditsModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "CRÉDITOS"
+label_settings = SubResource("LabelSettings_modal_title")
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="GameName" type="Label" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "OB1S"
+label_settings = SubResource("LabelSettings_controls_key")
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "Juego de Plataformas 2D en el Bosque de Hongos"
+label_settings = SubResource("LabelSettings_controls_action")
+horizontal_alignment = 1
+
+[node name="Engine" type="Label" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "Desarrollado con Godot Engine 4"
+label_settings = SubResource("LabelSettings_footer")
+horizontal_alignment = 1
+
+[node name="Thanks" type="Label" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "¡Gracias por jugar!"
+label_settings = SubResource("LabelSettings_subtitle")
+horizontal_alignment = 1
+
+[node name="Sep2" type="HSeparator" parent="CreditsModal/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="CloseCreditsButton" type="Button" parent="CreditsModal/Center/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(100, 0)
+text = "VOLVER"
+
+[node name="QuitModal" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.039, 0.059, 0.78)
+
+[node name="Center" type="CenterContainer" parent="QuitModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="QuitModal/Center"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="QuitModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="QuitModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "¿SALIR DEL JUEGO?"
+label_settings = SubResource("LabelSettings_modal_title")
+horizontal_alignment = 1
+
+[node name="Prompt" type="Label" parent="QuitModal/Center/Panel/VBox"]
+layout_mode = 2
+text = "¿Estás seguro de que deseas salir?"
+label_settings = SubResource("LabelSettings_controls_action")
+horizontal_alignment = 1
+
+[node name="HBoxButtons" type="HBoxContainer" parent="QuitModal/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ConfirmQuitButton" type="Button" parent="QuitModal/Center/Panel/VBox/HBoxButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_quit_confirm")
+text = "SÍ, SALIR"
+
+[node name="CancelQuitButton" type="Button" parent="QuitModal/Center/Panel/VBox/HBoxButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CANCELAR"

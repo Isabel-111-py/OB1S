@@ -91,6 +91,7 @@ func _action_attack_2d(delta: float) -> int:
 	anim_sprite.play("attack")
 	return BTState.RUNNING
 
+@warning_ignore("unused_parameter")
 func _action_wake_up(delta: float) -> int:
 	velocity.x = 0
 	
