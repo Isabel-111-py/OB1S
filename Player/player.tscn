@@ -339,12 +339,9 @@ air_momentum_decel = 150.0
 jump_velocity = -200.0
 dash_time = 0.3
 max_health = 3
-max_energy = 1000.0
-dash_energy_cost = 8.0
 turbo_drain_per_second = 5.0
 grapple_energy_cost = 5.0
 grapple_drain_per_second = 3.0
-energy_regen_enabled = false
 
 [node name="InventoryMenu" parent="." unique_id=1043020156 instance=ExtResource("2_gpjlu")]
 toggle_action = &"inventory"
