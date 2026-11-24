@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://cf18jlswvd1h5"]
 
 [ext_resource type="Script" uid="uid://w53jll8j0rpq" path="res://Player/Scripts/player.gd" id="1_btcbx"]
+[ext_resource type="PackedScene" uid="uid://dyfjguw683ti8" path="res://UI/Inventory/inventory_menu.tscn" id="2_gpjlu"]
 [ext_resource type="Script" uid="uid://drsh28p8wett8" path="res://Player/Scripts/animation_manager.gd" id="2_gwnis"]
+[ext_resource type="PackedScene" path="res://UI/HUD/health_layer.tscn" id="2_n471f"]
 [ext_resource type="Texture2D" uid="uid://b4oulsmduu2l0" path="res://Sprites/PlayerSprites/rob-Sheet.png" id="2_od3ui"]
+[ext_resource type="Texture2D" uid="uid://w88t2rwicp2x" path="res://Sprites/PlayerSprites/hearts2.png" id="3_hshwv"]
 [ext_resource type="Script" uid="uid://uf8d4o8uxiqo" path="res://Player/Scripts/StateMachine/state_machine.gd" id="3_k53q1"]
+[ext_resource type="Texture2D" uid="uid://g2ddhhjm4a21" path="res://Sprites/PlayerSprites/grappler.png" id="3_o28un"]
 [ext_resource type="Texture2D" uid="uid://be6h7338xpjge" path="res://Sprites/PlayerSprites/MonkeySpriteSheet.png" id="3_p5o4e"]
+[ext_resource type="Texture2D" uid="uid://djofbe4oy8lue" path="res://Sprites/PlayerSprites/hearts1.png" id="4_gpjlu"]
 [ext_resource type="Script" uid="uid://bjl5ibgfj8t7" path="res://Player/Scripts/StateMachine/idle.gd" id="4_gwnis"]
 [ext_resource type="Script" uid="uid://incw238830m1" path="res://Player/Scripts/StateMachine/run.gd" id="5_k53q1"]
 [ext_resource type="Script" uid="uid://db6mceyxlm145" path="res://Player/Scripts/StateMachine/jump.gd" id="6_fhl08"]
@@ -12,37 +17,363 @@
 [ext_resource type="Script" uid="uid://dupf2yx8eqdhv" path="res://Player/Scripts/camera_2d.gd" id="9_00tjw"]
 [ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
 [ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
+[ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="10_qemgg"]
 [ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
+[ext_resource type="Resource" uid="uid://chw1dhy6jdeyr" path="res://Ammo/banana.tres" id="11_8viyr"]
 [ext_resource type="Script" uid="uid://ctpilm781pw1e" path="res://Player/Scripts/dash.gd" id="12_lfmf2"]
 [ext_resource type="Script" uid="uid://cjlar54liudmr" path="res://Player/swing.gd" id="13_b1ygp"]
 [ext_resource type="Script" uid="uid://c6y5cv0nac6it" path="res://Player/Scripts/Bow.gd" id="14_gu6f8"]
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://drace0wc1sa3k" path="res://Player/Scripts/grapple.gd" id="17_pisgm"]
 
+[sub_resource type="Animation" id="Animation_b1ygp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -36)]
+}
+
+[sub_resource type="Animation" id="Animation_8viyr"]
+resource_name = "dash"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.03333333, 0.06666667, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [30, 31, 33, 32]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -33)]
+}
+
+[sub_resource type="Animation" id="Animation_8mwp6"]
+resource_name = "dead"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.20000002, 0.3, 0.43333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [15, 16, 17, 18, 19]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, -32)]
+}
+
+[sub_resource type="Animation" id="Animation_n471f"]
+resource_name = "fall"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, -36)]
+}
+
+[sub_resource type="Animation" id="Animation_7emwf"]
+resource_name = "hurt"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [20, 21, 22, 21, 22, 20]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, -36)]
+}
+
+[sub_resource type="Animation" id="Animation_o28un"]
+resource_name = "idle"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3.5666666, 3.6666665, 3.733333, 3.7666664, 3.9, 3.9333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 3, 5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, -36)]
+}
+
+[sub_resource type="Animation" id="Animation_hshwv"]
+resource_name = "jump"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [10]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, -38)]
+}
+
+[sub_resource type="Animation" id="Animation_gpjlu"]
+resource_name = "run"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.10297519, 0.20595038),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2(0, -36), Vector2(0, -35), Vector2(0, -34)]
+}
+
+[sub_resource type="Animation" id="Animation_qemgg"]
+resource_name = "swing"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -36)]
+}
+
+[sub_resource type="Animation" id="Animation_sm0op"]
+resource_name = "turbo"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [25, 26, 27, 28]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Mono:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(0, -36), Vector2(0, -35), Vector2(0, -34), Vector2(0, -35)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_n471f"]
+_data = {
+&"RESET": SubResource("Animation_b1ygp"),
+&"dash": SubResource("Animation_8viyr"),
+&"dead": SubResource("Animation_8mwp6"),
+&"fall": SubResource("Animation_n471f"),
+&"hurt": SubResource("Animation_7emwf"),
+&"idle": SubResource("Animation_o28un"),
+&"jump": SubResource("Animation_hshwv"),
+&"run": SubResource("Animation_gpjlu"),
+&"swing": SubResource("Animation_qemgg"),
+&"turbo": SubResource("Animation_sm0op")
+}
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b1ygp"]
-radius = 8.0
-height = 32.0
+radius = 7.0
+height = 26.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apfi5"]
-radius = 8.0
+radius = 7.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1251945402]
 script = ExtResource("1_btcbx")
+speed = 100.0
+time_to_max_speed = 0.5
+time_to_brake = 0.1
+air_momentum_decel = 150.0
+jump_velocity = -200.0
+dash_time = 0.3
+max_health = 3
+max_energy = 1000.0
+dash_energy_cost = 8.0
+turbo_drain_per_second = 5.0
+grapple_energy_cost = 5.0
+grapple_drain_per_second = 3.0
+energy_regen_enabled = false
+
+[node name="InventoryMenu" parent="." unique_id=1043020156 instance=ExtResource("2_gpjlu")]
+toggle_action = &"inventory"
+fallback_key = 73
+menu_scene_path = "res://UI/MainMenu/main_menu.tscn"
+reset_inventory_on_exit = true
+panel_width = 300
+title_font_size = 16
+body_font_size = 12
+
+[node name="HealthLayer" parent="." unique_id=80746217 instance=ExtResource("2_n471f")]
+full_texture = ExtResource("3_hshwv")
+empty_texture = ExtResource("4_gpjlu")
 
 [node name="Grapple" type="Node2D" parent="." unique_id=135467788]
 position = Vector2(0, -10)
 script = ExtResource("17_pisgm")
-rope_collision_mask = 2
-rope_color = Color(0.116551645, 0.1663138, 0.25118446, 1)
+rope_color = Color(0.41651985, 0.19808614, 0.2075322, 1)
+hook_texture = ExtResource("3_o28un")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
-root_node = NodePath("../Sprite2D")
+[node name="Arrow" parent="." unique_id=533443133 instance=ExtResource("15_dkpta")]
+position = Vector2(8.000001, -27)
+rotation = -0.7086037
+scale = Vector2(0.375, 0.375)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1213862459]
-position = Vector2(0, -16)
-texture = ExtResource("2_od3ui")
-hframes = 4
-vframes = 7
+[node name="Bow" type="Node2D" parent="." unique_id=1260639363]
+script = ExtResource("14_gu6f8")
+arrow_scene = ExtResource("15_dkpta")
+ammo_types = Array[ExtResource("10_qemgg")]([ExtResource("11_8viyr")])
 
 [node name="Mono" type="Sprite2D" parent="." unique_id=461304380]
 position = Vector2(0, -36)
@@ -51,8 +382,19 @@ hframes = 7
 vframes = 2
 frame = 9
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1292503704]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
+root_node = NodePath("../Sprite2D")
+libraries/ = SubResource("AnimationLibrary_n471f")
+autoplay = &"idle"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1213862459]
 position = Vector2(0, -16)
+texture = ExtResource("2_od3ui")
+hframes = 5
+vframes = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1292503704]
+position = Vector2(0, -13)
 shape = SubResource("CapsuleShape2D_b1ygp")
 
 [node name="AnimationManager" type="Node" parent="." unique_id=679508389 node_paths=PackedStringArray("state_machine", "sprite", "animation_player")]
@@ -85,12 +427,13 @@ script = ExtResource("10_5htga")
 
 [node name="Dash" type="Node" parent="StateMachine" unique_id=688605515]
 script = ExtResource("12_lfmf2")
+animation = &"dash"
 
 [node name="Swing" type="Node" parent="StateMachine" unique_id=2125128284]
 script = ExtResource("13_b1ygp")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2034993305]
-position = Vector2(-1, -64)
+position = Vector2(0, -36)
 drag_horizontal_enabled = true
 drag_left_margin = 0.04
 drag_top_margin = 0.33
@@ -108,12 +451,3 @@ script = ExtResource("10_x3vf3")
 position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_apfi5")
 debug_color = Color(0.8562831, 0.21506998, 0.73656285, 0.41960785)
-
-[node name="Bow" type="Node2D" parent="." unique_id=1260639363]
-script = ExtResource("14_gu6f8")
-arrow_scene = ExtResource("15_dkpta")
-
-[node name="Arrow" parent="." unique_id=533443133 instance=ExtResource("15_dkpta")]
-position = Vector2(-1.9073486e-06, -26)
-rotation = -0.7086037
-scale = Vector2(0.375, 0.375)

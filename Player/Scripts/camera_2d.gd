@@ -21,7 +21,7 @@ extends Camera2D
 ## Cuánto (px) puede subir el jugador desde el centro de la cámara antes de que esta empiece a subir.
 @export var vertical_dead_zone_up: float = 90.0
 ## Lo mismo hacia abajo (caídas).
-@export var vertical_dead_zone_down: float = 60.0
+@export var vertical_dead_zone_down: float = 90.0
 ## Qué tan rápido alcanza la cámara el borde de la zona muerta cuando el jugador se sale de ella
 ## (más alto = más pegada al jugador; 0 = sin suavizado, la sigue de golpe).
 @export var vertical_follow_smoothing: float = 10.0

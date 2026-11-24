@@ -11,6 +11,12 @@
 [ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="9_m1glj"]
 [ext_resource type="PackedScene" uid="uid://iuedjqbrw4qb" path="res://Enemies/jabali.tscn" id="10_n8ow5"]
 [ext_resource type="PackedScene" uid="uid://cvoocwuuhrfhi" path="res://Enemies/Lizzard.tscn" id="11_fdsp1"]
+[ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="12_87leo"]
+[ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="13_nsuen"]
+[ext_resource type="PackedScene" uid="uid://bu74rlockqg55" path="res://Levels/pickup.tscn" id="14_nsuen"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_apfi5"]
+radius = 61.961952
 
 [node name="Lvl11" type="Node2D" unique_id=696506894]
 script = ExtResource("1_red0v")
@@ -76,3 +82,22 @@ position = Vector2(153, 345)
 
 [node name="Lizzard" parent="." unique_id=331477245 instance=ExtResource("11_fdsp1")]
 position = Vector2(536, 339)
+
+[node name="Icon" type="Sprite2D" parent="." unique_id=217739714]
+position = Vector2(376, 355)
+scale = Vector2(0.2265625, 0.21875)
+texture = ExtResource("12_87leo")
+
+[node name="Area2D" type="Area2D" parent="Icon" unique_id=1450217169]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("13_nsuen")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Icon/Area2D" unique_id=986709046]
+shape = SubResource("CircleShape2D_apfi5")
+
+[node name="Pickup" parent="Icon" unique_id=466366395 instance=ExtResource("14_nsuen")]
+position = Vector2(-450.2069, -301.71423)
+
+[node name="Pickup2" parent="Icon" unique_id=1297564935 instance=ExtResource("14_nsuen")]
+position = Vector2(-2189.2412, -45.714233)

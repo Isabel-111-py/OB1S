@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AmmoType" format=3 uid="uid://chw1dhy6jdeyr"]
+
+[ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="1_5bscq"]
+[ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="1_eoj1y"]
+[ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="1_lem7s"]
+
+[resource]
+script = ExtResource("1_5bscq")
+display_name = "Banana"
+icon = ExtResource("1_lem7s")
+arrow_scene = ExtResource("1_eoj1y")
+starting_amount = 10
+metadata/_custom_type_script = "uid://cvwa1e3sdoi3v"

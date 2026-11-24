@@ -4,7 +4,7 @@ extends Area2D
 ## Agrégale un CollisionShape2D hijo. Quien RECIBE el daño usa un Hurtbox.
 
 ## Se emite cuando este hitbox golpea a un Hurtbox (útil para destruir proyectiles al impactar).
-signal hit_landed(hurtbox: Hurtbox)
+signal hit_landed(_hurtbox: Hurtbox)
 
 @export var damage: int = 1
 ## Retroceso aplicado a quien reciba el golpe.

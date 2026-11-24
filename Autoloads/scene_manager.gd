@@ -13,6 +13,8 @@ var fade_time: float = 0.25
 var respawn_delay: float = 1.0
 ## Daño al caer al vacío. Con 0 solo reaparece sin quitar vida.
 var void_damage: int = 1
+## true: la energía se conserva al cambiar de nivel. false: cada nivel empieza con la energía llena.
+var keep_energy_between_levels: bool = true
 
 var current_level: Level
 var player: Player
@@ -25,6 +27,8 @@ var _transitioning: bool = false
 var _pending_spawn: StringName = &""
 var _has_pending_spawn: bool = false
 var _saved_health: int = -1
+var _saved_energy: float = -1.0
+var _saved_energy_exhausted: bool = false
 
 var _checkpoint_pos: Vector2 = Vector2.ZERO
 var _checkpoint_facing: float = 1.0
@@ -57,6 +61,8 @@ func change_level(path: String, spawn_id: StringName = &"default") -> void:
 	_transitioning = true
 	if is_instance_valid(player):
 		_saved_health = player.health
+		_saved_energy = player.energy
+		_saved_energy_exhausted = player.energy_exhausted
 		player.process_mode = Node.PROCESS_MODE_DISABLED
 	await _fade(1.0)
 
@@ -80,6 +86,7 @@ func change_to_menu(path: String = "res://UI/MainMenu/main_menu.tscn") -> void:
 	current_level = null
 	_has_pending_spawn = false
 	_saved_health = -1
+	_saved_energy = -1.0
 	await _fade(1.0)
 	get_tree().change_scene_to_file(path)
 	await _fade(0.0)
@@ -149,6 +156,9 @@ func on_level_ready(level: Level) -> void:
 		player.health = clampi(_saved_health, 1, player.max_health)
 		player.health_changed.emit(player.health, player.max_health)
 
+	if keep_energy_between_levels and _has_pending_spawn and _saved_energy >= 0.0:
+		player.restore_energy(_saved_energy, _saved_energy_exhausted)
+
 	set_checkpoint(pos, facing)
 	player.respawn_at(pos, facing)
 	level.apply_camera_limits(player.get_node_or_null("Camera2D") as Camera2D)
@@ -158,6 +168,7 @@ func on_level_ready(level: Level) -> void:
 
 	_has_pending_spawn = false
 	_saved_health = -1
+	_saved_energy = -1.0
 	level_changed.emit(level)
 
 	await _fade(0.0)

@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dyfjguw683ti8"]
+
+[ext_resource type="Script" uid="uid://x261hjas67xy" path="res://UI/Inventory/inventory_menu.gd" id="1_inv"]
+
+[node name="InventoryMenu" type="CanvasLayer" unique_id=622214746]
+layer = 20
+script = ExtResource("1_inv")
+toggle_action = null
+fallback_key = null
+menu_scene_path = null
+reset_inventory_on_exit = null
+panel_width = null
+title_font_size = null
+body_font_size = null
+panel_color = Color(0.26770946, 0.07959583, 0.03660808, 0.9607843)
+border_color = Color(0.46977675, 0.37983263, 0.19980454, 1)

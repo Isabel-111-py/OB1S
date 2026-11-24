@@ -8,6 +8,8 @@ extends CharacterBody2D
 signal health_changed(current: int, maximum: int)
 ## Se emite una sola vez cuando la vida llega a 0.
 signal died
+## Se emite cada vez que cambia la energía (la usa la barra de energía del HUD).
+signal energy_changed(current: float, maximum: float)
 
 @export_group("Movimiento")
 @export var speed: float = 220.0
@@ -52,20 +54,41 @@ signal died
 
 @export_group("Turbo")
 ## Velocidad del impulso (dash) en px/s.
-@export var dash_speed: float = 520.0
+@export var dash_speed: float = 400.0
 ## Duración del impulso en segundos.
-@export var dash_time: float = 0.16
+@export var dash_time: float = 0.2
 ## Espera (s) tras terminar un dash antes de poder usar otro.
 @export var dash_cooldown: float = 0.35
 ## Dashes permitidos en el aire antes de volver a tocar el suelo.
 @export var max_air_dashes: int = 1
 ## Mientras mantengas presionado el botón turbo, la velocidad máxima se multiplica por esto.
-@export var turbo_speed_multiplier: float = 1.3
+@export var turbo_speed_multiplier: float = 2
 ## Estados desde los que se puede iniciar un dash (nombres de los nodos).
 @export var dash_allowed_from: Array[StringName] = [&"Idle", &"Run", &"Jump", &"Fall"]
 
 @export_group("Salud")
 @export var max_health: int = 5
+
+@export_group("Energía")
+## Energía máxima. La gastan el turbo y el gancho, y se recupera sola cuando no los usas.
+@export var max_energy: float = 100.0
+## Energía que cuesta cada dash.
+@export var dash_energy_cost: float = 20.0
+## Energía por segundo que gasta correr con el turbo mantenido (no cuenta durante el dash).
+@export var turbo_drain_per_second: float = 12.0
+## Energía que cuesta lanzar el gancho.
+@export var grapple_energy_cost: float = 10.0
+## Energía por segundo que gasta el gancho mientras estás colgado de la cuerda.
+@export var grapple_drain_per_second: float = 8.0
+## Si está activado, la energía se recupera sola cuando no usas turbo ni gancho.
+## Desactívalo para que solo se recargue al tocar un checkpoint (o donde llames a refill_energy()).
+@export var energy_regen_enabled: bool = true
+## Energía por segundo que se recupera sola (solo si energy_regen_enabled está activado).
+@export var energy_regen_per_second: float = 30.0
+## Segundos de espera, después de gastar energía, antes de que empiece a recuperarse.
+@export var energy_regen_delay: float = 0.6
+## Al llegar a 0 te "agotas": no puedes usar turbo ni gancho hasta recuperar esta fracción (0-1).
+@export_range(0.0, 1.0) var energy_recover_fraction: float = 0.25
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var coyote_timer: float = 0.0
@@ -79,6 +102,10 @@ var is_dead: bool = false
 var turbo_held: bool = false
 var dash_cooldown_timer: float = 0.0
 var air_dashes_left: int = 0
+var energy: float = 0.0
+## true cuando la energía llegó a 0 y aún no se recupera lo suficiente.
+var energy_exhausted: bool = false
+var _energy_regen_timer: float = 0.0
 
 @onready var animator: AnimationManager = $AnimationManager
 @onready var state_machine: StateMachine = $StateMachine
@@ -89,20 +116,24 @@ var air_dashes_left: int = 0
 func _ready() -> void:
 	add_to_group("player")
 	health = max_health
+	energy = max_energy
 	air_dashes_left = max_air_dashes
 	hurtbox.hit_received.connect(_on_hit_received)
 	health_changed.emit(health, max_health)
+	energy_changed.emit(energy, max_energy)
 
 
 func _physics_process(delta: float) -> void:
 	# El padre se procesa ANTES que sus hijos, así que los timers
 	# ya están actualizados cuando corre el estado actual.
 	_update_timers(delta)
+	_update_energy(delta)
 	_try_dash()
 
 
 func _update_timers(delta: float) -> void:
-	turbo_held = Input.is_action_pressed("turbo")
+	# Agotado = sin energía: el turbo mantenido no da velocidad extra hasta recuperarte.
+	turbo_held = Input.is_action_pressed("turbo") and not energy_exhausted
 	dash_cooldown_timer = maxf(dash_cooldown_timer - delta, 0.0)
 
 	# `velocity.y >= 0` evita que el coyote time se reinicie justo al saltar (doble salto accidental).
@@ -251,6 +282,8 @@ func respawn_at(pos: Vector2, dir: float = 1.0, full_heal: bool = false) -> void
 	if full_heal:
 		health = max_health
 		health_changed.emit(health, max_health)
+		energy_exhausted = false
+		_set_energy(max_energy)
 	is_dead = false
 
 	facing_lock = 0.0
@@ -274,6 +307,68 @@ func respawn_at(pos: Vector2, dir: float = 1.0, full_heal: bool = false) -> void
 
 
 # ---------------------------------------------------------------------------
+# Energía
+# ---------------------------------------------------------------------------
+
+## true si hay energía suficiente para pagar `cost` (y no estás agotado).
+func can_spend_energy(cost: float) -> bool:
+	return not energy_exhausted and energy >= cost
+
+
+## Gasta energía de golpe (por ejemplo, un dash o lanzar el gancho) y retrasa la recuperación.
+func spend_energy(cost: float) -> void:
+	_energy_regen_timer = energy_regen_delay
+	_set_energy(energy - cost)
+
+
+## Llena la energía por completo y quita el agotamiento (lo usa el Checkpoint).
+func refill_energy() -> void:
+	energy_exhausted = false
+	_set_energy(max_energy)
+
+
+## Restaura la energía (y el agotamiento) al cambiar de nivel; lo llama el SceneManager.
+func restore_energy(value: float, exhausted: bool) -> void:
+	energy_exhausted = exhausted
+	_set_energy(value)
+
+
+## Gasto continuo del turbo y del gancho, y recuperación cuando no se usan.
+func _update_energy(delta: float) -> void:
+	var state_name: StringName = &""
+	if state_machine.current_state:
+		state_name = state_machine.current_state.name
+
+	var drain := 0.0
+	if turbo_held and state_name != &"Dash" and not is_zero_approx(get_input_direction()):
+		drain += turbo_drain_per_second
+	if grapple and grapple.is_attached:
+		drain += grapple_drain_per_second
+
+	if drain > 0.0:
+		_energy_regen_timer = energy_regen_delay
+		_set_energy(energy - drain * delta)
+		# Sin energía, el gancho se suelta.
+		if energy_exhausted and grapple and grapple.is_attached:
+			grapple.detach()
+	else:
+		_energy_regen_timer -= delta
+		if energy_regen_enabled and _energy_regen_timer <= 0.0 and energy < max_energy:
+			_set_energy(energy + energy_regen_per_second * delta)
+
+
+func _set_energy(value: float) -> void:
+	var previous := energy
+	energy = clampf(value, 0.0, max_energy)
+	if energy <= 0.0:
+		energy_exhausted = true
+	elif energy_exhausted and energy >= max_energy * energy_recover_fraction:
+		energy_exhausted = false
+	if not is_equal_approx(energy, previous) or energy == 0.0:
+		energy_changed.emit(energy, max_energy)
+
+
+# ---------------------------------------------------------------------------
 # Turbo
 # ---------------------------------------------------------------------------
 
@@ -291,8 +386,13 @@ func _try_dash() -> void:
 		return
 	if not dash_allowed_from.has(state_machine.current_state.name):
 		return
+	if not can_spend_energy(dash_energy_cost):
+		return
 
 	if not is_on_floor():
 		if air_dashes_left <= 0:
 			return
 		air_dashes_left -= 1
+
+	spend_energy(dash_energy_cost)
+	state_machine.transition_to("Dash")

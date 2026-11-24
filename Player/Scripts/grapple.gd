@@ -42,6 +42,10 @@ const CORNER_PROBE_RADIUS: float = 2.0
 ## (por la espera tras soltarte, o porque aún estabas saliendo del balanceo). El gancho se lanza
 ## en cuanto es posible. Conviene que sea un poco mayor que fire_cooldown. 0 = sin buffer.
 @export var input_buffer_time: float = 0.25
+## Estados durante los cuales el clic guardado en el buffer NO caduca. Con "Dash" aquí, si presionas
+## el gancho mientras haces dash (aunque falte mucho para que termine), el gancho se lanza en cuanto
+## el dash acaba. En el modo de mantener, el botón debe seguir presionado cuando termine el dash.
+@export var buffer_hold_states: Array[StringName] = [&"Dash"]
 
 @export_group("Cuerda")
 ## Alcance máximo del gancho y largo máximo de la cuerda (px).
@@ -87,6 +91,12 @@ const CORNER_PROBE_RADIUS: float = 2.0
 @export_group("Dibujo")
 @export var rope_color: Color = Color(0.85, 0.85, 0.85)
 @export var rope_width: float = 1.5
+## Imagen del gancho. Dibújala apuntando hacia la DERECHA. Empieza a dibujarse justo en el punto
+## donde termina la cuerda (el borde izquierdo de la imagen) y se extiende hacia adelante.
+## Si la dejas vacía se dibuja un pequeño círculo.
+@export var hook_texture: Texture2D
+## Ajuste fino (px) de la imagen respecto al punto donde termina la cuerda: +X la adelanta, +Y la baja.
+@export var hook_offset: Vector2 = Vector2.ZERO
 
 @export_group("Depuración")
 ## Dibuja en amarillo los puntos donde la cuerda se dobla, y en rojo el último tramo
@@ -107,6 +117,7 @@ var points: Array[Vector2] = []
 var _hook_state: HookState = HookState.IDLE
 var _hook_pos: Vector2 = Vector2.ZERO
 var _hook_dir: Vector2 = Vector2.RIGHT
+var _anchor_angle: float = 0.0
 var _wrap_signs: Array[float] = []
 var _prev_hand: Vector2 = Vector2.ZERO
 var _cooldown_timer: float = 0.0
@@ -144,7 +155,7 @@ func _physics_process(delta: float) -> void:
 	# Input buffer: se recuerda el último clic durante un instante, por si aún no se puede usar.
 	if Input.is_action_just_pressed(grapple_action):
 		_buffer_timer = input_buffer_time
-	else:
+	elif not _buffer_is_held():
 		_buffer_timer = maxf(_buffer_timer - delta, 0.0)
 
 	# Los saltos desde la cuerda en el aire se recargan al tocar el suelo.
@@ -272,6 +283,12 @@ func _release_requested() -> bool:
 	return not Input.is_action_pressed(grapple_action)
 
 
+## true mientras el Player está en un estado que congela el buffer (por defecto, el dash).
+func _buffer_is_held() -> bool:
+	var current := _player.state_machine.current_state
+	return current != null and buffer_hold_states.has(current.name)
+
+
 func _can_use_hook() -> bool:
 	if _player.is_dead:
 		return false
@@ -281,6 +298,9 @@ func _can_use_hook() -> bool:
 
 func _try_fire() -> bool:
 	if _cooldown_timer > 0.0 or not _can_use_hook():
+		return false
+	# Lanzar el gancho cuesta energía (ver grapple_energy_cost en Player).
+	if not _player.can_spend_energy(_player.grapple_energy_cost):
 		return false
 
 	var origin := global_position
@@ -294,6 +314,7 @@ func _try_fire() -> bool:
 	_hook_pos = origin
 	_hook_dir = direction
 	_hook_state = HookState.FLYING
+	_player.spend_energy(_player.grapple_energy_cost)
 	hook_fired.emit(direction)
 	return true
 
@@ -391,6 +412,7 @@ func _attach(anchor: Vector2) -> void:
 	rope_length = minf(hand.distance_to(anchor), max_rope_length)
 	_prev_hand = hand
 	_unresolved_time = 0.0
+	_anchor_angle = _hook_dir.angle() # el gancho queda clavado en la dirección en que llegó
 	is_attached = true
 	_hook_state = HookState.ATTACHED
 	rope_attached.emit(anchor)
@@ -560,14 +582,36 @@ func _draw() -> void:
 				line.append(to_local(point))
 			line.append(Vector2.ZERO) # la mano (origen de este nodo)
 			draw_polyline(line, rope_color, rope_width)
-			draw_circle(to_local(points[0]), 2.0, rope_color)
+			_draw_hook(to_local(points[0]), _anchor_angle)
 			if debug_draw:
 				for i in range(1, points.size()):
 					draw_circle(to_local(points[i]), 3.0, Color.YELLOW)
 				if _unresolved_time > 0.0:
 					draw_line(to_local(get_pivot()), Vector2.ZERO, Color.RED, 2.0)
 		HookState.FLYING, HookState.RETURNING:
-			# Mientras viaja, la cuerda va del lanzador a la punta del gancho.
+			# Mientras viaja, la cuerda va del lanzador al punto de enganche (el original).
 			var tip := to_local(_hook_pos)
 			draw_line(Vector2.ZERO, tip, rope_color, rope_width)
-			draw_circle(tip, 2.0, rope_color)
+			# Al ir hacia el objetivo apunta en la dirección del disparo; al regresar, alejándose de ti.
+			var angle := _hook_dir.angle() if _hook_state == HookState.FLYING else tip.angle()
+			_draw_hook(tip, angle)
+
+
+## 1.0, o -1.0 cuando el gancho apunta hacia la izquierda (la imagen se voltea en vertical para
+## que no quede boca abajo).
+func _hook_flip(angle: float) -> float:
+	return -1.0 if absf(wrapf(angle, -PI, PI)) > PI * 0.5 else 1.0
+
+
+## Dibuja el gancho empezando en `origin` (el punto donde termina la cuerda) y apuntando hacia
+## `angle`: la imagen asignada o, si no hay ninguna, un pequeño círculo.
+func _draw_hook(origin: Vector2, angle: float) -> void:
+	if hook_texture == null:
+		draw_circle(origin, 2.0, rope_color)
+		return
+
+	var size := hook_texture.get_size()
+	draw_set_transform(origin, angle, Vector2(1.0, _hook_flip(angle)))
+	# El borde izquierdo de la imagen queda sobre `origin` y la imagen se extiende hacia adelante.
+	draw_texture(hook_texture, Vector2(0.0, -size.y * 0.5) + hook_offset)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

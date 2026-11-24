@@ -15,12 +15,29 @@ signal charge_changed(ratio: float)
 ## Se emite una vez al alcanzar la carga máxima (útil para un destello o un sonido de aviso).
 signal fully_charged
 signal arrow_fired(ratio: float)
+## Se emite al intentar disparar sin flechas del tipo seleccionado (útil para un sonido o un aviso).
+signal out_of_ammo
 signal charge_cancelled
 
 ## Escena de la flecha (debe tener el script arrow.gd en su nodo raíz).
 @export var arrow_scene: PackedScene
 ## Acción del Input Map que carga y dispara el arco.
 @export var shoot_action: StringName = &"shoot"
+## Si está activado, cada disparo gasta una flecha de la munición seleccionada (ver Inventory) y,
+## sin flechas de ese tipo, no se puede cargar el arco hasta cambiar de munición o conseguir más.
+## Desactivado = flechas infinitas.
+@export var use_ammo: bool = true
+## Los 3 tipos de munición (nombre, icono, flecha propia, cantidad inicial). Si no los defines,
+## se usan 3 tipos de prueba.
+@export var ammo_types: Array[AmmoType] = []
+
+@export_group("Cambio de munición")
+## Acciones del Input Map para elegir cada tipo. Si no existen, se usan las teclas 1, 2 y 3.
+@export var select_actions: Array[StringName] = [&"ammo_1", &"ammo_2", &"ammo_3"]
+## Rueda del ratón: pasa al siguiente / anterior tipo de munición.
+@export var cycle_with_mouse_wheel: bool = true
+
+const FALLBACK_KEYS: Array[Key] = [KEY_1, KEY_2, KEY_3]
 
 @export_group("Carga")
 ## Segundos manteniendo el botón hasta alcanzar la carga máxima (potencia máxima).
@@ -61,11 +78,13 @@ func _ready() -> void:
 	if position.is_zero_approx():
 		position.y = -default_height
 	visible = false
+	Inventory.setup_ammo(ammo_types)
 
 
 func _physics_process(delta: float) -> void:
 	_cooldown_timer = maxf(_cooldown_timer - delta, 0.0)
 	var pressed := Input.is_action_pressed(shoot_action)
+ 
 
 	if _player.is_dead:
 		if is_charging:
@@ -73,7 +92,9 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if not is_charging:
-		if pressed and _cooldown_timer <= 0.0:
+		if Input.is_action_just_pressed(shoot_action) and use_ammo and not Inventory.has_arrows():
+			out_of_ammo.emit()
+		if pressed and _cooldown_timer <= 0.0 and (not use_ammo or Inventory.has_arrows()):
 			_start_charge()
 		else:
 			return
@@ -91,6 +112,35 @@ func _physics_process(delta: float) -> void:
 	if _charge_time >= max_charge_time and not _full_notified:
 		_full_notified = true
 		fully_charged.emit()
+
+
+## Elegir munición: teclas 1-3 (o tus acciones) y rueda del ratón. No se puede cambiar mientras cargas.
+func _unhandled_input(event: InputEvent) -> void:
+	if _player == null or _player.is_dead or is_charging:
+		return
+
+	for slot in Inventory.SLOT_COUNT:
+		if _is_select_event(event, slot):
+			Inventory.select_ammo(slot)
+			get_viewport().set_input_as_handled()
+			return
+
+	var wheel := event as InputEventMouseButton
+	if cycle_with_mouse_wheel and wheel and wheel.pressed:
+		if wheel.button_index == MOUSE_BUTTON_WHEEL_UP:
+			Inventory.cycle_ammo(-1)
+			get_viewport().set_input_as_handled()
+		elif wheel.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			Inventory.cycle_ammo(1)
+			get_viewport().set_input_as_handled()
+
+
+func _is_select_event(event: InputEvent, slot: int) -> bool:
+	if slot < select_actions.size() and InputMap.has_action(select_actions[slot]):
+		return event.is_action_pressed(select_actions[slot])
+	var key_event := event as InputEventKey
+	return key_event != null and key_event.pressed and not key_event.echo \
+		and key_event.physical_keycode == FALLBACK_KEYS[slot]
 
 
 ## Dirección normalizada desde el arco hacia el mouse (en coordenadas del mundo).
@@ -127,15 +177,18 @@ func _fire() -> void:
 	_end_charge()
 	_cooldown_timer = cooldown
 	_spawn_arrow(direction, ratio)
+	if use_ammo:
+		Inventory.use_arrow() # después de elegir la escena: el tipo no cambia durante la carga
 	arrow_fired.emit(ratio)
 
 
 func _spawn_arrow(direction: Vector2, ratio: float) -> void:
-	if arrow_scene == null:
+	var scene: PackedScene = Inventory.get_selected_arrow_scene(arrow_scene)
+	if scene == null:
 		push_error("Bow: asigna 'arrow_scene' en el Inspector.")
 		return
 
-	var arrow := arrow_scene.instantiate() as Arrow
+	var arrow := scene.instantiate() as Arrow
 	if arrow == null:
 		push_error("Bow: el nodo raíz de 'arrow_scene' debe tener el script arrow.gd.")
 		return
