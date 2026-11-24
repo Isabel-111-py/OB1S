@@ -17,7 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Inventory="*uid://d26taeuai3uk1"
 SceneManager="*uid://qxjtpaioxm6r"
+QuestManager="*uid://cfvkiftdbwu57"
 SaveManager="*uid://5cha5gkakl5j"
 
 [display]
@@ -28,6 +30,8 @@ window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
+mouse_cursor/custom_image="uid://chb67pxiomidt"
+mouse_cursor/custom_image_hotspot=Vector2(24, 24)
 
 [file_customization]
 
