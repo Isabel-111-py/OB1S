@@ -339,7 +339,7 @@ air_momentum_decel = 150.0
 jump_velocity = -200.0
 dash_time = 0.3
 max_health = 3
-turbo_drain_per_second = 5.0
+turbo_drain_per_second = 20.0
 grapple_energy_cost = 5.0
 grapple_drain_per_second = 3.0
 

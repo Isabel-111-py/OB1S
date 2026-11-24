@@ -36,5 +36,5 @@ position = Vector2(3321, 280)
 
 [node name="Exit" parent="." unique_id=987654321 instance=ExtResource("6_exit")]
 position = Vector2(5640, 890)
-target_level = "uid://bx41ljrswm7mj"
+target_level = "uid://daen5hgfet5is"
 target_spawn = &"1"
