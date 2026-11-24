@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cd5ufuyqfq1sr"]
 
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_5wnrd"]
 [ext_resource type="Texture2D" uid="uid://dyls21ld2c66u" path="res://NPC/Sprites/hongosIdle.png" id="1_vxgrt"]
+[ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_palho"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_palho"]
 atlas = ExtResource("1_vxgrt")
@@ -34,6 +36,22 @@ region = Rect2(384, 0, 64, 48)
 atlas = ExtResource("1_vxgrt")
 region = Rect2(448, 0, 64, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5ulh"]
+atlas = ExtResource("2_palho")
+region = Rect2(576, 0, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4w6cc"]
+atlas = ExtResource("2_palho")
+region = Rect2(640, 0, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mvodu"]
+atlas = ExtResource("2_palho")
+region = Rect2(704, 0, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0hn5"]
+atlas = ExtResource("2_palho")
+region = Rect2(768, 0, 64, 48)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
 animations = [{
 "frames": [{
@@ -64,17 +82,35 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5ulh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4w6cc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mvodu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0hn5")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
 size = Vector2(20, 29)
 
 [node name="MiniMushroom1" type="CharacterBody2D" unique_id=642685112]
+script = ExtResource("1_5wnrd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1646260992]
 sprite_frames = SubResource("SpriteFrames_jso0p")
-animation = &"idle"
-frame_progress = 0.19749078
+animation = &"walk"
+frame_progress = 0.64128
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1956221468]
 position = Vector2(0, 9.5)

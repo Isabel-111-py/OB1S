@@ -1,0 +1,78 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://Player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://Artifacts/Elevator.tscn" id="3_elevator"]
+[ext_resource type="PackedScene" path="res://Levels/spawn.tscn" id="4_spawn"]
+[ext_resource type="PackedScene" path="res://Levels/checkpoint.tscn" id="5_checkpoint"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground1"]
+size = Vector2(220, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground2"]
+size = Vector2(220, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(20, 400)
+
+[node name="ElevatorTestRoom" type="Node2D"]
+script = ExtResource("1_level")
+default_spawn = &"default"
+fall_limit_y = 600.0
+
+[node name="SpawnPoint" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(80, 240)
+
+[node name="Checkpoint" parent="." instance=ExtResource("5_checkpoint")]
+position = Vector2(80, 240)
+
+[node name="FloorLower" type="StaticBody2D" parent="."]
+position = Vector2(100, 260)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorLower"]
+shape = SubResource("RectangleShape2D_ground1")
+
+[node name="ColorRect" type="ColorRect" parent="FloorLower"]
+offset_left = -110.0
+offset_top = -12.0
+offset_right = 110.0
+offset_bottom = 12.0
+color = Color(0.32, 0.22, 0.14, 1)
+
+[node name="FloorUpper" type="StaticBody2D" parent="."]
+position = Vector2(360, 100)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorUpper"]
+shape = SubResource("RectangleShape2D_ground2")
+
+[node name="ColorRect" type="ColorRect" parent="FloorUpper"]
+offset_left = -110.0
+offset_top = -12.0
+offset_right = 110.0
+offset_bottom = 12.0
+color = Color(0.32, 0.22, 0.14, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-20, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(480, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Elevator" parent="." instance=ExtResource("3_elevator")]
+position = Vector2(230, 254)
+travel_distance = 154.0
+move_direction = "Arriba"
+end_lever_offset = Vector2(48, 0)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(80, 240)

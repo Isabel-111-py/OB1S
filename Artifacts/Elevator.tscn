@@ -1,0 +1,168 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Artifacts/elevator.gd" id="1_elevator"]
+[ext_resource type="Script" path="res://Artifacts/elevator_platform_visual.gd" id="2_visual"]
+[ext_resource type="Script" path="res://Artifacts/elevator_call_lever.gd" id="3_lever"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+resource_local_to_scene = true
+size = Vector2(64, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+resource_local_to_scene = true
+size = Vector2(62, 40)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prompt"]
+bg_color = Color(0.16, 0.11, 0.08, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.58, 0.42, 0.24, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_prompt"]
+font_size = 9
+font_color = Color(0.96, 0.92, 0.82, 1)
+outline_size = 2
+outline_color = Color(0.10, 0.06, 0.04, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lever"]
+resource_local_to_scene = true
+size = Vector2(52, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crush"]
+resource_local_to_scene = true
+size = Vector2(56, 10)
+
+[node name="Elevator" type="Node2D"]
+script = ExtResource("1_elevator")
+
+[node name="Platform" type="AnimatableBody2D" parent="."]
+collision_layer = 3
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="VisualPlatform" type="Node2D" parent="Platform"]
+script = ExtResource("2_visual")
+
+[node name="InteractionArea" type="Area2D" parent="Platform"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/InteractionArea"]
+position = Vector2(0, -26)
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="CrushArea" type="Area2D" parent="Platform"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/CrushArea"]
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_crush")
+
+[node name="PromptContainer" type="Node2D" parent="Platform"]
+visible = false
+position = Vector2(0, -40)
+
+[node name="PromptPanel" type="PanelContainer" parent="Platform/PromptContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_prompt")
+
+[node name="Label" type="Label" parent="Platform/PromptContainer/PromptPanel"]
+layout_mode = 2
+text = "Presiona [E] para Subir"
+label_settings = SubResource("LabelSettings_prompt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartCallLever" type="Area2D" parent="."]
+position = Vector2(-46, 0)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("3_lever")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StartCallLever"]
+position = Vector2(0, -14)
+shape = SubResource("RectangleShape2D_lever")
+
+[node name="PromptContainer" type="Node2D" parent="StartCallLever"]
+visible = false
+position = Vector2(0, -36)
+
+[node name="PromptPanel" type="PanelContainer" parent="StartCallLever/PromptContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -10.0
+offset_right = 80.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_prompt")
+
+[node name="Label" type="Label" parent="StartCallLever/PromptContainer/PromptPanel"]
+layout_mode = 2
+text = "Presiona [E] para llamar elevador"
+label_settings = SubResource("LabelSettings_prompt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndCallLever" type="Area2D" parent="."]
+position = Vector2(-46, -160)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("3_lever")
+target_floor = "Piso Destino (Destination)"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EndCallLever"]
+position = Vector2(0, -14)
+shape = SubResource("RectangleShape2D_lever")
+
+[node name="PromptContainer" type="Node2D" parent="EndCallLever"]
+visible = false
+position = Vector2(0, -36)
+
+[node name="PromptPanel" type="PanelContainer" parent="EndCallLever/PromptContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -10.0
+offset_right = 80.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_prompt")
+
+[node name="Label" type="Label" parent="EndCallLever/PromptContainer/PromptPanel"]
+layout_mode = 2
+text = "Presiona [E] para llamar elevador"
+label_settings = SubResource("LabelSettings_prompt")
+horizontal_alignment = 1
+vertical_alignment = 1

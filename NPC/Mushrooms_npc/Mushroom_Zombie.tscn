@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ch0nn2j8mr5ui"]
 
-[ext_resource type="Texture2D" uid="uid://dyls21ld2c66u" path="res://NPC/Sprites/hongosIdle.png" id="1_wipei"]
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_k46af"]
+[ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="1_wipei"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k46af"]
 atlas = ExtResource("1_wipei")
@@ -34,10 +35,26 @@ region = Rect2(384, 192, 64, 48)
 atlas = ExtResource("1_wipei")
 region = Rect2(448, 192, 64, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_klhlf"]
+atlas = ExtResource("1_wipei")
+region = Rect2(576, 192, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7gstk"]
+atlas = ExtResource("1_wipei")
+region = Rect2(640, 192, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j1768"]
+atlas = ExtResource("1_wipei")
+region = Rect2(704, 192, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_op6c8"]
+atlas = ExtResource("1_wipei")
+region = Rect2(768, 192, 64, 48)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
 animations = [{
 "frames": [{
-"duration": 1.5,
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_k46af")
 }, {
 "duration": 1.0,
@@ -64,17 +81,36 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.2,
+"texture": SubResource("AtlasTexture_klhlf")
+}, {
+"duration": 1.09,
+"texture": SubResource("AtlasTexture_7gstk")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_j1768")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_op6c8")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
 size = Vector2(36, 38)
 
 [node name="MushroomZombie" type="CharacterBody2D" unique_id=1283045713]
+script = ExtResource("1_k46af")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=864131249]
 sprite_frames = SubResource("SpriteFrames_jso0p")
-animation = &"idle"
-frame_progress = 0.79237515
+animation = &"walk"
+frame = 1
+frame_progress = 0.48504657
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1251627157]
 position = Vector2(-1, 5)

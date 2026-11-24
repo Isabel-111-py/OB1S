@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://d2u7vjbn6hjvf"]
+
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_is5py"]
+[ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_euvu4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ml1ua"]
+size = Vector2(20, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_onygo"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(0, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_83yat"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(64, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcauc"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(128, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m6mk5"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(192, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sbdbr"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(256, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_po2rw"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(320, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rddv1"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(384, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mjuge"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(448, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7s7la"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(576, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lwmvr"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(640, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_885se"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(704, 144, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5t8j8"]
+atlas = ExtResource("2_euvu4")
+region = Rect2(768, 144, 64, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_onygo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_83yat")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hcauc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m6mk5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sbdbr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_po2rw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rddv1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mjuge")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7s7la")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lwmvr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_885se")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5t8j8")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="HealthMushroom" type="CharacterBody2D" unique_id=1723018535]
+script = ExtResource("1_is5py")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=255287650]
+position = Vector2(0, 5.5)
+shape = SubResource("RectangleShape2D_ml1ua")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1091031082]
+sprite_frames = SubResource("SpriteFrames_jso0p")
+animation = &"walk"
+frame_progress = 0.63370025

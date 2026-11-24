@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://b7lqixxuknqs7"]
 
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_43gjh"]
 [ext_resource type="Texture2D" uid="uid://dyls21ld2c66u" path="res://NPC/Sprites/hongosIdle.png" id="1_s4u0t"]
+[ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_6lsbv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
 size = Vector2(20, 34)
@@ -37,6 +39,22 @@ region = Rect2(384, 96, 64, 48)
 atlas = ExtResource("1_s4u0t")
 region = Rect2(448, 96, 64, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_k1log"]
+atlas = ExtResource("2_6lsbv")
+region = Rect2(576, 96, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a5io4"]
+atlas = ExtResource("2_6lsbv")
+region = Rect2(640, 96, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xlepm"]
+atlas = ExtResource("2_6lsbv")
+region = Rect2(704, 96, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lr0f8"]
+atlas = ExtResource("2_6lsbv")
+region = Rect2(768, 96, 64, 48)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
 animations = [{
 "frames": [{
@@ -65,11 +83,29 @@ animations = [{
 "texture": SubResource("AtlasTexture_3bqab")
 }],
 "loop": 1,
-"name": &"default",
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k1log")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a5io4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xlepm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lr0f8")
+}],
+"loop": 1,
+"name": &"walk",
 "speed": 5.0
 }]
 
 [node name="MiniMushroom3" type="CharacterBody2D" unique_id=1348697413]
+script = ExtResource("1_43gjh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=395159443]
 position = Vector2(0, 7)
@@ -77,3 +113,4 @@ shape = SubResource("RectangleShape2D_iivr6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=67811006]
 sprite_frames = SubResource("SpriteFrames_jso0p")
+animation = &"walk"

@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://c1xedowhvtj4r"]
 
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_6gq80"]
 [ext_resource type="Texture2D" uid="uid://dyls21ld2c66u" path="res://NPC/Sprites/hongosIdle.png" id="1_v6sxq"]
+[ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_twmnf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
 size = Vector2(20, 28)
@@ -37,6 +39,22 @@ region = Rect2(384, 48, 64, 48)
 atlas = ExtResource("1_v6sxq")
 region = Rect2(448, 48, 64, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_er1qo"]
+atlas = ExtResource("2_twmnf")
+region = Rect2(576, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xiwoy"]
+atlas = ExtResource("2_twmnf")
+region = Rect2(640, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mb6tl"]
+atlas = ExtResource("2_twmnf")
+region = Rect2(704, 48, 64, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bd7rj"]
+atlas = ExtResource("2_twmnf")
+region = Rect2(768, 48, 64, 48)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_jso0p"]
 animations = [{
 "frames": [{
@@ -65,11 +83,29 @@ animations = [{
 "texture": SubResource("AtlasTexture_gr7m5")
 }],
 "loop": 1,
-"name": &"default",
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_er1qo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xiwoy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mb6tl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bd7rj")
+}],
+"loop": 1,
+"name": &"walk",
 "speed": 5.0
 }]
 
 [node name="MiniMushroom2" type="CharacterBody2D" unique_id=2004828564]
+script = ExtResource("1_6gq80")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=412014939]
 position = Vector2(0, 9)
@@ -77,4 +113,5 @@ shape = SubResource("RectangleShape2D_iivr6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=912348712]
 sprite_frames = SubResource("SpriteFrames_jso0p")
-frame_progress = 0.7178286
+animation = &"idle"
+frame_progress = 0.88997966
