@@ -245,12 +245,19 @@ func _build() -> void:
 	_inventory_view.add_child(HSeparator.new())
 	_inventory_view.add_child(_make_label("Mejoras / Objetos", body_font_size))
 
-	_upgrades_box = VBoxContainer.new()
-	_upgrades_box.add_theme_constant_override("separation", 6)
-	_inventory_view.add_child(_upgrades_box)
 	_empty_label = _make_label("Aún no tienes mejoras", body_font_size - 2)
 	_empty_label.modulate = Color(1, 1, 1, 0.55)
 	_inventory_view.add_child(_empty_label)
+
+	_upgrades_scroll = ScrollContainer.new()
+	_upgrades_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_upgrades_scroll.custom_minimum_size = Vector2(0, upgrades_area_height)
+	_inventory_view.add_child(_upgrades_scroll)
+
+	_upgrades_box = VBoxContainer.new()
+	_upgrades_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_upgrades_box.add_theme_constant_override("separation", 6)
+	_upgrades_scroll.add_child(_upgrades_box)
 
 	# --- VISTA 2: MISIONES (Activas y Completadas) ---
 	_quests_view = VBoxContainer.new()
@@ -267,16 +274,6 @@ func _build() -> void:
 	_quests_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_quests_box.add_theme_constant_override("separation", 6)
 	scroll.add_child(_quests_box)
-
-	_upgrades_scroll = ScrollContainer.new()
-	_upgrades_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	_upgrades_scroll.custom_minimum_size = Vector2(0, upgrades_area_height)
-	box.add_child(_upgrades_scroll)
-
-	_upgrades_box = VBoxContainer.new()
-	_upgrades_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_upgrades_box.add_theme_constant_override("separation", 6)
-	_upgrades_scroll.add_child(_upgrades_box)
 
 	box.add_child(HSeparator.new())
 
