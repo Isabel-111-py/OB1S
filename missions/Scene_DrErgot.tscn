@@ -1,0 +1,158 @@
+[gd_scene format=3 uid="uid://drec57nsu01"]
+
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="2_spawn"]
+[ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="3_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://d2u7vjbn6hjvf" path="res://NPC/Mushrooms_npc/Health_Mushroom.tscn" id="4_dr_ergot"]
+[ext_resource type="PackedScene" path="res://missions/NPCQuestGiver.tscn" id="5_qgiver"]
+[ext_resource type="Script" uid="uid://dah8jjrbak4sf" path="res://Levels/scripts/level_exit.gd" id="6_exit"]
+[ext_resource type="PackedScene" uid="uid://cf18jlswvd1h5" path="res://Player/player.tscn" id="7_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(960, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(24, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(40, 70)
+
+[sub_resource type="LabelSettings" id="LabelSettings_sign"]
+font_size = 11
+font_color = Color(0.96, 0.85, 0.55, 1)
+outline_size = 2
+outline_color = Color(0.12, 0.08, 0.04, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 13
+font_color = Color(0.45, 0.92, 0.65, 1)
+outline_size = 2
+outline_color = Color(0.08, 0.12, 0.08, 1)
+
+[node name="Scene_DrErgot" type="Node2D"]
+script = ExtResource("1_level")
+fall_limit_y = 600.0
+
+[node name="SpawnDefault" parent="." instance=ExtResource("2_spawn")]
+position = Vector2(80, 240)
+
+[node name="SpawnFromFunry" parent="." instance=ExtResource("2_spawn")]
+position = Vector2(740, 240)
+id = &"from_funry"
+facing_right = false
+
+[node name="Checkpoint" parent="." instance=ExtResource("3_checkpoint")]
+position = Vector2(80, 240)
+
+[node name="MainFloor" type="StaticBody2D" parent="."]
+position = Vector2(450, 260)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MainFloor"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="MainFloor"]
+offset_left = -480.0
+offset_top = -12.0
+offset_right = 480.0
+offset_bottom = 12.0
+color = Color(0.24, 0.17, 0.11, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-20, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(920, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RoomTitle" type="Label" parent="."]
+offset_left = 30.0
+offset_top = 40.0
+offset_right = 400.0
+offset_bottom = 65.0
+text = "🍄 Escena 1: Consultorio del DrErgot (Giver)"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 30.0
+offset_top = 65.0
+offset_right = 550.0
+offset_bottom = 85.0
+text = "Habla con el DrErgot para aceptar la misión, luego cruza la puerta hacia el claro de Funry."
+modulate = Color(1, 1, 1, 0.6)
+
+[node name="DrErgotNPC" parent="." instance=ExtResource("4_dr_ergot")]
+position = Vector2(250, 230)
+speed = 0.0
+
+[node name="QuestGiver" parent="DrErgotNPC" instance=ExtResource("5_qgiver")]
+npc_role = "Giver (Asigna misión)"
+npc_name = "DrErgot"
+npc_id = "dr_ergot"
+quest_id = "medicina_funry"
+quest_title = "Medicina para Funry"
+quest_description = "El sabio DrErgot necesita que lleves una medicina urgente a Funry, que está enfermo en su claro del bosque."
+quest_objective = "Lleva la medicina al claro de Funry"
+target_npc_id = "funry"
+return_to_giver = true
+return_objective = "Regresa al consultorio del DrErgot para informarle"
+grant_item_on_accept = &"medicina_funry"
+grant_item_name = "Medicina de DrErgot"
+grant_item_desc = "Extracto de micelio medicinal formulado por el DrErgot para curar a Funry."
+required_item_id = "medicina_funry"
+consume_item_on_complete = true
+reward_ammo_slot = 0
+reward_ammo_amount = 5
+reward_upgrade_id = "receta_ergot"
+reward_upgrade_name = "Receta del DrErgot"
+reward_upgrade_desc = "Reconocimiento médico firmado por el sabio DrErgot."
+greeting_available = "¿Me ayuda, señor de metal?"
+greeting_in_progress = "¿Pudiste encontrar a Funry?"
+greeting_ready = "¡Has vuelto! ¿Cómo está Funry?"
+greeting_completed = "¡Muchas gracias por salvar a Funry, señor de metal!"
+dialogue_offer = "¡Hola señor de metal! Funry está muy enfermo en su claro por culpa de las esporas oscuras. Preparé este frasco de medicina, pero no puedo dejar el consultorio. ¿Podrías llevársela con urgencia?"
+dialogue_in_progress = "Por favor apresúrate en llevarle la medicina a Funry. Toma la puerta a la derecha hacia su claro del bosque."
+dialogue_ready = "¡Excelente noticia! Sabía que podía confiar en ti. Funry ya está fuera de peligro. ¡Toma esta recompensa por tu gran labor!"
+dialogue_completed = "¡Funry y yo siempre te recordaremos con cariño, señor de metal!"
+
+[node name="DoorToFunry" type="Area2D" parent="."]
+position = Vector2(830, 215)
+script = ExtResource("6_exit")
+target_level = "res://missions/Scene_Funry.tscn"
+target_spawn = &"from_dr_ergot"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorToFunry"]
+shape = SubResource("RectangleShape2D_door")
+
+[node name="DoorFrame" type="ColorRect" parent="DoorToFunry"]
+offset_left = -22.0
+offset_top = -35.0
+offset_right = 22.0
+offset_bottom = 35.0
+color = Color(0.32, 0.22, 0.14, 1)
+
+[node name="DoorHole" type="ColorRect" parent="DoorToFunry"]
+offset_left = -16.0
+offset_top = -29.0
+offset_right = 16.0
+offset_bottom = 35.0
+color = Color(0.08, 0.05, 0.03, 1)
+
+[node name="SignLabel" type="Label" parent="DoorToFunry"]
+offset_left = -90.0
+offset_top = -55.0
+offset_right = 90.0
+offset_bottom = -38.0
+text = "Hacia el Claro de Funry ➔"
+label_settings = SubResource("LabelSettings_sign")
+horizontal_alignment = 1
+
+[node name="Player" parent="." instance=ExtResource("7_player")]
+position = Vector2(80, 240)

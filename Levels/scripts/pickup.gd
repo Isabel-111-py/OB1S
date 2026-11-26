@@ -21,6 +21,10 @@ enum Kind { ARROWS, UPGRADE }
 @export_multiline var upgrade_description: String = ""
 ## Icono que se muestra en el inventario (opcional).
 @export var icon: Texture2D
+@export_group("Misión (Opcional)")
+## Si se especifica, este objeto solo se puede recoger mientras esta misión esté activa.
+## Déjalo vacío para que el jugador pueda recogerlo en cualquier momento.
+@export var required_quest_id: String = ""
 @export_group("Animación")
 ## Cuánto sube y baja (px) mientras flota.
 @export var bob_height: float = 2.0
@@ -49,9 +53,31 @@ func _process(delta: float) -> void:
 	position.y = _base_y + sin(_time * bob_speed) * bob_height
 
 
+func _is_player(body: Node2D) -> bool:
+	if body is Player:
+		return true
+	if body.is_in_group("player") or body.is_in_group("Player"):
+		return true
+	if body.name == "Player" or body.name.begins_with("Player"):
+		return true
+	return false
+
+
 func _on_body_entered(body: Node2D) -> void:
-	if _collected or not (body is Player):
+	if _collected or not _is_player(body):
 		return
+	_try_collect()
+
+
+func _try_collect() -> void:
+	if _collected:
+		return
+	
+	if not required_quest_id.is_empty():
+		if Engine.has_singleton("QuestManager") or has_node("/root/QuestManager"):
+			var qm = get_node("/root/QuestManager")
+			if qm and qm.get_quest_status(required_quest_id) != qm.QuestStatus.ACTIVE:
+				return
 
 	match kind:
 		Kind.ARROWS:

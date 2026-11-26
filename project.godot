@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 
 Inventory="*uid://d26taeuai3uk1"
 SceneManager="*uid://qxjtpaioxm6r"
-QuestManager="*uid://cfvkiftdbwu57"
+QuestManager="*res://Autoloads/quest_manager.gd"
 SaveManager="*uid://5cha5gkakl5j"
 
 [display]
@@ -39,7 +39,8 @@ folder_colors={
 "res://Levels/": "teal",
 "res://NPC/": "pink",
 "res://Player/": "blue",
-"res://UI/": "yellow"
+"res://UI/": "yellow",
+"res://missions/": "green"
 }
 
 [input]

@@ -1,0 +1,165 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://Player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="3_gate"]
+[ext_resource type="PackedScene" path="res://Artifacts/GateLever.tscn" id="4_lever"]
+[ext_resource type="PackedScene" path="res://Levels/spawn.tscn" id="5_spawn"]
+[ext_resource type="PackedScene" path="res://Levels/checkpoint.tscn" id="6_checkpoint"]
+[ext_resource type="PackedScene" path="res://Enemies/jabali.tscn" id="7_boss"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1200, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(160, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(24, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lintel"]
+size = Vector2(30, 80)
+
+[node name="GateTestRoom" type="Node2D"]
+script = ExtResource("1_level")
+default_spawn = &"default"
+fall_limit_y = 600.0
+
+[node name="SpawnPoint" parent="." instance=ExtResource("5_spawn")]
+position = Vector2(60, 240)
+
+[node name="Checkpoint" parent="." instance=ExtResource("6_checkpoint")]
+position = Vector2(60, 240)
+
+[node name="MainFloor" type="StaticBody2D" parent="."]
+position = Vector2(550, 260)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MainFloor"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="MainFloor"]
+offset_left = -600.0
+offset_top = -12.0
+offset_right = 600.0
+offset_bottom = 12.0
+color = Color(0.24, 0.17, 0.11, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-20, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(1120, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Lintel1" type="StaticBody2D" parent="."]
+position = Vector2(260, 128)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lintel1"]
+shape = SubResource("RectangleShape2D_lintel")
+
+[node name="ColorRect" type="ColorRect" parent="Lintel1"]
+offset_left = -15.0
+offset_top = -40.0
+offset_right = 15.0
+offset_bottom = 40.0
+color = Color(0.32, 0.22, 0.14, 1)
+
+[node name="LintelBoss" type="StaticBody2D" parent="."]
+position = Vector2(620, 128)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LintelBoss"]
+shape = SubResource("RectangleShape2D_lintel")
+
+[node name="ColorRect" type="ColorRect" parent="LintelBoss"]
+offset_left = -15.0
+offset_top = -40.0
+offset_right = 15.0
+offset_bottom = 40.0
+color = Color(0.32, 0.22, 0.14, 1)
+
+[node name="UpperPlat1" type="StaticBody2D" parent="."]
+position = Vector2(360, 160)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperPlat1"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="UpperPlat1"]
+offset_left = -80.0
+offset_top = -8.0
+offset_right = 80.0
+offset_bottom = 8.0
+color = Color(0.35, 0.24, 0.16, 1)
+
+[node name="UpperPlat2" type="StaticBody2D" parent="."]
+position = Vector2(540, 160)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperPlat2"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="UpperPlat2"]
+offset_left = -80.0
+offset_top = -8.0
+offset_right = 80.0
+offset_bottom = 8.0
+color = Color(0.35, 0.24, 0.16, 1)
+
+[node name="GateVertical" parent="." instance=ExtResource("3_gate")]
+position = Vector2(260, 208)
+gate_length = 80.0
+gate_thickness = 16.0
+open_direction = "Hacia Arriba"
+transition_duration = 0.6
+
+[node name="LeverVertical" parent="." node_paths=PackedStringArray("target_gate") instance=ExtResource("4_lever")]
+position = Vector2(170, 248)
+target_gate = NodePath("../GateVertical")
+gate_path = NodePath("../GateVertical")
+
+[node name="GateHorizontal" parent="." instance=ExtResource("3_gate")]
+position = Vector2(450, 160)
+orientation = "Horizontal"
+gate_length = 80.0
+gate_thickness = 16.0
+open_direction = "Hacia la Derecha"
+transition_duration = 0.6
+
+[node name="LeverHorizontal" parent="." node_paths=PackedStringArray("target_gate") instance=ExtResource("4_lever")]
+position = Vector2(340, 248)
+target_gate = NodePath("../GateHorizontal")
+gate_path = NodePath("../GateHorizontal")
+
+[node name="GateBoss" parent="." node_paths=PackedStringArray("boss_target") instance=ExtResource("3_gate")]
+position = Vector2(620, 208)
+gate_length = 80.0
+gate_thickness = 16.0
+open_direction = "Hacia Arriba"
+transition_duration = 0.5
+gate_type = "Jefe / Evento"
+start_open = true
+boss_target = NodePath("../BossEnemy")
+trigger_offset = Vector2(70, 0)
+trigger_size = Vector2(48, 80)
+
+[node name="LeverArena" parent="." node_paths=PackedStringArray("target_gate") instance=ExtResource("4_lever")]
+position = Vector2(670, 248)
+target_gate = NodePath("../GateBoss")
+gate_path = NodePath("../GateBoss")
+
+[node name="BossEnemy" parent="." instance=ExtResource("7_boss")]
+position = Vector2(860, 236)
+max_health = 3
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(60, 240)

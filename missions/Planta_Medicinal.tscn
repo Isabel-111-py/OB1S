@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://c7mfl0k8medic"]
+
+[ext_resource type="PackedScene" uid="uid://bu74rlockqg55" path="res://Levels/pickup.tscn" id="1_pickup"]
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="2_4j5yw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uj3cu"]
+height = 44.0
+
+[node name="Planta_Medicinal" unique_id=1676948908 instance=ExtResource("1_pickup")]
+kind = 1
+upgrade_id = &"planta_medicinal"
+upgrade_name = "Planta Medicinal"
+upgrade_description = "Una planta silvestre con propiedades curativas. Munfy la necesita para preparar su antídoto."
+required_quest_id = "ingrediente_munfy"
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=1403478972]
+position = Vector2(0, -9)
+shape = SubResource("CapsuleShape2D_uj3cu")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="1" unique_id=1386641334]
+position = Vector2(1, -11)
+texture = ExtResource("2_4j5yw")
+region_enabled = true
+region_rect = Rect2(147.99994, 3.0846777, 24, 45.432037)

@@ -1,0 +1,166 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://missions/quest_dialogue_box.gd" id="1_dlg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.14, 0.09, 0.06, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.52, 0.38, 0.22, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 14.0
+content_margin_top = 12.0
+content_margin_right = 14.0
+content_margin_bottom = 12.0
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_name"]
+font_size = 13
+font_color = Color(0.96, 0.78, 0.35, 1)
+outline_size = 2
+outline_color = Color(0.12, 0.06, 0.03, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_text"]
+font_size = 11
+font_color = Color(0.94, 0.90, 0.82, 1)
+outline_size = 1
+outline_color = Color(0.12, 0.06, 0.03, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.09, 0.06, 0.04, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38, 0.28, 0.16, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_qtitle"]
+font_size = 11
+font_color = Color(0.98, 0.82, 0.45, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qdesc"]
+font_size = 10
+font_color = Color(0.85, 0.82, 0.76, 0.9)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qobj"]
+font_size = 10
+font_color = Color(0.35, 0.88, 0.95, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qreward"]
+font_size = 10
+font_color = Color(0.45, 0.92, 0.55, 1)
+
+[node name="QuestDialogueBox" type="CanvasLayer"]
+layer = 25
+script = ExtResource("1_dlg")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.4)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Box" type="VBoxContainer" parent="Root/Center/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Root/Center/PanelContainer/Box"]
+layout_mode = 2
+
+[node name="NPCNameLabel" type="Label" parent="Root/Center/PanelContainer/Box/Header"]
+layout_mode = 2
+text = "MiniHongo"
+label_settings = SubResource("LabelSettings_name")
+
+[node name="HSeparator" type="HSeparator" parent="Root/Center/PanelContainer/Box"]
+layout_mode = 2
+
+[node name="DialogueLabel" type="Label" parent="Root/Center/PanelContainer/Box"]
+layout_mode = 2
+text = "Hola viajero."
+label_settings = SubResource("LabelSettings_text")
+autowrap_mode = 3
+
+[node name="QuestCard" type="PanelContainer" parent="Root/Center/PanelContainer/Box"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/PanelContainer/Box/QuestCard"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="QuestTitleLabel" type="Label" parent="Root/Center/PanelContainer/Box/QuestCard/VBox"]
+layout_mode = 2
+text = "📜 Curar al Pequeño Hongo"
+label_settings = SubResource("LabelSettings_qtitle")
+
+[node name="QuestDescLabel" type="Label" parent="Root/Center/PanelContainer/Box/QuestCard/VBox"]
+layout_mode = 2
+text = "Descripción de la misión..."
+label_settings = SubResource("LabelSettings_qdesc")
+autowrap_mode = 3
+
+[node name="QuestObjLabel" type="Label" parent="Root/Center/PanelContainer/Box/QuestCard/VBox"]
+layout_mode = 2
+text = "🎯 Objetivo: Entrega medicina"
+label_settings = SubResource("LabelSettings_qobj")
+
+[node name="QuestRewardLabel" type="Label" parent="Root/Center/PanelContainer/Box/QuestCard/VBox"]
+layout_mode = 2
+text = "🎁 Recompensa: Poción"
+label_settings = SubResource("LabelSettings_qreward")
+
+[node name="Buttons" type="HBoxContainer" parent="Root/Center/PanelContainer/Box"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="BtnAccept" type="Button" parent="Root/Center/PanelContainer/Box/Buttons"]
+layout_mode = 2
+text = "Aceptar Misión"
+
+[node name="BtnComplete" type="Button" parent="Root/Center/PanelContainer/Box/Buttons"]
+layout_mode = 2
+text = "Entregar Misión"
+
+[node name="BtnClose" type="Button" parent="Root/Center/PanelContainer/Box/Buttons"]
+layout_mode = 2
+text = "Cerrar"

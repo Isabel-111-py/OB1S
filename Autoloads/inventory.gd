@@ -14,6 +14,7 @@ signal ammo_selected(slot: int)
 ## Se emite cuando cambian las definiciones (nombres, iconos) de los tipos de munición.
 signal ammo_types_changed
 signal upgrade_added(id: StringName)
+signal upgrade_removed(id: StringName)
 
 var ammo_types: Array[AmmoType] = []
 ## Flechas que tienes de cada tipo.
@@ -148,8 +149,23 @@ func add_upgrade(id: StringName, display_name: String, description: String = "",
 	return true
 
 
-func has_upgrade(id: StringName) -> bool:
-	return upgrades.has(id)
+func has_upgrade(id: Variant) -> bool:
+	return upgrades.has(StringName(id)) or upgrades.has(str(id))
+
+
+## Elimina una mejora / ítem del inventario (útil para misiones de entrega).
+func remove_upgrade(id: Variant) -> bool:
+	var key_sn := StringName(id)
+	var key_str := str(id)
+	if upgrades.has(key_sn):
+		upgrades.erase(key_sn)
+		upgrade_removed.emit(key_sn)
+		return true
+	elif upgrades.has(key_str):
+		upgrades.erase(key_str)
+		upgrade_removed.emit(key_sn)
+		return true
+	return false
 
 
 # ---------------------------------------------------------------------------

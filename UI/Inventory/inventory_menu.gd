@@ -32,7 +32,7 @@ extends CanvasLayer
 @export var slot_texture_margin: int = 4
 
 @export_group("Diseño")
-@export var panel_width: int = 300
+@export var panel_width: int = 320
 ## Lado (px) de cada espacio de munición.
 @export var slot_size: int = 72
 @export var title_font_size: int = 16
@@ -44,8 +44,14 @@ extends CanvasLayer
 @export var empty_count_color: Color = Color(0.9, 0.25, 0.25)
 
 var _root: Control
+var _tab_inv_button: Button
+var _tab_quests_button: Button
+var _inventory_view: VBoxContainer
+var _quests_view: VBoxContainer
+var _quests_box: VBoxContainer
 var _upgrades_box: VBoxContainer
 var _empty_label: Label
+var _empty_quests_label: Label
 var _continue_button: Button
 var _menu_button: Button
 var _slot_buttons: Array[Button] = []
@@ -53,6 +59,7 @@ var _slot_icons: Array[TextureRect] = []
 var _slot_counts: Array[Label] = []
 var _slot_names: Array[Label] = []
 var _is_open: bool = false
+var _current_tab: int = 0 # 0 = Inventario, 1 = Misiones
 
 
 func _ready() -> void:
@@ -67,6 +74,17 @@ func _ready() -> void:
 	Inventory.ammo_selected.connect(_refresh.unbind(1))
 	Inventory.ammo_types_changed.connect(_refresh)
 	Inventory.upgrade_added.connect(_refresh.unbind(1))
+	if Inventory.has_signal("upgrade_removed"):
+		Inventory.upgrade_removed.connect(_refresh.unbind(1))
+	
+	if has_node("/root/QuestManager"):
+		var qm = get_node("/root/QuestManager")
+		qm.quest_updated.connect(_refresh.unbind(1))
+		qm.quest_accepted.connect(_refresh.unbind(1))
+		qm.quest_completed.connect(_refresh.unbind(1))
+		qm.quest_ready_to_turn_in.connect(_refresh.unbind(1))
+		qm.quest_unlocked.connect(_refresh.unbind(1))
+	
 	_refresh()
 
 
@@ -77,6 +95,20 @@ func _exit_tree() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _is_open and event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_TAB or event.physical_keycode == KEY_Q:
+			_switch_tab(0 if _current_tab == 1 else 1)
+			get_viewport().set_input_as_handled()
+			return
+		elif event.physical_keycode == KEY_1:
+			_switch_tab(0)
+			get_viewport().set_input_as_handled()
+			return
+		elif event.physical_keycode == KEY_2:
+			_switch_tab(1)
+			get_viewport().set_input_as_handled()
+			return
+	
 	if not _is_toggle(event):
 		return
 	get_viewport().set_input_as_handled()
@@ -98,6 +130,19 @@ func close() -> void:
 	_is_open = false
 	_root.visible = false
 	get_tree().paused = false
+
+
+func _switch_tab(tab_idx: int) -> void:
+	_current_tab = tab_idx
+	if _inventory_view:
+		_inventory_view.visible = (_current_tab == 0)
+	if _quests_view:
+		_quests_view.visible = (_current_tab == 1)
+	
+	if _tab_inv_button:
+		_tab_inv_button.modulate = Color(1.25, 1.25, 1.0) if _current_tab == 0 else Color(0.7, 0.7, 0.7)
+	if _tab_quests_button:
+		_tab_quests_button.modulate = Color(1.25, 1.25, 1.0) if _current_tab == 1 else Color(0.7, 0.7, 0.7)
 
 
 func _is_toggle(event: InputEvent) -> bool:
@@ -155,26 +200,61 @@ func _build() -> void:
 	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
 
-	var title := _make_label("Inventario", title_font_size)
+	var title := _make_label("Mochila de Aventurero", title_font_size)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
 
-	box.add_child(_make_label("Munición", body_font_size))
-	box.add_child(_build_slots_row())
+	# Fila de pestañas
+	var tabs_row := HBoxContainer.new()
+	tabs_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs_row.add_theme_constant_override("separation", 6)
+	box.add_child(tabs_row)
+
+	_tab_inv_button = _make_button("🎒 Inventario")
+	_tab_inv_button.pressed.connect(_switch_tab.bind(0))
+	tabs_row.add_child(_tab_inv_button)
+
+	_tab_quests_button = _make_button("📜 Misiones")
+	_tab_quests_button.pressed.connect(_switch_tab.bind(1))
+	tabs_row.add_child(_tab_quests_button)
+
+	# --- VISTA 1: INVENTARIO (Munición + Mejoras) ---
+	_inventory_view = VBoxContainer.new()
+	_inventory_view.add_theme_constant_override("separation", 8)
+	box.add_child(_inventory_view)
+
+	_inventory_view.add_child(_make_label("Munición", body_font_size))
+	_inventory_view.add_child(_build_slots_row())
 	var hint := _make_label("En el juego: teclas 1-3 o rueda del ratón", body_font_size - 3)
 	hint.modulate = Color(1, 1, 1, 0.5)
-	box.add_child(hint)
+	_inventory_view.add_child(hint)
 
-	box.add_child(HSeparator.new())
-	box.add_child(_make_label("Mejoras", body_font_size))
+	_inventory_view.add_child(HSeparator.new())
+	_inventory_view.add_child(_make_label("Mejoras / Objetos", body_font_size))
 
 	_upgrades_box = VBoxContainer.new()
 	_upgrades_box.add_theme_constant_override("separation", 6)
-	box.add_child(_upgrades_box)
+	_inventory_view.add_child(_upgrades_box)
 
 	_empty_label = _make_label("Aún no tienes mejoras", body_font_size - 2)
 	_empty_label.modulate = Color(1, 1, 1, 0.55)
-	box.add_child(_empty_label)
+	_inventory_view.add_child(_empty_label)
+
+	# --- VISTA 2: MISIONES (Activas y Completadas) ---
+	_quests_view = VBoxContainer.new()
+	_quests_view.add_theme_constant_override("separation", 8)
+	_quests_view.visible = false
+	box.add_child(_quests_view)
+
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 160)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_quests_view.add_child(scroll)
+
+	_quests_box = VBoxContainer.new()
+	_quests_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_quests_box.add_theme_constant_override("separation", 6)
+	scroll.add_child(_quests_box)
 
 	box.add_child(HSeparator.new())
 
@@ -185,6 +265,8 @@ func _build() -> void:
 	_menu_button = _make_button("Volver al menú")
 	_menu_button.pressed.connect(_return_to_menu)
 	box.add_child(_menu_button)
+
+	_switch_tab(0)
 
 
 func _build_slots_row() -> Control:
@@ -298,10 +380,11 @@ func _make_button(text: String) -> Button:
 # Actualización
 # ---------------------------------------------------------------------------
 
-## Vuelve a dibujar los espacios de munición y la lista de mejoras.
+## Vuelve a dibujar los espacios de munición, la lista de mejoras y las misiones.
 func _refresh() -> void:
 	_refresh_slots()
 	_refresh_upgrades()
+	_refresh_quests()
 
 
 func _refresh_slots() -> void:
@@ -357,3 +440,95 @@ func _refresh_upgrades() -> void:
 
 		row.add_child(text)
 		_upgrades_box.add_child(row)
+
+
+func _refresh_quests() -> void:
+	if not _quests_box or not has_node("/root/QuestManager"):
+		return
+	
+	for child in _quests_box.get_children():
+		child.queue_free()
+	
+	var active_quests = QuestManager.get_active_quests()
+	var completed_quests = QuestManager.get_completed_quests()
+	
+	# Actualizar texto del botón de pestaña con contador
+	if _tab_quests_button:
+		if active_quests.size() > 0:
+			_tab_quests_button.text = "📜 Misiones (%d)" % active_quests.size()
+		else:
+			_tab_quests_button.text = "📜 Misiones"
+	
+	if active_quests.is_empty() and completed_quests.is_empty():
+		var empty_lbl := _make_label("No tienes misiones activas.\n¡Habla con los habitantes que tengan '?' sobre su cabeza!", body_font_size - 2)
+		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_lbl.modulate = Color(1, 1, 1, 0.55)
+		_quests_box.add_child(empty_lbl)
+		return
+	
+	# Misiones activas
+	if not active_quests.is_empty():
+		var header := _make_label("Misiones en Curso", body_font_size)
+		header.modulate = Color(0.96, 0.78, 0.35)
+		_quests_box.add_child(header)
+		
+		for q in active_quests:
+			var card := _make_quest_card(q)
+			_quests_box.add_child(card)
+	
+	# Misiones completadas
+	if not completed_quests.is_empty():
+		if not active_quests.is_empty():
+			_quests_box.add_child(HSeparator.new())
+		var comp_header := _make_label("Completadas (%d)" % completed_quests.size(), body_font_size - 1)
+		comp_header.modulate = Color(0.45, 0.85, 0.55)
+		_quests_box.add_child(comp_header)
+		
+		for q in completed_quests:
+			var row := HBoxContainer.new()
+			var check := _make_label("✓ " + str(q.title), body_font_size - 2)
+			check.modulate = Color(0.8, 0.8, 0.8, 0.75)
+			row.add_child(check)
+			_quests_box.add_child(row)
+
+
+func _make_quest_card(q_data: Dictionary) -> Control:
+	var card := PanelContainer.new()
+	var card_style := StyleBoxFlat.new()
+	card_style.bg_color = Color(0.08, 0.05, 0.03, 0.92)
+	card_style.border_color = Color(0.35, 0.95, 0.55) if q_data.is_ready else Color(0.48, 0.35, 0.20)
+	card_style.set_border_width_all(1)
+	card_style.set_corner_radius_all(4)
+	card_style.set_content_margin_all(8)
+	card.add_theme_stylebox_override("panel", card_style)
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 3)
+	card.add_child(vbox)
+	
+	# Cabecera con título y estado
+	var header := HBoxContainer.new()
+	var title_lbl := _make_label(q_data.title, body_font_size)
+	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title_lbl)
+	
+	var badge := _make_label(q_data.status_name, body_font_size - 3)
+	badge.modulate = Color(0.35, 0.95, 0.55) if q_data.is_ready else Color(0.96, 0.78, 0.35)
+	header.add_child(badge)
+	vbox.add_child(header)
+	
+	# Objetivo
+	if not str(q_data.objective).is_empty():
+		var obj_lbl := _make_label("🎯 " + str(q_data.objective), body_font_size - 2)
+		obj_lbl.modulate = Color(0.35, 0.88, 0.95)
+		obj_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vbox.add_child(obj_lbl)
+	
+	# Descripción
+	if not str(q_data.description).is_empty():
+		var desc_lbl := _make_label(str(q_data.description), body_font_size - 3)
+		desc_lbl.modulate = Color(1, 1, 1, 0.6)
+		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vbox.add_child(desc_lbl)
+	
+	return card

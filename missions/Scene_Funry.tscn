@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://funryscene02"]
+
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="2_spawn"]
+[ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="3_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://b7lqixxuknqs7" path="res://NPC/Mushrooms_npc/Mini_mushroom_3.tscn" id="4_funry"]
+[ext_resource type="PackedScene" path="res://missions/NPCQuestGiver.tscn" id="5_qgiver"]
+[ext_resource type="Script" uid="uid://dah8jjrbak4sf" path="res://Levels/scripts/level_exit.gd" id="6_exit"]
+[ext_resource type="PackedScene" uid="uid://cf18jlswvd1h5" path="res://Player/player.tscn" id="7_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(960, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(24, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(40, 70)
+
+[sub_resource type="LabelSettings" id="LabelSettings_sign"]
+font_size = 11
+font_color = Color(0.96, 0.85, 0.55, 1)
+outline_size = 2
+outline_color = Color(0.12, 0.08, 0.04, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 13
+font_color = Color(0.45, 0.85, 0.95, 1)
+outline_size = 2
+outline_color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="Scene_Funry" type="Node2D"]
+script = ExtResource("1_level")
+fall_limit_y = 600.0
+
+[node name="SpawnDefault" parent="." instance=ExtResource("2_spawn")]
+position = Vector2(140, 240)
+
+[node name="SpawnFromDrErgot" parent="." instance=ExtResource("2_spawn")]
+position = Vector2(140, 240)
+id = &"from_dr_ergot"
+facing_right = true
+
+[node name="Checkpoint" parent="." instance=ExtResource("3_checkpoint")]
+position = Vector2(140, 240)
+
+[node name="MainFloor" type="StaticBody2D" parent="."]
+position = Vector2(450, 260)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MainFloor"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="MainFloor"]
+offset_left = -480.0
+offset_top = -12.0
+offset_right = 480.0
+offset_bottom = 12.0
+color = Color(0.18, 0.22, 0.15, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-20, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(920, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RoomTitle" type="Label" parent="."]
+offset_left = 30.0
+offset_top = 40.0
+offset_right = 400.0
+offset_bottom = 65.0
+text = "🌲 Escena 2: Refugio del Bosque de Funry (Receiver)"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 30.0
+offset_top = 65.0
+offset_right = 580.0
+offset_bottom = 85.0
+text = "Entrega la medicina a Funry con clic derecho/[E], y luego regresa por la puerta al consultorio del DrErgot."
+modulate = Color(1, 1, 1, 0.6)
+
+[node name="FunryNPC" parent="." instance=ExtResource("4_funry")]
+position = Vector2(520, 235)
+speed = 0.0
+
+[node name="QuestReceiver" parent="FunryNPC" instance=ExtResource("5_qgiver")]
+npc_role = "Receiver (Solo recibe ítem / entrega)"
+npc_name = "Funry"
+npc_id = "funry"
+quest_id = ""
+greeting_waiting_delivery = "Cof cof... me siento muy débil..."
+greeting_can_deliver = "¡Traes la medicina del DrErgot! ¡Por favor dámela!"
+greeting_after_delivered = "¡Gracias a la medicina ya me siento mucho mejor!"
+dialogue_waiting_delivery = "Cof cof... no me quedan fuerzas... El DrErgot me dijo que me mandaría una medicina con alguien de buen corazón..."
+dialogue_can_deliver = "¡Oh! ¿Esa es la medicina que preparó el DrErgot? ¡Muchísimas gracias, señor de metal! (Funry bebe la medicina y su sombrerillo recupera su brillo saludable). ¡Me siento con fuerzas otra vez! Por favor, regresa al consultorio con el DrErgot e infórmale que ya estoy a salvo."
+dialogue_after_delivered = "¡Me siento lleno de vida otra vez! Ve a avisarle al DrErgot para que sepa que su fórmula funcionó a la perfección."
+
+[node name="DoorToDrErgot" type="Area2D" parent="."]
+position = Vector2(50, 215)
+script = ExtResource("6_exit")
+target_level = "res://missions/Scene_DrErgot.tscn"
+target_spawn = &"from_funry"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorToDrErgot"]
+shape = SubResource("RectangleShape2D_door")
+
+[node name="DoorFrame" type="ColorRect" parent="DoorToDrErgot"]
+offset_left = -22.0
+offset_top = -35.0
+offset_right = 22.0
+offset_bottom = 35.0
+color = Color(0.25, 0.18, 0.12, 1)
+
+[node name="DoorHole" type="ColorRect" parent="DoorToDrErgot"]
+offset_left = -16.0
+offset_top = -29.0
+offset_right = 16.0
+offset_bottom = 35.0
+color = Color(0.06, 0.04, 0.02, 1)
+
+[node name="SignLabel" type="Label" parent="DoorToDrErgot"]
+offset_left = -70.0
+offset_top = -55.0
+offset_right = 110.0
+offset_bottom = -38.0
+text = "⬅ Regresar al DrErgot"
+label_settings = SubResource("LabelSettings_sign")
+horizontal_alignment = 1
+
+[node name="Player" parent="." instance=ExtResource("7_player")]
+position = Vector2(140, 240)

@@ -1,0 +1,123 @@
+[gd_scene format=3 uid="uid://bvo3s0pmcsm50"]
+
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://cf18jlswvd1h5" path="res://Player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="3_spawn"]
+[ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://d2u7vjbn6hjvf" path="res://NPC/Mushrooms_npc/Health_Mushroom.tscn" id="5_dr_ergot"]
+[ext_resource type="PackedScene" uid="uid://b7lqixxuknqs7" path="res://NPC/Mushrooms_npc/Mini_mushroom_3.tscn" id="6_runry"]
+[ext_resource type="PackedScene" path="res://missions/NPCQuestGiver.tscn" id="7_qgiver"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(900, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(24, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(160, 16)
+
+[node name="QuestTestRoom" type="Node2D" unique_id=1159609772]
+script = ExtResource("1_level")
+fall_limit_y = 600.0
+
+[node name="SpawnPoint" parent="." unique_id=1839004928 instance=ExtResource("3_spawn")]
+position = Vector2(80, 240)
+
+[node name="Checkpoint" parent="." unique_id=252261270 instance=ExtResource("4_checkpoint")]
+position = Vector2(80, 240)
+
+[node name="MainFloor" type="StaticBody2D" parent="." unique_id=1495613883]
+position = Vector2(450, 260)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MainFloor" unique_id=607052464]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="MainFloor" unique_id=713359678]
+offset_left = -450.0
+offset_top = -12.0
+offset_right = 450.0
+offset_bottom = 12.0
+color = Color(0.24, 0.17, 0.11, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="." unique_id=816089650]
+position = Vector2(-20, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=1792958865]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="WallRight" type="StaticBody2D" parent="." unique_id=1538832870]
+position = Vector2(920, 150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=712256579]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Platform" type="StaticBody2D" parent="." unique_id=983905869]
+position = Vector2(420, 190)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform" unique_id=608109074]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="Platform" unique_id=230925762]
+offset_left = -80.0
+offset_top = -8.0
+offset_right = 80.0
+offset_bottom = 8.0
+color = Color(0.35, 0.24, 0.16, 1)
+
+[node name="DrErgotNPC" parent="." unique_id=112661760 instance=ExtResource("5_dr_ergot")]
+position = Vector2(200, 230)
+speed = 0.0
+
+[node name="QuestGiverDrErgot" parent="DrErgotNPC" unique_id=388988225 instance=ExtResource("7_qgiver")]
+npc_role = "Giver (Asigna misión)"
+npc_name = "DrErgot"
+npc_id = "dr_ergot"
+quest_id = "medicina_funry"
+quest_title = "Medicina para Funry"
+quest_description = "El sabio DrErgot necesita que lleves una medicina urgente a Funry, que está enfermo al otro lado del claro."
+quest_objective = "Entrega la medicina a Funry"
+target_npc_id = "funry"
+return_to_giver = true
+return_objective = "Regresa con DrErgot para informarle"
+grant_item_on_accept = &"medicina_funry"
+grant_item_name = "Medicina de DrErgot"
+grant_item_desc = "Extracto de micelio medicinal formulado para curar las esporas de Funry."
+required_item_id = "medicina_funry"
+consume_item_on_complete = true
+reward_ammo_slot = 0
+reward_ammo_amount = 5
+reward_upgrade_id = "receta_ergot"
+reward_upgrade_name = "Receta del DrErgot"
+reward_upgrade_desc = "Distintivo médico entregado por el DrErgot en agradecimiento por salvar a Funry."
+greeting_available = "¿Me ayuda, señor de metal?"
+greeting_in_progress = "¿Pudiste encontrar a Funry?"
+greeting_ready = "¡Has vuelto! ¿Cómo está Funry?"
+greeting_completed = "¡Muchas gracias por ayudar a Funry, señor de metal!"
+dialogue_offer = "¡Hola señor de metal! Funry está muy débil por culpa de las esporas oscuras. Preparé este frasco de medicina, pero no puedo dejar el consultorio. ¿Podrías llevársela con urgencia?"
+dialogue_in_progress = "Por favor apresúrate en llevarle la medicina a Funry. Lo encontrarás a la derecha del claro."
+dialogue_ready = "¡Excelente noticia! Sabía que podía confiar en ti. Funry ya está fuera de peligro. ¡Toma esta recompensa por tu gran labor!"
+dialogue_completed = "¡Funry y yo siempre te recordaremos con cariño, señor de metal!"
+
+[node name="FunryNPC" parent="." unique_id=567945905 instance=ExtResource("6_runry")]
+position = Vector2(620, 235)
+speed = 0.0
+
+[node name="QuestReceiverFunry" parent="FunryNPC" unique_id=1053722440 instance=ExtResource("7_qgiver")]
+npc_role = "Receiver (Solo recibe ítem / entrega)"
+npc_name = "Funry"
+npc_id = "funry"
+quest_id = ""
+greeting_waiting_delivery = "Cof cof... me siento muy débil..."
+greeting_can_deliver = "¡Traes la medicina del DrErgot! ¡Por favor dámela!"
+greeting_after_delivered = "¡Gracias a la medicina ya me siento mucho mejor!"
+dialogue_waiting_delivery = "Cof cof... no me quedan fuerzas... El DrErgot me dijo que me mandaría una medicina con alguien de buen corazón..."
+dialogue_can_deliver = "¡Oh! ¿Esa es la medicina que envió el DrErgot? ¡Muchísimas gracias, señor de metal! (Funry bebe la medicina y su sombrerillo recupera su brillo saludable). ¡Me siento con fuerzas otra vez! Por favor, regresa con el DrErgot e infórmale que ya estoy a salvo."
+dialogue_after_delivered = "¡Me siento lleno de vida otra vez! Ve a avisarle al DrErgot para que sepa que su fórmula funcionó a la perfección."
+
+[node name="Player" parent="." unique_id=1048230193 instance=ExtResource("2_player")]
+position = Vector2(80, 240)
