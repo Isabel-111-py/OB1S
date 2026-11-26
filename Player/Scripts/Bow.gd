@@ -84,9 +84,14 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_cooldown_timer = maxf(_cooldown_timer - delta, 0.0)
 	var pressed := Input.is_action_pressed(shoot_action)
- 
 
 	if _player.is_dead:
+		if is_charging:
+			_cancel_charge()
+		return
+
+	# Con el paraguas equipado no se puede disparar (y se cancela cualquier carga en curso).
+	if Inventory.umbrella_equipped:
 		if is_charging:
 			_cancel_charge()
 		return

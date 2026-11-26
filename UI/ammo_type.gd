@@ -1,5 +1,4 @@
-class_name AmmoType
-extends Resource
+class_name AmmoType extends Resource
 ## Un tipo de munición. Crea hasta 3 recursos (Clic derecho en FileSystem > Nuevo recurso > AmmoType)
 ## y arrástralos a `ammo_types` del nodo Bow.
 

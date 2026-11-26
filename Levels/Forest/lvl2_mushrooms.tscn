@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://b7lqixxuknqs7" path="res://NPC/Mushrooms_npc/Mini_mushroom_3.tscn" id="15_w7m6m"]
 [ext_resource type="PackedScene" uid="uid://c1xedowhvtj4r" path="res://NPC/Mushrooms_npc/Mini_mushroom_2.tscn" id="16_s5age"]
 [ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="18_tqfyk"]
+[ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="18_s5age"]
 [ext_resource type="PackedScene" path="res://Artifacts/GateLever.tscn" id="19_cs0i1"]
 [ext_resource type="Texture2D" uid="uid://chb67pxiomidt" path="res://UI/mouse.png" id="19_g5f01"]
 
@@ -118,10 +119,6 @@ texture = SubResource("CompressedTexture2D_tqfyk")
 region_enabled = true
 region_rect = Rect2(24.03328, 0.5008774, 107.688446, 15.579756)
 
-[node name="Marker" parent="." unique_id=298895395 instance=ExtResource("8_3pc40")]
-position = Vector2(-643, 352)
-id = &"1"
-
 [node name="MarkerDefault" parent="." unique_id=741029482 instance=ExtResource("8_3pc40")]
 position = Vector2(6997, 175)
 
@@ -131,7 +128,6 @@ position = Vector2(3666, 377)
 [node name="Marker2" parent="." unique_id=1971252606 instance=ExtResource("8_3pc40")]
 position = Vector2(-592, 347)
 id = &"2"
-
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("10_m1glj")]
 position = Vector2(6954, 168)
 
@@ -484,3 +480,11 @@ position = Vector2(1071, 8)
 target_floor = "Piso Destino (Destination)"
 elevator = NodePath("..")
 elevator_path = NodePath("..")
+[node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("18_s5age")]
+position = Vector2(-560, 358)
+target_level = "uid://d4bcducbmiexj"
+target_spawn = &"1"
+
+[node name="Marker3" parent="." unique_id=113970895 instance=ExtResource("8_3pc40")]
+position = Vector2(-537, 358)
+id = &"1"

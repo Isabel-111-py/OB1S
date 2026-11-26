@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://iuedjqbrw4qb"]
 
 [ext_resource type="Texture2D" uid="uid://bdwxetyy3qkwd" path="res://Enemies/Sprites/pig-Sheet (2).png" id="3_5njra"]
+[ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="3_p6jpd"]
 [ext_resource type="Script" uid="uid://di1kui7t1v5ep" path="res://Enemies/EnemyBase.gd" id="9_m8jh4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ftw4q"]
@@ -220,11 +221,18 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
-size = Vector2(33, 19)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dm5t5"]
+radius = 1.9999237
+height = 3.999848
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ml1ua"]
 radius = 150.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6673r"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5pl1k"]
+radius = 9.0
+height = 26.0
 
 [node name="Jabali" type="CharacterBody2D" unique_id=326541478]
 script = ExtResource("9_m8jh4")
@@ -232,19 +240,41 @@ script = ExtResource("9_m8jh4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1808092625]
 sprite_frames = SubResource("SpriteFrames_jso0p")
 animation = &"run"
+frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2076982516]
-position = Vector2(0.5, 6.5)
-shape = SubResource("RectangleShape2D_iivr6")
+position = Vector2(-7.450581e-09, 14)
+rotation = -1.5620697
+shape = SubResource("CapsuleShape2D_dm5t5")
 
 [node name="DetectionZone" type="Area2D" parent="." unique_id=1969422745]
 collision_layer = 0
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionZone" unique_id=515290390]
-position = Vector2(-1, 8)
+position = Vector2(0, 7)
 shape = SubResource("CircleShape2D_ml1ua")
 debug_color = Color(0.57254905, 0.6, 0.69803923, 0.41960785)
+
+[node name="hitbox" type="Area2D" parent="." unique_id=646420588]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_p6jpd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=88000126]
+position = Vector2(1, 8)
+shape = SubResource("CircleShape2D_6673r")
+
+[node name="hurtbox" type="Area2D" parent="." unique_id=717106494]
+collision_layer = 33
+collision_mask = 32
+script = ExtResource("3_p6jpd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox" unique_id=76221164]
+position = Vector2(1, 8)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_5pl1k")
+debug_color = Color(0.94839877, 3.080368e-06, 0.5808584, 0.41960785)
 
 [connection signal="body_entered" from="DetectionZone" to="." method="_on_detection_zone_body_entered"]
 [connection signal="body_exited" from="DetectionZone" to="." method="_on_detection_zone_body_exited"]

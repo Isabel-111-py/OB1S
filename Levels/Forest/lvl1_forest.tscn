@@ -1,14 +1,46 @@
 [gd_scene format=4 uid="uid://d4bcducbmiexj"]
 
 [ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_mqc2q"]
+[ext_resource type="Texture2D" uid="uid://b1l4cwil7mxew" path="res://Tilesets/paralaxLayers/bg3.png" id="2_hak1i"]
+[ext_resource type="Texture2D" uid="uid://cwahdg3aj3mnl" path="res://Tilesets/paralaxLayers/bg2.png" id="3_8cdvc"]
 [ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="3_nskd6"]
 [ext_resource type="PackedScene" uid="uid://dhdiiyb8380v2" path="res://Tilesets/tileset.tscn" id="4_nskd6"]
 [ext_resource type="PackedScene" uid="uid://iuedjqbrw4qb" path="res://Enemies/jabali.tscn" id="5_dm5t5"]
+[ext_resource type="Texture2D" uid="uid://xfjgpq24d2v5" path="res://Tilesets/Trees/trees.png" id="6_d2ut3"]
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="6_exit"]
+[ext_resource type="PackedScene" path="res://Levels/rain.tscn" id="7_eymrc"]
+[ext_resource type="PackedScene" path="res://Levels/waterfall.tscn" id="8_b658w"]
+[ext_resource type="PackedScene" path="res://Levels/river.tscn" id="11_8cdvc"]
 
 [node name="Lvl1Forest" type="Node2D" unique_id=1647137562]
 script = ExtResource("1_mqc2q")
 fall_limit_y = 1000.0
+
+[node name="Parallax2D2" type="Parallax2D" parent="." unique_id=1209937000]
+scroll_scale = Vector2(0.2, 0)
+scroll_offset = Vector2(-80, 201)
+repeat_size = Vector2(480, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D2" unique_id=1520717987]
+texture = ExtResource("2_hak1i")
+
+[node name="Parallax2D3" type="Parallax2D" parent="." unique_id=1056347989]
+scroll_scale = Vector2(0.5, 0)
+scroll_offset = Vector2(-75, 210)
+repeat_size = Vector2(480, 0)
+repeat_times = 3
+
+[node name="Sprite2D2" type="Sprite2D" parent="Parallax2D3" unique_id=1368147540]
+position = Vector2(0, -266)
+texture = ExtResource("3_8cdvc")
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D3" unique_id=1128095619]
+texture = ExtResource("3_8cdvc")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Parallax2D3" unique_id=10180545]
+position = Vector2(-1, 262)
+texture = ExtResource("3_8cdvc")
 
 [node name="Marker" parent="." unique_id=298895395 instance=ExtResource("3_nskd6")]
 position = Vector2(-1791, 525)
@@ -35,6 +67,43 @@ position = Vector2(3321, 280)
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=553530627]
 
 [node name="Exit" parent="." unique_id=987654321 instance=ExtResource("6_exit")]
-position = Vector2(5640, 890)
-target_level = "uid://bx41ljrswm7mj"
+position = Vector2(-1904, 542)
+target_level = "uid://daen5hgfet5is"
 target_spawn = &"1"
+
+[node name="Trees" type="Sprite2D" parent="." unique_id=1438181188]
+position = Vector2(-735, 629)
+texture = ExtResource("6_d2ut3")
+region_enabled = true
+region_rect = Rect2(32, 0, 96, 16)
+
+[node name="Marker2" parent="." unique_id=1858077980 instance=ExtResource("3_nskd6")]
+position = Vector2(-1879, 541)
+id = &"1"
+
+[node name="Rain" parent="." unique_id=1473625426 instance=ExtResource("7_eymrc")]
+position = Vector2(-1348, 512)
+
+[node name="Waterfall" parent="." unique_id=807363823 instance=ExtResource("8_b658w")]
+position = Vector2(-1180, 509)
+width = null
+max_height = null
+enabled = null
+texture_frames = null
+frames_per_second = null
+column_width = null
+show_foam = null
+water_color = null
+streak_color = null
+foam_color = null
+flow_speed = null
+draw_z_index = null
+block_mask = null
+roof_update_interval = null
+damage_enabled = null
+damage_per_tick = null
+tick_interval = null
+
+[node name="River" parent="." unique_id=1526503955 instance=ExtResource("11_8cdvc")]
+z_index = 3
+position = Vector2(-1487, 622)

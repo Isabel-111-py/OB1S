@@ -8,6 +8,7 @@ extends Area2D
 
 enum Kind { ARROWS, UPGRADE }
 
+
 @export var kind: Kind = Kind.ARROWS
 @export_group("Flechas")
 ## A qué espacio de munición suma (0, 1 o 2).

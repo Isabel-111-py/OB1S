@@ -16,6 +16,9 @@ extends CanvasLayer
 @export_file("*.tscn") var menu_scene_path: String = "res://UI/MainMenu/main_menu.tscn"
 ## Al volver al menú, el inventario se vacía (como una partida nueva).
 @export var reset_inventory_on_exit: bool = true
+## Mejora que hay que tener para poder equipar el paraguas (el `upgrade_id` de un Pickup tipo Mejora).
+## Vacío = el paraguas siempre está disponible.
+@export var umbrella_upgrade_id: StringName = &""
 
 @export_group("Texturas")
 ## Imagen del cuadro del menú. Se estira como un 9-patch: los bordes no se deforman.
@@ -34,7 +37,9 @@ extends CanvasLayer
 @export_group("Diseño")
 @export var panel_width: int = 320
 ## Lado (px) de cada espacio de munición.
-@export var slot_size: int = 72
+@export var slot_size: int = 64
+## Alto (px) de la lista de mejoras; si hay más, se desplaza.
+@export var upgrades_area_height: int = 64
 @export var title_font_size: int = 16
 @export var body_font_size: int = 12
 @export var panel_color: Color = Color(0.098, 0.157, 0.204, 0.96)
@@ -50,6 +55,8 @@ var _inventory_view: VBoxContainer
 var _quests_view: VBoxContainer
 var _quests_box: VBoxContainer
 var _upgrades_box: VBoxContainer
+var _upgrades_scroll: ScrollContainer
+var _umbrella_button: Button
 var _empty_label: Label
 var _empty_quests_label: Label
 var _continue_button: Button
@@ -85,6 +92,7 @@ func _ready() -> void:
 		qm.quest_ready_to_turn_in.connect(_refresh.unbind(1))
 		qm.quest_unlocked.connect(_refresh.unbind(1))
 	
+	Inventory.umbrella_toggled.connect(_refresh.unbind(1))
 	_refresh()
 
 
@@ -197,7 +205,7 @@ func _build() -> void:
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", 5)
 	panel.add_child(box)
 
 	var title := _make_label("Mochila de Aventurero", title_font_size)
@@ -229,13 +237,17 @@ func _build() -> void:
 	hint.modulate = Color(1, 1, 1, 0.5)
 	_inventory_view.add_child(hint)
 
+	# Paraguas: equipado cubre del agua, pero no deja disparar flechas.
+	_umbrella_button = _make_button("")
+	_umbrella_button.pressed.connect(Inventory.toggle_umbrella)
+	_inventory_view.add_child(_umbrella_button)
+
 	_inventory_view.add_child(HSeparator.new())
 	_inventory_view.add_child(_make_label("Mejoras / Objetos", body_font_size))
 
 	_upgrades_box = VBoxContainer.new()
 	_upgrades_box.add_theme_constant_override("separation", 6)
 	_inventory_view.add_child(_upgrades_box)
-
 	_empty_label = _make_label("Aún no tienes mejoras", body_font_size - 2)
 	_empty_label.modulate = Color(1, 1, 1, 0.55)
 	_inventory_view.add_child(_empty_label)
@@ -256,15 +268,31 @@ func _build() -> void:
 	_quests_box.add_theme_constant_override("separation", 6)
 	scroll.add_child(_quests_box)
 
+	_upgrades_scroll = ScrollContainer.new()
+	_upgrades_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_upgrades_scroll.custom_minimum_size = Vector2(0, upgrades_area_height)
+	box.add_child(_upgrades_scroll)
+
+	_upgrades_box = VBoxContainer.new()
+	_upgrades_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_upgrades_box.add_theme_constant_override("separation", 6)
+	_upgrades_scroll.add_child(_upgrades_box)
+
 	box.add_child(HSeparator.new())
 
+	var buttons := HBoxContainer.new()
+	buttons.add_theme_constant_override("separation", 6)
+	box.add_child(buttons)
+
 	_continue_button = _make_button("Continuar")
+	_continue_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_continue_button.pressed.connect(close)
-	box.add_child(_continue_button)
+	buttons.add_child(_continue_button)
 
 	_menu_button = _make_button("Volver al menú")
+	_menu_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_menu_button.pressed.connect(_return_to_menu)
-	box.add_child(_menu_button)
+	buttons.add_child(_menu_button)
 
 	_switch_tab(0)
 
@@ -383,8 +411,20 @@ func _make_button(text: String) -> Button:
 ## Vuelve a dibujar los espacios de munición, la lista de mejoras y las misiones.
 func _refresh() -> void:
 	_refresh_slots()
+	_refresh_umbrella()
 	_refresh_upgrades()
 	_refresh_quests()
+
+
+func _refresh_umbrella() -> void:
+	var available := umbrella_upgrade_id == &"" or Inventory.has_upgrade(umbrella_upgrade_id)
+	_umbrella_button.disabled = not available
+	if not available:
+		_umbrella_button.text = "Paraguas (aún no lo tienes)"
+	elif Inventory.umbrella_equipped:
+		_umbrella_button.text = "Guardar paraguas (sin disparar)"
+	else:
+		_umbrella_button.text = "Equipar paraguas"
 
 
 func _refresh_slots() -> void:
@@ -411,6 +451,7 @@ func _refresh_upgrades() -> void:
 	for child in _upgrades_box.get_children():
 		child.queue_free()
 	_empty_label.visible = Inventory.upgrades.is_empty()
+	_upgrades_scroll.visible = not Inventory.upgrades.is_empty()
 
 	for id in Inventory.upgrades:
 		var data: Dictionary = Inventory.upgrades[id]
