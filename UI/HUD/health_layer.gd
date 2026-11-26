@@ -291,6 +291,7 @@ func _build_ammo_hud() -> void:
 	Inventory.ammo_changed.connect(_refresh_ammo.unbind(2))
 	Inventory.ammo_selected.connect(_refresh_ammo.unbind(1))
 	Inventory.ammo_types_changed.connect(_refresh_ammo)
+	Inventory.umbrella_toggled.connect(_refresh_ammo.unbind(1))
 	_refresh_ammo()
 
 
@@ -303,6 +304,11 @@ func _refresh_ammo() -> void:
 	_ammo_icon.modulate = Inventory.get_slot_tint(slot)
 	_ammo_label.text = "x%d" % count
 	_ammo_label.add_theme_color_override("font_color", ammo_color if count > 0 else ammo_empty_color)
+	# Con el paraguas equipado no se dispara: la munición se ve apagada y lo avisa.
+	if Inventory.umbrella_equipped:
+		_ammo_icon.modulate.a = 0.35
+		_ammo_label.text = "Paraguas"
+		_ammo_label.add_theme_color_override("font_color", ammo_color.darkened(0.2))
 
 
 # ---------------------------------------------------------------------------

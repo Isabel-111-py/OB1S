@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://drsh28p8wett8" path="res://Player/Scripts/animation_manager.gd" id="2_gwnis"]
 [ext_resource type="PackedScene" path="res://UI/HUD/health_layer.tscn" id="2_n471f"]
 [ext_resource type="Texture2D" uid="uid://b4oulsmduu2l0" path="res://Sprites/PlayerSprites/rob-Sheet.png" id="2_od3ui"]
+[ext_resource type="PackedScene" path="res://Player/umbrella.tscn" id="2_sm0op"]
 [ext_resource type="Texture2D" uid="uid://w88t2rwicp2x" path="res://Sprites/PlayerSprites/hearts2.png" id="3_hshwv"]
 [ext_resource type="Script" uid="uid://uf8d4o8uxiqo" path="res://Player/Scripts/StateMachine/state_machine.gd" id="3_k53q1"]
 [ext_resource type="Texture2D" uid="uid://g2ddhhjm4a21" path="res://Sprites/PlayerSprites/grappler.png" id="3_o28un"]
@@ -17,10 +18,9 @@
 [ext_resource type="Script" uid="uid://dupf2yx8eqdhv" path="res://Player/Scripts/camera_2d.gd" id="9_00tjw"]
 [ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
 [ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
-[ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="10_qemgg"]
 [ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
-[ext_resource type="Resource" uid="uid://chw1dhy6jdeyr" path="res://Ammo/banana.tres" id="11_8viyr"]
 [ext_resource type="Script" uid="uid://ctpilm781pw1e" path="res://Player/Scripts/dash.gd" id="12_lfmf2"]
+[ext_resource type="Script" uid="uid://d0d60vw3tud3r" path="res://Player/monkey.gd" id="13_8viyr"]
 [ext_resource type="Script" uid="uid://cjlar54liudmr" path="res://Player/swing.gd" id="13_b1ygp"]
 [ext_resource type="Script" uid="uid://c6y5cv0nac6it" path="res://Player/Scripts/Bow.gd" id="14_gu6f8"]
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
@@ -343,6 +343,16 @@ turbo_drain_per_second = 20.0
 grapple_energy_cost = 5.0
 grapple_drain_per_second = 3.0
 
+[node name="Umbrella" parent="." unique_id=372970773 instance=ExtResource("2_sm0op")]
+position = Vector2(47, 30)
+follow_offset = Vector2(0, 0)
+default_height = 0.0
+shield_height = -10.0
+canopy_radius = 10.0
+canopy_color = Color(0.79607844, 0.06666667, 0.7254902, 0)
+stripe_color = Color(0.9490196, 0.9490196, 0.9490196, 0)
+handle_color = Color(0.2509804, 0.14901961, 0.101960786, 0)
+
 [node name="InventoryMenu" parent="." unique_id=1043020156 instance=ExtResource("2_gpjlu")]
 toggle_action = &"inventory"
 fallback_key = 73
@@ -359,6 +369,7 @@ empty_texture = ExtResource("4_gpjlu")
 [node name="Grapple" type="Node2D" parent="." unique_id=135467788]
 position = Vector2(0, -10)
 script = ExtResource("17_pisgm")
+rope_collision_mask = 2
 rope_color = Color(0.41651985, 0.19808614, 0.2075322, 1)
 hook_texture = ExtResource("3_o28un")
 
@@ -370,14 +381,14 @@ scale = Vector2(0.375, 0.375)
 [node name="Bow" type="Node2D" parent="." unique_id=1260639363]
 script = ExtResource("14_gu6f8")
 arrow_scene = ExtResource("15_dkpta")
-ammo_types = Array[ExtResource("10_qemgg")]([ExtResource("11_8viyr")])
 
 [node name="Mono" type="Sprite2D" parent="." unique_id=461304380]
 position = Vector2(0, -36)
 texture = ExtResource("3_p5o4e")
 hframes = 7
 vframes = 2
-frame = 9
+frame = 8
+script = ExtResource("13_8viyr")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1494422191]
 root_node = NodePath("../Sprite2D")

@@ -14,11 +14,16 @@ signal ammo_selected(slot: int)
 ## Se emite cuando cambian las definiciones (nombres, iconos) de los tipos de munición.
 signal ammo_types_changed
 signal upgrade_added(id: StringName)
+## Se emite al equipar o guardar el paraguas.
+signal umbrella_toggled(equipped: bool)
 
 var ammo_types: Array[AmmoType] = []
 ## Flechas que tienes de cada tipo.
 var ammo: Array[int] = []
 var selected_slot: int = 0
+## true mientras el paraguas está equipado: cubre del agua que cae y no deja disparar flechas.
+## Para el agua (lluvia, cascadas) basta con preguntar `Inventory.umbrella_equipped`.
+var umbrella_equipped: bool = false
 
 ## id -> {"name": String, "description": String, "icon": Texture2D}
 var upgrades: Dictionary = {}
@@ -136,6 +141,21 @@ func cycle_ammo(direction: int) -> void:
 
 
 # ---------------------------------------------------------------------------
+# Paraguas
+# ---------------------------------------------------------------------------
+
+func set_umbrella_equipped(value: bool) -> void:
+	if value == umbrella_equipped:
+		return
+	umbrella_equipped = value
+	umbrella_toggled.emit(value)
+
+
+func toggle_umbrella() -> void:
+	set_umbrella_equipped(not umbrella_equipped)
+
+
+# ---------------------------------------------------------------------------
 # Mejoras
 # ---------------------------------------------------------------------------
 
@@ -171,6 +191,7 @@ func reset() -> void:
 	_reset_ammo_counts()
 	selected_slot = 0
 	ammo_selected.emit(selected_slot)
+	set_umbrella_equipped(false)
 
 
 # ---------------------------------------------------------------------------

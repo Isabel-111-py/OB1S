@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Levels/scripts/river.gd" id="1_river"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_river"]
+resource_local_to_scene = true
+size = Vector2(128, 32)
+
+[node name="River" type="Area2D"]
+collision_layer = 0
+script = ExtResource("1_river")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(64, 16)
+shape = SubResource("RectangleShape2D_river")
