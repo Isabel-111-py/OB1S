@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c8lightcrystal1"]
+
+[ext_resource type="Script" path="res://Artifacts/LightSystem/light_crystal.gd" id="1_crystal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crystal_base"]
+size = Vector2(24, 20)
+
+[node name="LightCrystal" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_crystal")
+crystal_type = "Rotable por Jugador [E]"
+rotation_angle = 0.0
+rotation_step = 45.0
+crystal_color = Color(0.2, 0.88, 1, 0.9)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_crystal_base")

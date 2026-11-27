@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c8lightreceiver1"]
+
+[ext_resource type="Script" path="res://Artifacts/LightSystem/light_receiver.gd" id="1_receiver"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_receiver"]
+radius = 16.0
+
+[node name="LightReceiver" type="Area2D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_receiver")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_receiver")

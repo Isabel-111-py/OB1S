@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c8crystalpedestal1"]
+
+[ext_resource type="Script" path="res://Artifacts/LightSystem/crystal_pedestal.gd" id="1_pedestal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pedestal"]
+size = Vector2(28, 16)
+
+[node name="CrystalPedestal" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_pedestal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_pedestal")
