@@ -17,7 +17,7 @@ signal activated(state: bool)
 @export var stay_active_once_powered: bool = false
 
 @export_group("Aspecto")
-@export var receiver_color: Color = Color(1.0, 0.85, 0.25, 0.95)
+@export var receiver_color: Color = Color(1.0, 0.85, 0.55, 0.9)
 
 var is_powered: bool = false
 var _active_sources: Array = []
@@ -38,8 +38,8 @@ func _setup_light() -> void:
 		_ambient_light = PointLight2D.new()
 		_ambient_light.name = "AmbientLight"
 		_ambient_light.texture = _get_or_create_light_texture()
-		_ambient_light.texture_scale = 1.6
-		_ambient_light.energy = 1.6
+		_ambient_light.texture_scale = 1.5
+		_ambient_light.energy = 0.85
 		_ambient_light.color = receiver_color
 		_ambient_light.visible = false
 		add_child(_ambient_light)
@@ -71,7 +71,7 @@ func _physics_process(delta: float) -> void:
 	
 	if _ambient_light:
 		_ambient_light.visible = _bloom_progress > 0.05
-		_ambient_light.energy = 1.6 * _bloom_progress
+		_ambient_light.energy = 0.85 * _bloom_progress
 	
 	queue_redraw()
 

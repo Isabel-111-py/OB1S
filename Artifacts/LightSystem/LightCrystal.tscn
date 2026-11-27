@@ -10,9 +10,13 @@ collision_layer = 2
 collision_mask = 1
 script = ExtResource("1_crystal")
 crystal_type = "Rotable por Jugador [E]"
-rotation_angle = 0.0
+angle_1 = 145.0
+angle_2 = 90.0
+angle_3 = 45.0
+rotation_angle = 145.0
 rotation_step = 45.0
-crystal_color = Color(0.2, 0.88, 1, 0.9)
+crystal_color = Color(1, 0.82, 0.52, 0.9)
+light_energy = 0.85
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0)

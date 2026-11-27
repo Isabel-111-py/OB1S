@@ -18,8 +18,8 @@ extends Node2D
 		max_beam_distance = val
 		queue_redraw()
 
-## Color del haz de luz (por defecto dorado solar suave)
-@export var beam_color: Color = Color(1.0, 0.95, 0.72, 0.9):
+## Color del haz de luz (luz cálida y natural de grieta solar)
+@export var beam_color: Color = Color(1.0, 0.88, 0.65, 0.85):
 	set(val):
 		beam_color = val
 		_apply_beam_visuals()
@@ -114,8 +114,8 @@ func _ensure_path_lights() -> void:
 		var l := PointLight2D.new()
 		l.name = "PathLight_%d" % _path_lights.size()
 		l.texture = tex
-		l.texture_scale = 1.3
-		l.energy = 1.1
+		l.texture_scale = 1.2
+		l.energy = 0.5
 		l.visible = false
 		add_child(l)
 		_path_lights.append(l)
@@ -149,17 +149,17 @@ func _apply_beam_visuals() -> void:
 	if _origin_light:
 		_origin_light.visible = active_visible
 		_origin_light.color = beam_color
-		_origin_light.energy = 1.2
+		_origin_light.energy = 0.8
 	if _impact_light:
 		_impact_light.visible = active_visible
 		_impact_light.color = beam_color
-		_impact_light.energy = 1.5
+		_impact_light.energy = 0.75
 	
-	_glow_line.width = beam_width * 2.8
-	_glow_line.default_color = Color(beam_color.r, beam_color.g, beam_color.b, 0.28)
+	_glow_line.width = beam_width * 2.4
+	_glow_line.default_color = Color(beam_color.r, beam_color.g * 0.95, beam_color.b * 0.8, 0.22)
 	
-	_core_line.width = beam_width
-	_core_line.default_color = Color(beam_color.r, beam_color.g, beam_color.b, 0.95)
+	_core_line.width = beam_width * 0.6
+	_core_line.default_color = Color(1.0, 0.95, 0.85, 0.85)
 
 
 func _physics_process(delta: float) -> void:

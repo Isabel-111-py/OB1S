@@ -27,60 +27,74 @@ signal undocked_from_pedestal(pedestal: Node)
 		_apply_crystal_type()
 		queue_redraw()
 
-@export_group("Rotaciones Permitidas (3 Posiciones)")
-## Si está activo, el cristal solo alterna entre 3 ángulos predefinidos
+@export_group("Opciones de Rotación y Conexión")
+## Modo de conexión:
+## - "Nodos Objetivo (Auto-Alinear)": Si asignas target_1/2/3, calcula el ángulo exacto al cristal objetivo
+##   para garantizar una conexión perfecta sin fallos de puntería. Si está vacío, usa el ángulo numérico.
+## - "Ángulos Fijos (145°, 90°, 45°)": Usa estrictamente los grados configurados en angle_1, angle_2 y angle_3.
+@export_enum("Nodos Objetivo (Auto-Alinear)", "Ángulos Fijos (145°, 90°, 45°)") var connection_mode: String = "Nodos Objetivo (Auto-Alinear)":
+	set(val):
+		connection_mode = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Si está activo, el cristal solo alterna entre 3 posiciones de rotación predefinidas
 @export var use_three_rotations: bool = true:
 	set(val):
 		use_three_rotations = val
 		_sync_three_angles()
 		queue_redraw()
 
-## Ángulo 1 en grados (o calculado automáticamente si asignas target_1)
-@export_range(0.0, 360.0, 1.0) var angle_1: float = 0.0:
+@export_subgroup("Opción 1 (145°)")
+## Primer ángulo en grados (por defecto 145°)
+@export_range(0.0, 360.0, 1.0) var angle_1: float = 145.0:
 	set(val):
 		angle_1 = val
 		_sync_three_angles()
 		queue_redraw()
 
-## Ángulo 2 en grados (o calculado automáticamente si asignas target_2)
-@export_range(0.0, 360.0, 1.0) var angle_2: float = 330.0:
-	set(val):
-		angle_2 = val
-		_sync_three_angles()
-		queue_redraw()
-
-## Ángulo 3 en grados (o calculado automáticamente si asignas target_3)
-@export_range(0.0, 360.0, 1.0) var angle_3: float = 30.0:
-	set(val):
-		angle_3 = val
-		_sync_three_angles()
-		queue_redraw()
-
-## Posición actual seleccionada entre las 3 rotaciones (0 = Posición 1, 1 = Posición 2, 2 = Posición 3)
-@export_range(0, 2) var current_angle_index: int = 0:
-	set(val):
-		current_angle_index = clampi(val, 0, 2)
-		_sync_three_angles()
-		queue_redraw()
-
-@export_group("Objetivos Directos (Apuntado Automático)")
-## Si asignas nodos objetivo (otros cristales o receptores), el cristal apunta
-## automáticamente con precisión matemática hacia ellos para que la conexión nunca falle:
+## Cristal o receptor al que se conecta en la Opción 1
 @export var target_1: Node2D:
 	set(val):
 		target_1 = val
 		_sync_three_angles()
 		queue_redraw()
 
+@export_subgroup("Opción 2 (90°)")
+## Segundo ángulo en grados (por defecto 90°)
+@export_range(0.0, 360.0, 1.0) var angle_2: float = 90.0:
+	set(val):
+		angle_2 = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Cristal o receptor al que se conecta en la Opción 2
 @export var target_2: Node2D:
 	set(val):
 		target_2 = val
 		_sync_three_angles()
 		queue_redraw()
 
+@export_subgroup("Opción 3 (45°)")
+## Tercer ángulo en grados (por defecto 45°)
+@export_range(0.0, 360.0, 1.0) var angle_3: float = 45.0:
+	set(val):
+		angle_3 = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Cristal o receptor al que se conecta en la Opción 3
 @export var target_3: Node2D:
 	set(val):
 		target_3 = val
+		_sync_three_angles()
+		queue_redraw()
+
+@export_subgroup("Selección Actual")
+## Posición actual seleccionada entre las 3 rotaciones (0 = Opción 1 [145°], 1 = Opción 2 [90°], 2 = Opción 3 [45°])
+@export_range(0, 2) var current_angle_index: int = 0:
+	set(val):
+		current_angle_index = clampi(val, 0, 2)
 		_sync_three_angles()
 		queue_redraw()
 
@@ -99,13 +113,19 @@ signal undocked_from_pedestal(pedestal: Node)
 ## - Espejo: Refleja la luz por rebote óptico según el ángulo de entrada.
 @export_enum("Dirección del Cristal (Prisma)", "Reflejo Óptico (Espejo)") var reflection_mode: String = "Dirección del Cristal (Prisma)"
 
-@export_group("Propiedades de Luz")
-## Color del cristal y del haz reflejado
-@export var crystal_color: Color = Color(0.25, 0.9, 1.0, 0.95):
+@export_group("Propiedades de Luz (Cálida y Tenue)")
+## Color del cristal y del haz reflejado (cálido, suave y natural)
+@export var crystal_color: Color = Color(1.0, 0.82, 0.52, 0.9):
 	set(val):
 		crystal_color = val
 		_apply_beam_visuals()
 		queue_redraw()
+
+## Intensidad general de la luz emitida (luz tenue y acogedora en cavernas oscuras)
+@export_range(0.1, 2.0, 0.05) var light_energy: float = 0.85:
+	set(val):
+		light_energy = val
+		_apply_beam_visuals()
 
 ## Distancia máxima del haz reflejado
 @export var max_beam_distance: float = 1200.0
@@ -117,7 +137,7 @@ signal undocked_from_pedestal(pedestal: Node)
 @export var gravity: float = 980.0
 
 # --- Estado Interno ---
-var rotation_angle: float = 0.0
+var rotation_angle: float = 145.0
 var is_energized: bool = false
 var player_in_interaction_range: bool = false
 var is_docked: bool = false
@@ -163,22 +183,23 @@ func _sync_three_angles() -> void:
 
 ## Devuelve el ángulo efectivo para el índice (calculado desde target_node si existe, o ángulo manual)
 func _get_effective_angle(index: int) -> float:
-	var target_node: Node2D = null
-	match index:
-		0: target_node = target_1
-		1: target_node = target_2
-		2: target_node = target_3
-	
-	if target_node != null and is_instance_valid(target_node):
-		var from_pos := global_position + Vector2(0, -10)
-		var to_pos := target_node.global_position + Vector2(0, -10)
-		return wrapf(rad_to_deg((to_pos - from_pos).angle()), 0.0, 360.0)
+	if connection_mode == "Nodos Objetivo (Auto-Alinear)":
+		var target_node: Node2D = null
+		match index:
+			0: target_node = target_1
+			1: target_node = target_2
+			2: target_node = target_3
+		
+		if target_node != null and is_instance_valid(target_node):
+			var from_pos := global_position + Vector2(0, -10)
+			var to_pos := target_node.global_position + Vector2(0, -10)
+			return wrapf(rad_to_deg((to_pos - from_pos).angle()), 0.0, 360.0)
 	
 	match index:
 		0: return angle_1
 		1: return angle_2
 		2: return angle_3
-	return 0.0
+	return 145.0
 
 
 func _setup_internal_components() -> void:
@@ -242,26 +263,26 @@ func _setup_internal_components() -> void:
 		
 		var panel := PanelContainer.new()
 		panel.name = "Panel"
-		panel.position = Vector2(-44, -12)
-		panel.custom_minimum_size = Vector2(88, 24)
+		panel.position = Vector2(-55, -12)
+		panel.custom_minimum_size = Vector2(110, 24)
 		
 		var s_style := StyleBoxFlat.new()
-		s_style.bg_color = Color(0.12, 0.14, 0.22, 0.94)
+		s_style.bg_color = Color(0.12, 0.11, 0.16, 0.94)
 		s_style.set_corner_radius_all(6)
 		s_style.border_width_left = 1
 		s_style.border_width_top = 1
 		s_style.border_width_right = 1
 		s_style.border_width_bottom = 1
-		s_style.border_color = Color(0.2, 0.85, 1.0, 0.7)
+		s_style.border_color = Color(0.95, 0.78, 0.45, 0.75)
 		panel.add_theme_stylebox_override("panel", s_style)
 		
 		_prompt_label = Label.new()
 		_prompt_label.name = "Label"
-		_prompt_label.text = "[E] Girar (1/3)"
+		_prompt_label.text = "[E] Girar (1/3: 145°)"
 		_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_prompt_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		_prompt_label.add_theme_font_size_override("font_size", 10)
-		_prompt_label.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
+		_prompt_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.85))
 		panel.add_child(_prompt_label)
 		
 		_prompt_container.add_child(panel)
@@ -269,7 +290,7 @@ func _setup_internal_components() -> void:
 	else:
 		_prompt_label = _prompt_container.get_node_or_null("Panel/Label") as Label
 	
-	# Líneas del haz de luz saliente
+	# Líneas del haz de luz saliente (delicadas y cálidas)
 	_glow_line = get_node_or_null("GlowLine") as Line2D
 	if not _glow_line:
 		_glow_line = Line2D.new()
@@ -286,14 +307,15 @@ func _setup_internal_components() -> void:
 		_core_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 		add_child(_core_line)
 	
-	# Luz ambiental propia del cristal cuando está encendido
+	# Luz ambiental propia del cristal (tenue, suave y cálida)
 	_ambient_light = get_node_or_null("AmbientLight") as PointLight2D
 	if not _ambient_light:
 		_ambient_light = PointLight2D.new()
 		_ambient_light.name = "AmbientLight"
 		_ambient_light.texture = _get_or_create_light_texture()
-		_ambient_light.texture_scale = 1.8
-		_ambient_light.energy = 1.6
+		_ambient_light.texture_scale = 1.6
+		_ambient_light.energy = light_energy
+		_ambient_light.color = crystal_color
 		_ambient_light.position = Vector2(0, -10)
 		add_child(_ambient_light)
 	
@@ -303,8 +325,9 @@ func _setup_internal_components() -> void:
 		_impact_light = PointLight2D.new()
 		_impact_light.name = "ImpactLight"
 		_impact_light.texture = _get_or_create_light_texture()
-		_impact_light.texture_scale = 1.4
-		_impact_light.energy = 1.5
+		_impact_light.texture_scale = 1.3
+		_impact_light.energy = light_energy * 0.9
+		_impact_light.color = crystal_color
 		add_child(_impact_light)
 	
 	_ensure_path_lights()
@@ -316,8 +339,9 @@ func _ensure_path_lights() -> void:
 		var l := PointLight2D.new()
 		l.name = "PathLight_%d" % _path_lights.size()
 		l.texture = tex
-		l.texture_scale = 1.3
-		l.energy = 1.1
+		l.texture_scale = 1.2
+		l.energy = light_energy * 0.65
+		l.color = crystal_color
 		l.visible = false
 		add_child(l)
 		_path_lights.append(l)
@@ -344,7 +368,7 @@ func _get_or_create_light_texture() -> Texture2D:
 func _apply_crystal_type() -> void:
 	match crystal_type:
 		"Primer_Iluminado (Entrada de Luz)":
-			# Cristal emisor primario: recibe luz solar directa de forma permanente
+			# Cristal emisor primario: recibe luz exterior constante por las grietas
 			motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 			collision_layer = 2
 			collision_mask = 0
@@ -384,9 +408,19 @@ func _update_prompt_text() -> void:
 	if not _prompt_label:
 		return
 	if use_three_rotations:
-		_prompt_label.text = "[E] Girar (%d/3)" % (current_angle_index + 1)
+		var target_node: Node2D = null
+		match current_angle_index:
+			0: target_node = target_1
+			1: target_node = target_2
+			2: target_node = target_3
+		
+		var target_info := ""
+		if target_node != null and is_instance_valid(target_node):
+			target_info = " -> %s" % target_node.name
+		
+		_prompt_label.text = "[E] Girar (%d/3: %.0f°%s)" % [current_angle_index + 1, rotation_angle, target_info]
 	else:
-		_prompt_label.text = "[E] Rotar"
+		_prompt_label.text = "[E] Rotar (%.0f°)" % rotation_angle
 
 
 func _apply_beam_visuals() -> void:
@@ -399,15 +433,18 @@ func _apply_beam_visuals() -> void:
 	if _ambient_light:
 		_ambient_light.visible = active
 		_ambient_light.color = crystal_color
+		_ambient_light.energy = light_energy
 	if _impact_light:
 		_impact_light.visible = active
 		_impact_light.color = crystal_color
+		_impact_light.energy = light_energy * 0.9
 	
-	_glow_line.width = 18.0
-	_glow_line.default_color = Color(crystal_color.r, crystal_color.g, crystal_color.b, 0.3)
+	# Haz tenue, cálido y elegante
+	_glow_line.width = 14.0
+	_glow_line.default_color = Color(crystal_color.r, crystal_color.g * 0.95, crystal_color.b * 0.8, 0.22)
 	
-	_core_line.width = 6.0
-	_core_line.default_color = Color(crystal_color.r, crystal_color.g, crystal_color.b, 0.95)
+	_core_line.width = 4.0
+	_core_line.default_color = Color(1.0, 0.94, 0.82, 0.88)
 
 
 # ==============================================================================
@@ -417,10 +454,18 @@ func _apply_beam_visuals() -> void:
 func _physics_process(delta: float) -> void:
 	_anim_pulse += delta
 	
+	# Actualizar ángulo dinámicamente si el cristal o su objetivo se mueven
+	if use_three_rotations and connection_mode == "Nodos Objetivo (Auto-Alinear)":
+		var eff_angle := _get_effective_angle(current_angle_index)
+		if not is_equal_approx(rotation_angle, eff_angle):
+			rotation_angle = eff_angle
+			_visual_rotation = deg_to_rad(rotation_angle)
+	
 	if Engine.is_editor_hint():
 		if is_energized:
 			_sync_three_angles()
 			_cast_outgoing_beam()
+		queue_redraw()
 		return
 	
 	# Animación suave del cartel [E]
@@ -493,7 +538,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_crystal()
 
 
-## Alterna al siguiente ángulo de rotación
+## Alterna al siguiente ángulo de rotación (Opción 1: 145°, Opción 2: 90°, Opción 3: 45°)
 func rotate_crystal() -> void:
 	if use_three_rotations:
 		current_angle_index = (current_angle_index + 1) % 3
@@ -562,7 +607,6 @@ func receive_light(source: Object, hit_point: Vector2, in_dir: Vector2, in_color
 
 ## Llamado cuando el haz entrante deja de tocar este cristal
 func release_light(source: Object) -> void:
-	# El Primer_Iluminado no se apaga por fuentes externas
 	if crystal_type == "Primer_Iluminado (Entrada de Luz)":
 		return
 	
@@ -613,7 +657,7 @@ func _cast_outgoing_beam() -> void:
 	if not current_chain.has(self):
 		current_chain.append(self)
 	
-	# Punto de origen: centro de la gema adelantado 8px hacia la dirección de salida para evitar colisionar consigo mismo
+	# Punto de origen adelantado 12px hacia la dirección de salida para evitar colisionar consigo mismo
 	var gem_center := global_position + Vector2(0, -10)
 	var start_pos := gem_center + out_dir * 12.0
 	var end_pos := gem_center + out_dir * max_beam_distance
@@ -624,7 +668,7 @@ func _cast_outgoing_beam() -> void:
 	query.collide_with_bodies = true
 	query.hit_from_inside = false
 	
-	# Excluir a sí mismo y a todas sus áreas/hijos colisionadores
+	# Excluir a sí mismo y a sus colisionadores
 	var exclude_list := [get_rid()]
 	for child in get_children():
 		if child is CollisionObject2D:
@@ -640,14 +684,14 @@ func _cast_outgoing_beam() -> void:
 		var collider = result.collider
 		new_target = _find_light_receiver(collider)
 	
-	# Si el objetivo aguas abajo cambió (ej. se rotó o movió a otro cristal)
+	# Si el objetivo aguas abajo cambió (ej. se rotó hacia otro cristal)
 	if new_target != _downstream_target:
 		if _downstream_target != null and is_instance_valid(_downstream_target):
 			if _downstream_target.has_method("release_light"):
 				_downstream_target.release_light(self)
 		_downstream_target = new_target
 	
-	# Alimentar al nuevo objetivo
+	# Conectar y alimentar al nuevo objetivo
 	if _downstream_target != null and is_instance_valid(_downstream_target):
 		if _downstream_target.has_method("receive_light"):
 			_downstream_target.receive_light(self, hit_pos, out_dir, crystal_color, current_chain)
@@ -667,10 +711,12 @@ func _cast_outgoing_beam() -> void:
 	if _impact_light:
 		_impact_light.visible = true
 		_impact_light.position = local_end
+		_impact_light.energy = light_energy * 0.9
 	if _ambient_light:
 		_ambient_light.visible = true
+		_ambient_light.energy = light_energy
 	
-	# Iluminar el camino entre cristales para ver el suelo y plataformas
+	# Iluminar el camino entre cristales para orientar al jugador
 	var beam_dist := gem_center.distance_to(hit_pos)
 	var step := 70.0
 	var count := clampi(int(beam_dist / step), 0, _path_lights.size())
@@ -679,6 +725,7 @@ func _cast_outgoing_beam() -> void:
 			var light_pos := local_start + (local_end - local_start) * (float(i) / float(count + 1))
 			_path_lights[i].position = light_pos
 			_path_lights[i].color = crystal_color
+			_path_lights[i].energy = light_energy * 0.65
 			_path_lights[i].visible = true
 		else:
 			_path_lights[i].visible = false
@@ -703,10 +750,14 @@ func _exit_tree() -> void:
 
 
 # ==============================================================================
-# DIBUJO PROCEDURAL ESTILIZADO
+# DIBUJO PROCEDURAL ESTILIZADO (LUZ CÁLIDA Y NATURAL)
 # ==============================================================================
 
 func _draw() -> void:
+	# Guías visuales en el editor para ver las 3 conexiones
+	if Engine.is_editor_hint():
+		_draw_editor_guides()
+	
 	# Haz celestial vertical que entra desde el techo si es Primer_Iluminado
 	if crystal_type == "Primer_Iluminado (Entrada de Luz)":
 		_draw_sunshaft_stream()
@@ -718,37 +769,55 @@ func _draw() -> void:
 	_draw_gem()
 
 
+func _draw_editor_guides() -> void:
+	if not use_three_rotations:
+		return
+	var gem_center := Vector2(0, -10)
+	var colors := [
+		Color(1.0, 0.75, 0.35, 0.6), # Opción 1 (145°)
+		Color(1.0, 0.9, 0.45, 0.6),  # Opción 2 (90°)
+		Color(0.9, 0.6, 0.3, 0.6)    # Opción 3 (45°)
+	]
+	for i in range(3):
+		var ang := _get_effective_angle(i)
+		var dir := Vector2.from_angle(deg_to_rad(ang))
+		var is_sel := (i == current_angle_index)
+		var col: Color = colors[i]
+		if is_sel:
+			col.a = 0.95
+			draw_line(gem_center, gem_center + dir * 32.0, col, 2.0)
+			draw_circle(gem_center + dir * 32.0, 3.0, col)
+		else:
+			draw_line(gem_center, gem_center + dir * 20.0, col, 1.0)
+
+
 func _draw_sunshaft_stream() -> void:
-	# Haz de luz que desciende desde el techo de la cueva sobre el cristal
 	var shaft_top := Vector2(0, -90)
 	var shaft_bottom := Vector2(0, -14)
-	var pulse := (sin(_anim_pulse * 4.0) * 0.1) + 0.9
+	var pulse := (sin(_anim_pulse * 3.5) * 0.08) + 0.92
 	
-	# Haz amplio suave
-	draw_line(shaft_top, shaft_bottom, Color(1.0, 0.95, 0.75, 0.22 * pulse), 22.0)
-	# Rayo central dorado
-	draw_line(shaft_top, shaft_bottom, Color(1.0, 0.98, 0.85, 0.65 * pulse), 8.0)
-	# Núcleo blanco
-	draw_line(shaft_top, shaft_bottom, Color.WHITE, 2.5)
-	# Halo de impacto sobre la corona del cristal
-	draw_circle(shaft_bottom, 12.0, Color(1.0, 0.9, 0.6, 0.35))
+	# Haz cálido solar natural que desciende por la grieta
+	draw_line(shaft_top, shaft_bottom, Color(1.0, 0.88, 0.65, 0.2 * pulse), 20.0)
+	draw_line(shaft_top, shaft_bottom, Color(1.0, 0.92, 0.75, 0.55 * pulse), 7.0)
+	draw_line(shaft_top, shaft_bottom, Color(1.0, 0.98, 0.9, 0.8), 2.0)
+	draw_circle(shaft_bottom, 10.0, Color(1.0, 0.85, 0.55, 0.3))
 
 
 func _draw_base() -> void:
 	match crystal_type:
 		"Primer_Iluminado (Entrada de Luz)":
-			# Gran altar de piedra fúngica con adornos dorados de recepción solar
-			var stone_col := Color(0.24, 0.22, 0.3)
-			var gold := Color(0.9, 0.78, 0.32)
+			# Gran altar de piedra fúngica con adornos dorados solares
+			var stone_col := Color(0.24, 0.22, 0.28)
+			var gold := Color(0.9, 0.75, 0.35)
 			
-			# Base ancha escalonada
+			# Base escalonada
 			draw_colored_polygon(PackedVector2Array([
 				Vector2(-16, 12), Vector2(16, 12), Vector2(12, 3), Vector2(-12, 3)
 			]), stone_col)
 			draw_line(Vector2(-16, 12), Vector2(16, 12), gold, 1.5)
 			
-			# Aro selector / dial dorado
-			draw_circle(Vector2(0, -8), 8.0, Color(0.16, 0.14, 0.22))
+			# Aro selector / dial dorado cálido
+			draw_circle(Vector2(0, -8), 8.0, Color(0.18, 0.16, 0.22))
 			draw_arc(Vector2(0, -8), 8.0, 0, TAU, 16, gold, 1.8)
 			
 			# Marcadores de las 3 rotaciones disponibles
@@ -758,14 +827,14 @@ func _draw_base() -> void:
 					var a_rad := deg_to_rad(a_deg)
 					var dot_pos := Vector2(0, -8) + Vector2.from_angle(a_rad) * 6.5
 					var is_current := (i == current_angle_index)
-					var dot_col := Color(1.0, 0.92, 0.4, 1.0) if is_current else Color(0.5, 0.45, 0.35, 0.7)
+					var dot_col := Color(1.0, 0.9, 0.5, 1.0) if is_current else Color(0.55, 0.45, 0.35, 0.7)
 					var dot_rad := 2.5 if is_current else 1.2
 					draw_circle(dot_pos, dot_rad, dot_col)
 
 		"Empujable (Pedestal)":
-			var base_col := Color(0.24, 0.22, 0.28)
-			var trim_col := Color(0.42, 0.38, 0.48)
-			var wheel_col := Color(0.14, 0.12, 0.18)
+			var base_col := Color(0.24, 0.22, 0.26)
+			var trim_col := Color(0.48, 0.42, 0.38)
+			var wheel_col := Color(0.15, 0.13, 0.16)
 			
 			draw_circle(Vector2(-9, 10), 3.5, wheel_col)
 			draw_circle(Vector2(9, 10), 3.5, wheel_col)
@@ -773,16 +842,16 @@ func _draw_base() -> void:
 			draw_rect(Rect2(-12, -2, 24, 11), base_col)
 			draw_rect(Rect2(-12, -2, 24, 11), trim_col, false, 1.5)
 			
-			draw_line(Vector2(-4, 0), Vector2(-1, 6), Color(0.12, 0.1, 0.15), 1.2)
-			draw_line(Vector2(-1, 6), Vector2(3, 8), Color(0.12, 0.1, 0.15), 1.2)
+			draw_line(Vector2(-4, 0), Vector2(-1, 6), Color(0.14, 0.12, 0.15), 1.2)
+			draw_line(Vector2(-1, 6), Vector2(3, 8), Color(0.14, 0.12, 0.15), 1.2)
 			
 			draw_colored_polygon(PackedVector2Array([
 				Vector2(-5, -2), Vector2(5, -2), Vector2(3, -7), Vector2(-3, -7)
 			]), trim_col)
 			
 		"Rotable por Jugador [E]":
-			var base_col := Color(0.28, 0.25, 0.32)
-			var bronze := Color(0.68, 0.52, 0.28)
+			var base_col := Color(0.26, 0.24, 0.28)
+			var bronze := Color(0.75, 0.58, 0.32)
 			
 			draw_colored_polygon(PackedVector2Array([
 				Vector2(-14, 10), Vector2(14, 10), Vector2(10, 3), Vector2(-10, 3)
@@ -791,7 +860,7 @@ func _draw_base() -> void:
 			
 			draw_rect(Rect2(-4, -6, 8, 9), bronze)
 			
-			draw_circle(Vector2(0, -8), 7.5, Color(0.16, 0.14, 0.22))
+			draw_circle(Vector2(0, -8), 7.5, Color(0.18, 0.16, 0.2))
 			draw_arc(Vector2(0, -8), 7.5, 0, TAU, 16, bronze, 1.5)
 			
 			if use_three_rotations:
@@ -800,17 +869,17 @@ func _draw_base() -> void:
 					var a_rad := deg_to_rad(a_deg)
 					var dot_pos := Vector2(0, -8) + Vector2.from_angle(a_rad) * 6.0
 					var is_current := (i == current_angle_index)
-					var dot_col := Color(0.2, 0.9, 1.0, 1.0) if is_current else Color(0.45, 0.4, 0.35, 0.7)
-					var dot_rad := 2.0 if is_current else 1.2
+					var dot_col := Color(1.0, 0.85, 0.45, 1.0) if is_current else Color(0.48, 0.4, 0.32, 0.7)
+					var dot_rad := 2.2 if is_current else 1.2
 					draw_circle(dot_pos, dot_rad, dot_col)
 			
 		"Fijo (Techo/Pared)":
-			var iron := Color(0.3, 0.3, 0.36)
+			var iron := Color(0.32, 0.3, 0.34)
 			draw_colored_polygon(PackedVector2Array([
 				Vector2(-10, -18), Vector2(10, -18), Vector2(4, -8), Vector2(-4, -8)
 			]), iron)
-			draw_circle(Vector2(-6, -15), 1.5, Color(0.15, 0.15, 0.2))
-			draw_circle(Vector2(6, -15), 1.5, Color(0.15, 0.15, 0.2))
+			draw_circle(Vector2(-6, -15), 1.5, Color(0.16, 0.15, 0.18))
+			draw_circle(Vector2(6, -15), 1.5, Color(0.16, 0.15, 0.18))
 
 
 func _draw_gem() -> void:
@@ -831,17 +900,18 @@ func _draw_gem() -> void:
 	var col_outline: Color
 	
 	if is_energized:
-		var pulse := (sin(_anim_pulse * 6.0) * 0.15) + 0.85
-		col_main = Color(crystal_color.r * 1.1, crystal_color.g * 1.1, crystal_color.b * 1.1, 0.95)
-		col_bright = Color(1.0, 1.0, 1.0, 0.95 * pulse)
-		col_dark = Color(crystal_color.r * 0.7, crystal_color.g * 0.7, crystal_color.b * 0.7, 0.9)
-		col_outline = Color(1.0, 1.0, 1.0, 0.85)
-		draw_circle(gem_center, 18.0, Color(crystal_color.r, crystal_color.g, crystal_color.b, 0.28 * pulse))
+		var pulse := (sin(_anim_pulse * 4.5) * 0.1) + 0.9
+		col_main = Color(crystal_color.r, crystal_color.g, crystal_color.b, 0.92)
+		col_bright = Color(1.0, 0.96, 0.85, 0.95 * pulse)
+		col_dark = Color(crystal_color.r * 0.7, crystal_color.g * 0.65, crystal_color.b * 0.5, 0.88)
+		col_outline = Color(1.0, 0.95, 0.82, 0.9)
+		draw_circle(gem_center, 16.0, Color(crystal_color.r, crystal_color.g, crystal_color.b, 0.22 * pulse))
 	else:
-		col_main = Color(0.18, 0.38, 0.52, 0.85)
-		col_bright = Color(0.35, 0.62, 0.78, 0.9)
-		col_dark = Color(0.08, 0.2, 0.32, 0.9)
-		col_outline = Color(0.45, 0.72, 0.88, 0.75)
+		# Cuarzo ámbar reposado / tonos minerales cálidos oscuros
+		col_main = Color(0.42, 0.34, 0.24, 0.85)
+		col_bright = Color(0.60, 0.50, 0.36, 0.9)
+		col_dark = Color(0.24, 0.18, 0.12, 0.9)
+		col_outline = Color(0.65, 0.55, 0.40, 0.75)
 	
 	draw_colored_polygon(PackedVector2Array([tip, left, gem_center]), col_bright)
 	draw_colored_polygon(PackedVector2Array([tip, right, gem_center]), col_main)

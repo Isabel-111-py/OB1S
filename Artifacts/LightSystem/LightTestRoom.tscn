@@ -15,7 +15,10 @@ size = Vector2(280, 24)
 size = Vector2(440, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
-size = Vector2(100, 14)
+size = Vector2(50, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_plat"]
+size = Vector2(120, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(920, 24)
@@ -80,30 +83,30 @@ offset_bottom = 12.0
 color = Color(0.18, 0.14, 0.2, 1)
 
 [node name="FloatingPlat1" type="StaticBody2D" parent="."]
-position = Vector2(350, 260)
+position = Vector2(290, 175)
 collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FloatingPlat1"]
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="ColorRect" type="ColorRect" parent="FloatingPlat1"]
-offset_left = -50.0
+offset_left = -25.0
 offset_top = -7.0
-offset_right = 50.0
+offset_right = 25.0
 offset_bottom = 7.0
 color = Color(0.25, 0.2, 0.3, 1)
 
 [node name="UpperLedge" type="StaticBody2D" parent="."]
-position = Vector2(400, 105)
+position = Vector2(380, 105)
 collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UpperLedge"]
-shape = SubResource("RectangleShape2D_plat")
+shape = SubResource("RectangleShape2D_upper_plat")
 
 [node name="ColorRect" type="ColorRect" parent="UpperLedge"]
-offset_left = -50.0
+offset_left = -60.0
 offset_top = -7.0
-offset_right = 50.0
+offset_right = 60.0
 offset_bottom = 7.0
 color = Color(0.25, 0.2, 0.3, 1)
 
@@ -122,37 +125,43 @@ collision_layer = 1
 shape = SubResource("RectangleShape2D_wall")
 
 [node name="Primer_Iluminado" parent="." node_paths=PackedStringArray("target_1", "target_2", "target_3") instance=ExtResource("5_crystal")]
-position = Vector2(140, 248)
+position = Vector2(380, 95)
 crystal_type = "Primer_Iluminado (Entrada de Luz)"
 use_three_rotations = true
-target_1 = NodePath("../Crystal2_Fijo")
+angle_1 = 145.0
+angle_2 = 90.0
+angle_3 = 45.0
+target_1 = NodePath("../Crystal_Left_Rotable")
 target_2 = NodePath("../Crystal_Mid_Rotable")
 target_3 = NodePath("../Crystal3_Empujable")
 current_angle_index = 0
 
-[node name="Crystal2_Fijo" parent="." node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
-position = Vector2(400, 95)
-crystal_type = "Fijo (Techo/Pared)"
-use_three_rotations = false
-target_1 = NodePath("../Receiver")
-custom_rotation_angle = 30.0
-
-[node name="Crystal_Mid_Rotable" parent="." node_paths=PackedStringArray("target_1", "target_2") instance=ExtResource("5_crystal")]
-position = Vector2(350, 248)
+[node name="Crystal_Left_Rotable" parent="." node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
+position = Vector2(160, 248)
 crystal_type = "Rotable por Jugador [E]"
 use_three_rotations = true
-target_1 = NodePath("../Crystal3_Empujable")
-target_2 = NodePath("../Receiver")
 angle_1 = 0.0
 angle_2 = 330.0
-angle_3 = 30.0
+angle_3 = 45.0
+target_1 = NodePath("../Crystal_Mid_Rotable")
+current_angle_index = 0
+
+[node name="Crystal_Mid_Rotable" parent="." node_paths=PackedStringArray("target_1", "target_2") instance=ExtResource("5_crystal")]
+position = Vector2(380, 248)
+crystal_type = "Rotable por Jugador [E]"
+use_three_rotations = true
+angle_1 = 0.0
+angle_2 = 330.0
+angle_3 = 45.0
+target_1 = NodePath("../Crystal3_Empujable")
+target_2 = NodePath("../Receiver")
 current_angle_index = 0
 
 [node name="PedestalSocket" parent="." instance=ExtResource("6_pedestal")]
-position = Vector2(580, 248)
+position = Vector2(540, 248)
 
 [node name="Crystal3_Empujable" parent="." node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
-position = Vector2(520, 248)
+position = Vector2(470, 248)
 crystal_type = "Empujable (Pedestal)"
 use_three_rotations = false
 target_1 = NodePath("../Receiver")
