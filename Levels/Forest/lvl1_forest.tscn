@@ -107,3 +107,5 @@ tick_interval = null
 [node name="River" parent="." unique_id=1526503955 instance=ExtResource("11_8cdvc")]
 z_index = 3
 position = Vector2(-1487, 622)
+wave_height = 0.6
+pushes_player = false

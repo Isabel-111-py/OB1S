@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cf18jlswvd1h5"]
 
 [ext_resource type="Script" uid="uid://w53jll8j0rpq" path="res://Player/Scripts/player.gd" id="1_btcbx"]
+[ext_resource type="PackedScene" path="res://UI/DeathScreen/death_screen.tscn" id="2_8viyr"]
 [ext_resource type="PackedScene" uid="uid://dyfjguw683ti8" path="res://UI/Inventory/inventory_menu.tscn" id="2_gpjlu"]
 [ext_resource type="Script" uid="uid://drsh28p8wett8" path="res://Player/Scripts/animation_manager.gd" id="2_gwnis"]
 [ext_resource type="PackedScene" path="res://UI/HUD/health_layer.tscn" id="2_n471f"]
@@ -354,6 +355,9 @@ max_health = 3
 turbo_drain_per_second = 20.0
 grapple_energy_cost = 5.0
 grapple_drain_per_second = 3.0
+
+[node name="DeathScreen" parent="." unique_id=568031575 node_paths=PackedStringArray("player") instance=ExtResource("2_8viyr")]
+player = NodePath("..")
 
 [node name="Umbrella" parent="." unique_id=372970773 instance=ExtResource("2_sm0op")]
 position = Vector2(47, 30)

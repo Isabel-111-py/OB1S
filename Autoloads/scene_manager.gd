@@ -15,6 +15,9 @@ var respawn_delay: float = 1.0
 var void_damage: int = 1
 ## true: la energía se conserva al cambiar de nivel. false: cada nivel empieza con la energía llena.
 var keep_energy_between_levels: bool = true
+## Pantallas de muerte (DeathScreen) activas. Si hay alguna, ella decide qué pasa al morir
+## (reintentar o volver al menú) y el jugador ya no reaparece solo tras `respawn_delay`.
+var death_screens: int = 0
 
 var current_level: Level
 var player: Player
@@ -188,6 +191,8 @@ func _find_spawn(level: Level, id: StringName) -> SpawnPoint:
 
 
 func _on_player_died() -> void:
+	if death_screens > 0:
+		return # la pantalla de muerte llama a respawn_player(true) cuando el jugador elige reintentar
 	var dead_player := player
 	await get_tree().create_timer(respawn_delay).timeout
 	# Si mientras tanto cambió el nivel, este jugador ya no existe: no hacer nada.
