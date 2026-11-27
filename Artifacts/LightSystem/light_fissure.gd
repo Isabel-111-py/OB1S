@@ -182,13 +182,14 @@ func _physics_process(delta: float) -> void:
 
 func _cast_beam() -> void:
 	var ray_dir := Vector2.from_angle(deg_to_rad(beam_angle)).normalized()
-	var start_pos := global_position
+	var start_pos := global_position + ray_dir * 10.0
 	var end_pos := start_pos + ray_dir * max_beam_distance
 	
 	var space := get_world_2d().direct_space_state
 	var query := PhysicsRayQueryParameters2D.create(start_pos, end_pos)
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
+	query.hit_from_inside = false
 	
 	var result := space.intersect_ray(query)
 	var hit_pos := end_pos
