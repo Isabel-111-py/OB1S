@@ -24,7 +24,7 @@ size = Vector2(50, 14)
 size = Vector2(120, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
-size = Vector2(24, 340)
+size = Vector2(24, 336)
 
 [node name="LightTestRoom" type="Node2D" unique_id=818079318]
 script = ExtResource("1_level")
@@ -109,6 +109,7 @@ color = Color(0.25, 0.2, 0.3, 1)
 position = Vector2(-10, 150)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=9963017]
+position = Vector2(6, 26)
 shape = SubResource("RectangleShape2D_wall")
 
 [node name="WallRight" type="StaticBody2D" parent="." unique_id=1982489707]
@@ -127,14 +128,14 @@ target_3 = NodePath("../Crystal3_Empujable")
 [node name="Crystal_Left_Rotable" parent="." unique_id=1359580298 node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
 position = Vector2(160, 248)
 angle_1 = 0.0
-angle_2 = 330.0
 target_1 = NodePath("../Crystal_Mid_Rotable")
+angle_2 = 330.0
 
 [node name="Crystal_Mid_Rotable" parent="." unique_id=1989572584 node_paths=PackedStringArray("target_1", "target_2") instance=ExtResource("5_crystal")]
 position = Vector2(380, 248)
 angle_1 = 0.0
-angle_2 = 330.0
 target_1 = NodePath("../Crystal3_Empujable")
+angle_2 = 330.0
 target_2 = NodePath("../Receiver")
 
 [node name="PedestalSocket" parent="." unique_id=600821490 instance=ExtResource("6_pedestal")]

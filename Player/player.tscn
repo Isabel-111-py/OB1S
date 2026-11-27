@@ -27,18 +27,6 @@
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://drace0wc1sa3k" path="res://Player/Scripts/grapple.gd" id="17_pisgm"]
 
-[sub_resource type="Gradient" id="Gradient_aura"]
-offsets = PackedFloat32Array(0, 0.65, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0.5, 0.7, 1, 0.35, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_aura"]
-gradient = SubResource("Gradient_aura")
-width = 128
-height = 128
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.5, 0)
-
 [sub_resource type="Animation" id="Animation_b1ygp"]
 length = 0.001
 tracks/0/type = "value"
@@ -342,6 +330,18 @@ height = 26.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apfi5"]
 radius = 7.0
+
+[sub_resource type="Gradient" id="Gradient_aura"]
+offsets = PackedFloat32Array(0, 0.4417178, 0.44785276, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.82621413, 0.78428286, 0.44631416, 0.5294118, 0.8782723, 0.63452536, 0.47565287, 0.34901962, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aura"]
+gradient = SubResource("Gradient_aura")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [node name="Player" type="CharacterBody2D" unique_id=1251945402]
 script = ExtResource("1_btcbx")
