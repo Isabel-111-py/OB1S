@@ -8,6 +8,7 @@ enum BTState { SUCCESS, FAILURE, RUNNING }
 @export var attack_range: float = 40.0
 @export var chase_speed: float = 120.0
 
+
 var target_player: Node2D = null
 var is_awake: bool = false # Controla si el enemigo ya terminó su animación de despertar
 var current_health: int      # <--- NUEVO

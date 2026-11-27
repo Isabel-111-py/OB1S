@@ -1,15 +1,14 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cgxuqlpsym4wa"]
 
-[ext_resource type="Script" path="res://Artifacts/boss_room_detector.gd" id="1_detector"]
+[ext_resource type="Script" uid="uid://d2dx0n8sef0sa" path="res://Artifacts/boss_room_detector.gd" id="1_detector"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detector"]
 size = Vector2(800, 500)
 
-[node name="BossRoomDetector" type="Area2D"]
+[node name="BossRoomDetector" type="Area2D" unique_id=2062590149]
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("1_detector")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1383396829]
 shape = SubResource("RectangleShape2D_detector")
 debug_color = Color(0.85, 0.15, 0.15, 0.25)
