@@ -5,4 +5,4 @@
 [node name="Flor1" type="Sprite2D" unique_id=1376677452]
 texture = ExtResource("1_8pjtn")
 region_enabled = true
-region_rect = Rect2(149.97388, 63.74243, 21.263306, 16.356392)
+region_rect = Rect2(149.97388, 64.22473, 21.263306, 15.874092)

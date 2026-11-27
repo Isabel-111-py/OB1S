@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bfaueeg8em36j"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_umccc"]
+
+[node name="Dechongo4" type="Sprite2D" unique_id=1848614026]
+texture = ExtResource("1_umccc")
+region_enabled = true
+region_rect = Rect2(80.95491, 32.113796, 14.366928, 16.052376)

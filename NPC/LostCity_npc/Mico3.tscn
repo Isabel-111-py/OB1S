@@ -1,6 +1,47 @@
 [gd_scene format=3 uid="uid://mjx1dp7l6ai8"]
 
 [ext_resource type="Texture2D" uid="uid://dn2dpqdh7fy4j" path="res://NPC/Sprites/MonkeysssSpriteSheet.png" id="1_26y0v"]
+[ext_resource type="Texture2D" uid="uid://b01a8o2wxq6r6" path="res://NPC/LostCity_npc/monkeydead.png" id="1_w61qw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rpa3"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(0, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s5oqb"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(32, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w3kgq"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(64, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xdg4j"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(96, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5dl7"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(128, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b61wi"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(160, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ghlq"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(192, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etr6q"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(224, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6q5qr"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(256, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4n0sq"]
+atlas = ExtResource("1_w61qw")
+region = Rect2(288, 352, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w61qw"]
 atlas = ExtResource("1_26y0v")
@@ -58,6 +99,41 @@ region = Rect2(224, 128, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_1rpa3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s5oqb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w3kgq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xdg4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i5dl7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b61wi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ghlq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_etr6q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6q5qr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4n0sq")
+}],
+"loop": 1,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_w61qw")
 }, {
 "duration": 1.0,
@@ -113,8 +189,8 @@ size = Vector2(20, 6)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1344838597]
 sprite_frames = SubResource("SpriteFrames_jso0p")
-animation = &"walk"
-frame_progress = 0.52639693
+animation = &"die"
+frame_progress = 0.40631554
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=376935540]
 position = Vector2(2, 13)

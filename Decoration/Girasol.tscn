@@ -5,4 +5,4 @@
 [node name="Girasol" type="Sprite2D" unique_id=419337417]
 texture = ExtResource("1_pi7kx")
 region_enabled = true
-region_rect = Rect2(63.39407, 14.151619, 17.342945, 34.032707)
+region_rect = Rect2(64.31207, 16.493025, 15.37915, 31.691301)

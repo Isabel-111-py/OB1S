@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://s46nmusufvo2"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_5c8fk"]
+
+[node name="Hongo1" type="Sprite2D" unique_id=1566257315]
+texture = ExtResource("1_5c8fk")
+region_enabled = true
+region_rect = Rect2(479.87906, 0, 112.12094, 160)
