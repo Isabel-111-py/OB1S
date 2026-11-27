@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_ljwbt"]
 [ext_resource type="PackedScene" uid="uid://dhdiiyb8380v2" path="res://Tilesets/tileset.tscn" id="2_pe0oh"]
 [ext_resource type="PackedScene" path="res://Artifacts/Elevator.tscn" id="3_fmsi0"]
+[ext_resource type="PackedScene" path="res://Artifacts/CallLever.tscn" id="4_k317d"]
+[ext_resource type="PackedScene" uid="uid://btx174jdlow7o" path="res://Artifacts/LightSystem/LightFissure.tscn" id="5_cpud2"]
+[ext_resource type="PackedScene" uid="uid://btx171sjlngfo" path="res://Artifacts/LightSystem/LightCrystal.tscn" id="6_vhaf8"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="7_rmgvj"]
 
 [node name="LvlCaverns" type="Node2D" unique_id=1550236972]
 script = ExtResource("1_ljwbt")
@@ -15,3 +19,32 @@ position = Vector2(192, 585)
 travel_distance = 312.0
 include_start_lever = false
 include_end_lever = false
+
+[node name="CallLever" parent="Elevator" unique_id=1305774584 node_paths=PackedStringArray("elevator") instance=ExtResource("4_k317d")]
+position = Vector2(-64, -312)
+elevator = NodePath("..")
+elevator_path = NodePath("..")
+
+[node name="CallLever2" parent="Elevator" unique_id=328898254 node_paths=PackedStringArray("elevator") instance=ExtResource("4_k317d")]
+position = Vector2(59, 8)
+target_floor = "Piso Destino (Destination)"
+elevator = NodePath("..")
+elevator_path = NodePath("..")
+
+[node name="LightFissure" parent="." unique_id=476634727 instance=ExtResource("5_cpud2")]
+position = Vector2(880, 32)
+
+[node name="LightCrystal" parent="." unique_id=951720751 node_paths=PackedStringArray("target_3") instance=ExtResource("6_vhaf8")]
+position = Vector2(878, 579)
+collision_mask = 0
+motion_mode = 1
+target_3 = NodePath("../LightCrystal2")
+
+[node name="LightCrystal2" parent="." unique_id=1041204503 instance=ExtResource("6_vhaf8")]
+position = Vector2(1099, 337)
+collision_mask = 0
+motion_mode = 1
+crystal_type = "Fijo (Techo/Pared)"
+
+[node name="Marker" parent="." unique_id=298895395 instance=ExtResource("7_rmgvj")]
+position = Vector2(-262, 263)
