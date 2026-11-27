@@ -402,8 +402,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jso0p"]
-radius = 9.0
-height = 66.0
+radius = 3.0
+height = 42.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_iivr6"]
 radius = 24.186773
@@ -413,14 +413,36 @@ size = Vector2(70, 57)
 
 [node name="HealthMushroom2" type="CharacterBody2D" unique_id=955745691]
 script = ExtResource("1_dr_ergot")
+entrance_position = null
+lab_position = null
+lab_patrol_radius = null
+lab_quest_id = null
+only_appear_during_quest = null
+transformation_duration = null
+enemy_max_health = null
+enemy_chase_speed = null
+enemy_attack_range = null
+enemy_attack_damage = null
+enemy_attack_cooldown = null
+contact_damage = null
+enemy_knockback = null
+defeated_flag = null
+speed = null
+gravity = null
+patrol_radius = null
+min_idle_time = null
+max_idle_time = null
+min_walk_time = null
+max_walk_time = null
+sprite_faces_right = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1867809483]
-position = Vector2(6, -10)
+position = Vector2(0, -1)
 sprite_frames = SubResource("SpriteFrames_jso0p")
-animation = &"run"
+animation = &"transform"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=234324556]
-position = Vector2(-1, 15)
+position = Vector2(-1, 20)
 rotation = 4.712389
 shape = SubResource("CapsuleShape2D_jso0p")
 

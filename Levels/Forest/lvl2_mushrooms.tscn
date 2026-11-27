@@ -133,11 +133,33 @@ id = &"2"
 position = Vector2(6954, 168)
 
 [node name="Laboratorio_DrErgot" type="Marker2D" parent="." unique_id=1908635143]
-position = Vector2(8295, 468)
+position = Vector2(8323, 424)
 
 [node name="DrErgot" parent="." unique_id=955745691 node_paths=PackedStringArray("lab_marker") instance=ExtResource("10_ibu38")]
-position = Vector2(0, 341)
+position = Vector2(15, 296)
+entrance_position = Vector2(0, 341)
+lab_position = Vector2(7800, 810)
 lab_marker = NodePath("../Laboratorio_DrErgot")
+lab_patrol_radius = 40.0
+lab_quest_id = "Llevarle_a_ergot"
+only_appear_during_quest = false
+transformation_duration = 2.0
+enemy_max_health = 8
+enemy_chase_speed = 95.0
+enemy_attack_range = 45.0
+enemy_attack_damage = 1
+enemy_attack_cooldown = 1.2
+contact_damage = true
+enemy_knockback = Vector2(240, -180)
+defeated_flag = "dr_ergot_defeated"
+speed = 40.0
+gravity = 980.0
+patrol_radius = 80.0
+min_idle_time = 1.0
+max_idle_time = 3.0
+min_walk_time = 1.5
+max_walk_time = 3.5
+sprite_faces_right = true
 
 [node name="NPCQuestGiver" parent="DrErgot" unique_id=560244351 instance=ExtResource("12_0dawo")]
 position = Vector2(0, 6)
@@ -499,7 +521,7 @@ position = Vector2(262, -6)
 target_gate = NodePath("..")
 
 [node name="BossRoomDetector" parent="." unique_id=2091837461 node_paths=PackedStringArray("target_gate", "boss_node") instance=ExtResource("20_boss_detector")]
-position = Vector2(8295, 468)
+position = Vector2(8324, 424)
 target_gate = NodePath("../Puerta_boss")
 boss_node = NodePath("../DrErgot")
 

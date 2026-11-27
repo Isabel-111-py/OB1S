@@ -10,6 +10,7 @@ extends Node2D
 
 ## true si el jugador está bajo el agua de esta cascada.
 signal player_wet_changed(wet: bool)
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 ## Ancho total (px).
 @export var width: float = 24.0

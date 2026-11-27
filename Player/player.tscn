@@ -384,7 +384,9 @@ empty_texture = ExtResource("4_gpjlu")
 [node name="Grapple" type="Node2D" parent="." unique_id=135467788]
 position = Vector2(0, -10)
 script = ExtResource("17_pisgm")
+max_rope_length = 130.0
 rope_collision_mask = 2
+max_rope_jumps = 2
 rope_color = Color(0.41651985, 0.19808614, 0.2075322, 1)
 hook_texture = ExtResource("3_o28un")
 

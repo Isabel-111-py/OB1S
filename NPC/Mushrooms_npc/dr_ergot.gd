@@ -7,6 +7,7 @@ extends NPCBase
 ##    DrErgot se traslada automáticamente a su laboratorio (marcador Laboratorio_DrErgot).
 ## 3. Al hablar con él en su laboratorio (entregar la noticia de la cura), inicia su transformación
 ##    en la criatura y comienza a atacar al jugador.
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 enum ErgotState {
 	NPC,
@@ -89,6 +90,7 @@ var _pending_transformation: bool = false
 
 
 func _ready() -> void:
+	
 	add_to_group("boss")
 	add_to_group("enemies")
 	_default_patrol_radius = patrol_radius
@@ -98,6 +100,7 @@ func _ready() -> void:
 	# Guardar la posición de spawn de la entrada
 	if entrance_position == Vector2(0, 341) and global_position != Vector2.ZERO:
 		entrance_position = global_position
+		
 	
 	# Si ya fue derrotado anteriormente en esta partida, eliminarlo
 	if QuestManager and QuestManager.has_event_flag(defeated_flag):
@@ -137,8 +140,10 @@ func _ready() -> void:
 		
 		# Si la misión ya había sido completada en una sesión previa y aún no fue derrotado,
 		# iniciar directamente en forma enemiga dentro del laboratorio
+		
 		if QuestManager.is_quest_completed(lab_quest_id):
 			_complete_transformation(true)
+			collision_shape_2d.position.y = 29.0 
 	
 	# Sincronización diferida para garantizar que el árbol de nodos se haya posicionado
 	call_deferred("_post_ready_sync")
@@ -307,6 +312,7 @@ func start_transformation() -> void:
 	# Mirar al jugador
 	target_player = _get_player()
 	boss_transformed.emit()
+	
 	if target_player:
 		_face_target(target_player.global_position)
 	

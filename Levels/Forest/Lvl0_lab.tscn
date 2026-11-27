@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bgkv1vmav7hgt"]
+
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_ewsk4"]
+[ext_resource type="Texture2D" uid="uid://b31yvevigxscb" path="res://Tilesets/paralaxLayers/Lab BG.png" id="2_txtvq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
+size = Vector2(968.5, 64)
+
+[node name="Lvl0Lab" type="Node2D" unique_id=2108927666]
+script = ExtResource("1_ewsk4")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=281091922]
+position = Vector2(241, -45)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1709316331]
+position = Vector2(243.25, 325)
+shape = SubResource("RectangleShape2D_6673r")
+
+[node name="LabBg2" type="Sprite2D" parent="." unique_id=1453790317]
+position = Vector2(325, 180)
+texture = ExtResource("2_txtvq")
