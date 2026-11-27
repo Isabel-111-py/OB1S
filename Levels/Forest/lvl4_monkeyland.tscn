@@ -53,7 +53,7 @@ tile_map_data = PackedByteArray("AADy/xcAAAABAAAAAADz/xcAAAABAAAAAAD0/xcAAAABAAA
 [node name="Sprites" type="Node2D" parent="." unique_id=69132332]
 
 [node name="FinalbossSheet" type="Sprite2D" parent="Sprites" unique_id=1326753755]
-position = Vector2(1852, 192)
+position = Vector2(1490, 192)
 texture = ExtResource("6_exm1v")
 hframes = 8
 vframes = 3
@@ -354,3 +354,13 @@ id = &"1"
 
 [node name="Marker2" parent="Sprites" unique_id=918246397 instance=ExtResource("11_loiqw")]
 position = Vector2(-368, 358)
+
+[node name="Exit" parent="." unique_id=1142082125 instance=ExtResource("10_h26y5")]
+position = Vector2(1455, 137)
+scale = Vector2(1.525, 30.305)
+target_level = "uid://dhp81jgp5txba"
+target_spawn = &"2"
+
+[node name="Marker" parent="." unique_id=1911912859 instance=ExtResource("11_loiqw")]
+position = Vector2(1241, 357)
+id = &"2"

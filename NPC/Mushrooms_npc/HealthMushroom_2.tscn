@@ -412,29 +412,8 @@ radius = 24.186773
 size = Vector2(70, 57)
 
 [node name="HealthMushroom2" type="CharacterBody2D" unique_id=955745691]
+collision_layer = 0
 script = ExtResource("1_dr_ergot")
-entrance_position = null
-lab_position = null
-lab_patrol_radius = null
-lab_quest_id = null
-only_appear_during_quest = null
-transformation_duration = null
-enemy_max_health = null
-enemy_chase_speed = null
-enemy_attack_range = null
-enemy_attack_damage = null
-enemy_attack_cooldown = null
-contact_damage = null
-enemy_knockback = null
-defeated_flag = null
-speed = null
-gravity = null
-patrol_radius = null
-min_idle_time = null
-max_idle_time = null
-min_walk_time = null
-max_walk_time = null
-sprite_faces_right = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1867809483]
 position = Vector2(0, -1)

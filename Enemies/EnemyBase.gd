@@ -168,6 +168,7 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if current_health <= 0:
 		die()
 
+
 func die() -> void:
 	is_dead = true
 	velocity.x = 0 # Detenemos su movimiento horizontal
@@ -179,3 +180,11 @@ func die() -> void:
 	
 	# OPCIÓN 2: Si NO tienes animación de muerte, lo destruimos de inmediato:
 	queue_free()
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	pass # Replace with function body.
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	pass # Replace with function body.
