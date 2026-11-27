@@ -80,7 +80,11 @@ func _try_collect() -> void:
 			if qm and qm.get_quest_status(required_quest_id) != qm.QuestStatus.ACTIVE:
 				return
 
-	match kind:
+	var effective_kind := kind
+	if kind == Kind.ARROWS and not upgrade_id.is_empty():
+		effective_kind = Kind.UPGRADE
+
+	match effective_kind:
 		Kind.ARROWS:
 			if Inventory.add_ammo(ammo_slot, arrow_amount) <= 0:
 				return # ya llevas el máximo de ese tipo: se queda en el mapa

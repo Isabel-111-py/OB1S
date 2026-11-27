@@ -257,6 +257,10 @@ func _get_active_handler(info: Dictionary) -> NPCQuestGiver:
 		
 		# 2. Si la acción es entrega hacia este NPC (DELIVER, WAITING_DELIVERY, DELIVERY_DONE):
 		if info.action_type in ["DELIVER", "WAITING_DELIVERY", "DELIVERY_DONE"]:
+			# Buscar primero coincidencia exacta por quest_id
+			for s in siblings:
+				if s.quest_id == q_id:
+					return s
 			# Buscar un nodo con diálogo de entrega configurado
 			for s in siblings:
 				if not s.dialogue_can_deliver.is_empty():

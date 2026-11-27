@@ -170,7 +170,13 @@ func add_upgrade(id: StringName, display_name: String, description: String = "",
 
 
 func has_upgrade(id: Variant) -> bool:
-	return upgrades.has(StringName(id)) or upgrades.has(str(id))
+	if upgrades.has(StringName(id)) or upgrades.has(str(id)):
+		return true
+	var target_str := str(id).strip_edges().to_lower()
+	for k in upgrades.keys():
+		if str(k).strip_edges().to_lower() == target_str:
+			return true
+	return false
 
 
 ## Elimina una mejora / ítem del inventario (útil para misiones de entrega).
@@ -185,6 +191,12 @@ func remove_upgrade(id: Variant) -> bool:
 		upgrades.erase(key_str)
 		upgrade_removed.emit(key_sn)
 		return true
+	var target_str := str(id).strip_edges().to_lower()
+	for k in upgrades.keys():
+		if str(k).strip_edges().to_lower() == target_str:
+			upgrades.erase(k)
+			upgrade_removed.emit(StringName(k))
+			return true
 	return false
 
 

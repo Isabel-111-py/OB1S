@@ -89,7 +89,7 @@ region_rect = Rect2(24.03328, 0.5008774, 107.688446, 15.579756)
 
 [node name="Planta_Medicinal" parent="." unique_id=2127003346 instance=ExtResource("8_kb5yf")]
 position = Vector2(-575, -43)
-kind = 0
+kind = 1
 
 [node name="Sprite2D5" type="Sprite2D" parent="." unique_id=1819466777]
 position = Vector2(7991, 817)

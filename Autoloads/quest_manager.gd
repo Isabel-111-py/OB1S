@@ -327,18 +327,22 @@ func get_npc_interaction_info(npc_id: String) -> Dictionary:
 	for q_id in _quest_definitions:
 		var q: QuestData = _quest_definitions[q_id]
 		var status := get_quest_status(q_id)
+		if status == QuestStatus.ACTIVE or status == QuestStatus.READY_TO_TURN_IN:
+			check_quest_progress(q_id)
+			status = get_quest_status(q_id)
 		
 		# Comprobación insensible a mayúsculas y tolerante a alias (funry/runry)
 		var is_giver := ids_match(q.giver_npc_id, npc_id) or (q.giver_npc_id.is_empty() and ids_match(q.target_npc_id, npc_id))
 		var is_target := ids_match(q.target_npc_id, npc_id)
+		var has_separate_target := not q.target_npc_id.is_empty() and not ids_match(q.target_npc_id, q.giver_npc_id)
 		
-		# 1. Turn-in: DrErgot listo para recibir informe y entregar recompensa
+		# 1. Turn-in: DrErgot / Munfy listo para recibir informe y entregar recompensa
 		if is_giver and status == QuestStatus.READY_TO_TURN_IN:
 			turn_in_q = q
 			break
 		
-		# 2. Deliver: Funry con misión activa, entrega no hecha, y player tiene el ítem
-		if is_target and status == QuestStatus.ACTIVE and not is_delivery_done(q_id):
+		# 2. Deliver: Funry con misión activa, entrega no hecha, y player tiene el ítem (solo si es receptor separado)
+		if has_separate_target and is_target and status == QuestStatus.ACTIVE and not is_delivery_done(q_id):
 			var has_item: bool = true
 			if q.completion_type == "Entregar Ítem / Mejora":
 				var inv = get_node_or_null("/root/Inventory")
@@ -348,19 +352,19 @@ func get_npc_interaction_info(npc_id: String) -> Dictionary:
 			else:
 				waiting_q = q
 		
-		# 3. Offer: DrErgot con misión disponible para iniciar
+		# 3. Offer: DrErgot / Munfy con misión disponible para iniciar
 		if is_giver and status == QuestStatus.AVAILABLE and offer_q == null:
 			offer_q = q
 		
-		# 4. In Progress: DrErgot esperando que el player haga la entrega a Funry
+		# 4. In Progress: DrErgot / Munfy esperando que el player haga la entrega o consiga el ítem
 		if is_giver and status == QuestStatus.ACTIVE and not is_delivery_done(q_id) and in_progress_q == null:
 			in_progress_q = q
 		
-		# 5. Delivery Done: Funry tras haber recibido la medicina
-		if is_target and is_delivery_done(q_id) and delivered_q == null:
+		# 5. Delivery Done: Receptor tras haber recibido la medicina o entrega
+		if has_separate_target and is_target and is_delivery_done(q_id) and delivered_q == null:
 			delivered_q = q
 		
-		# 6. Completed: DrErgot tras completar definitivamente la misión
+		# 6. Completed: DrErgot / Munfy tras completar definitivamente la misión
 		if is_giver and status == QuestStatus.COMPLETED and completed_q == null:
 			completed_q = q
 	
