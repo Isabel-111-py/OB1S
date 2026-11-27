@@ -1,9 +1,7 @@
 [gd_scene format=3 uid="uid://btx174jdlow7o"]
 
-[ext_resource type="Script" path="res://Artifacts/LightSystem/light_fissure.gd" id="1_fissure"]
+[ext_resource type="Script" uid="uid://h157yclxmhfd" path="res://Artifacts/LightSystem/light_fissure.gd" id="1_fissure"]
 
-[node name="LightFissure" type="Node2D"]
+[node name="LightFissure" type="Node2D" unique_id=1512806650]
 script = ExtResource("1_fissure")
-beam_angle = 90.0
-beam_color = Color(1, 0.94902, 0.721569, 0.9)
-beam_width = 8.0
+beam_color = Color(0.6356338, 0.6020295, 0.4523377, 0.9019608)
