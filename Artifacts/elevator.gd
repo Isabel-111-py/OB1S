@@ -305,6 +305,8 @@ func _check_crush_hazard() -> void:
 
 
 func _kill_player_by_crush(player_node: Node2D) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
 	if player_node.get("is_dead") == true:
 		return
 	
@@ -532,11 +534,11 @@ func _on_call_body_exited(body: Node2D) -> void:
 
 
 func _is_player(body: Node2D) -> bool:
-	if body is CharacterBody2D:
-		return true
+	if body == null or not is_instance_valid(body):
+		return false
 	if body.is_in_group("player") or body.is_in_group("Player"):
 		return true
-	if body.name.begins_with("Player") or body.name.begins_with("player"):
+	if body.name.to_lower().begins_with("player"):
 		return true
 	return false
 

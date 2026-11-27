@@ -156,11 +156,13 @@ func _update_facing() -> void:
 # SALUD Y DAÑO
 # ==============================================================================
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if is_dead:
 		return # Si ya está muerto, ignorar
 		
 	current_health -= amount
+	if knockback != Vector2.ZERO:
+		velocity += knockback
 	print("Enemigo recibió daño. Vida restante: ", current_health)
 	
 	if current_health <= 0:

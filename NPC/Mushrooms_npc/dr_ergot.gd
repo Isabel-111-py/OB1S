@@ -390,14 +390,17 @@ func _on_hurtbox_hit_received(incoming_hitbox: Hitbox) -> void:
 	if ergot_state in [ErgotState.NPC, ErgotState.TRANSFORMING, ErgotState.ENEMY_DEAD]:
 		return
 	var dmg: int = incoming_hitbox.damage if incoming_hitbox else 1
-	take_damage(dmg)
+	var knock: Vector2 = incoming_hitbox.knockback if incoming_hitbox else Vector2.ZERO
+	take_damage(dmg, knock)
 
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if ergot_state in [ErgotState.NPC, ErgotState.TRANSFORMING, ErgotState.ENEMY_DEAD]:
 		return
 	
 	current_health -= amount
+	if knockback != Vector2.ZERO:
+		velocity += knockback
 	
 	# Parpadeo de impacto
 	var tween = create_tween()
