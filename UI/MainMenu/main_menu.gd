@@ -1,7 +1,7 @@
 class_name MainMenu
 extends Control
 
-## Ruta de la escena del primer nivel que se cargará al pulsar "Jugar".
+## Ruta de la escena del primer nivel que se cargará al pulsar "Nueva partida".
 @export_file("*.tscn") var first_level_path: String = "res://Levels/Forest/lvl1_forest.tscn"
 
 ## Velocidad de desplazamiento horizontal para cada capa de fondo parallax (px/segundo)
@@ -20,6 +20,7 @@ extends Control
 
 # Botones principales
 @onready var play_button: Button = %PlayButton
+@onready var load_button: Button = %LoadButton
 @onready var controls_button: Button = %ControlsButton
 @onready var options_button: Button = %OptionsButton
 @onready var credits_button: Button = %CreditsButton
@@ -56,6 +57,7 @@ var _last_focused_button: Button = null
 var _main_buttons: Array[Button] = []
 var _starting_game: bool = false
 var _cursor_tween: Tween
+var _slots_menu: SaveSlotsMenu
 
 
 func _ready() -> void:
@@ -67,7 +69,7 @@ func _ready() -> void:
 		_title_base_y = title_label.position.y
 
 	# Lista de botones principales
-	_main_buttons = [play_button, controls_button, options_button, credits_button, quit_button]
+	_main_buttons = [play_button, load_button, controls_button, options_button, credits_button, quit_button]
 	
 	# Ocultar botón Salir en la web (los navegadores no admiten quit())
 	if OS.has_feature("web") and is_instance_valid(quit_button):
@@ -75,6 +77,7 @@ func _ready() -> void:
 
 	# Conectar eventos de botones principales
 	play_button.pressed.connect(_on_play_pressed)
+	load_button.pressed.connect(_on_load_pressed)
 	controls_button.pressed.connect(_on_controls_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	credits_button.pressed.connect(_on_credits_pressed)
@@ -157,12 +160,24 @@ func _on_play_pressed() -> void:
 		if is_instance_valid(btn):
 			btn.disabled = true
 
-	# Transición al nivel a través de SceneManager si existe, o directo
-	if has_node("/root/SceneManager"):
-		var sm = get_node("/root/SceneManager")
-		sm.change_level(first_level_path)
-	else:
-		get_tree().change_scene_to_file(first_level_path)
+	# Partida nueva: inventario y misiones desde cero (SaveManager también los reinicia).
+	SaveManager.start_new_game(first_level_path)
+
+
+func _on_load_pressed() -> void:
+	if _starting_game or is_instance_valid(_slots_menu):
+		return
+	if is_instance_valid(cursor_indicator):
+		cursor_indicator.visible = false
+	_slots_menu = SaveSlotsMenu.open_load(self)
+	_slots_menu.closed.connect(_on_slots_menu_closed)
+
+
+func _on_slots_menu_closed() -> void:
+	_slots_menu = null
+	if is_instance_valid(load_button):
+		load_button.grab_focus()
+		_update_cursor_to_button(load_button)
 
 
 func _on_controls_pressed() -> void:

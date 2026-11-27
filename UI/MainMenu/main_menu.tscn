@@ -277,18 +277,27 @@ theme_override_constants/separation = 6
 unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../LoadButton")
+focus_next = NodePath("../LoadButton")
+focus_previous = NodePath("../QuitButton")
+text = "NUEVA PARTIDA"
+
+[node name="LoadButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox" unique_id=1900100201]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../PlayButton")
 focus_neighbor_bottom = NodePath("../ControlsButton")
 focus_next = NodePath("../ControlsButton")
-focus_previous = NodePath("../QuitButton")
-text = "JUGAR"
+focus_previous = NodePath("../PlayButton")
+text = "CARGAR PARTIDA"
 
 [node name="ControlsButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox" unique_id=940091102]
 unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../PlayButton")
+focus_neighbor_top = NodePath("../LoadButton")
 focus_neighbor_bottom = NodePath("../OptionsButton")
 focus_next = NodePath("../OptionsButton")
-focus_previous = NodePath("../PlayButton")
+focus_previous = NodePath("../LoadButton")
 text = "CONTROLES"
 
 [node name="OptionsButton" type="Button" parent="LeftSidebarCard/VBox/ButtonBox" unique_id=1097046779]
@@ -459,6 +468,16 @@ label_settings = SubResource("LabelSettings_controls_action")
 [node name="Key6" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid" unique_id=1772361158]
 layout_mode = 2
 text = "[W] / [S]"
+label_settings = SubResource("LabelSettings_controls_key")
+
+[node name="Act7" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid" unique_id=1900100301]
+layout_mode = 2
+text = "Interactuar / Guardar:"
+label_settings = SubResource("LabelSettings_controls_action")
+
+[node name="Key7" type="Label" parent="ControlsModal/Center/Panel/VBox/Grid" unique_id=1900100302]
+layout_mode = 2
+text = "[E]"
 label_settings = SubResource("LabelSettings_controls_key")
 
 [node name="Sep2" type="HSeparator" parent="ControlsModal/Center/Panel/VBox" unique_id=1515459222]

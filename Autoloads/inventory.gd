@@ -222,6 +222,63 @@ func reset() -> void:
 	set_umbrella_equipped(false)
 
 
+## Estado serializable (para guardar partida). Los iconos se guardan como ruta de recurso.
+func get_state() -> Dictionary:
+	var saved_upgrades: Array = []
+	for id in upgrades:
+		var entry: Dictionary = upgrades[id]
+		var icon := entry.get("icon") as Texture2D
+		saved_upgrades.append({
+			"id": String(id),
+			"name": String(entry.get("name", "")),
+			"description": String(entry.get("description", "")),
+			"icon": icon.resource_path if icon else "",
+		})
+	return {
+		"ammo": ammo.duplicate(),
+		"selected_slot": selected_slot,
+		"umbrella_equipped": umbrella_equipped,
+		"upgrades": saved_upgrades,
+		"collected": _collected.keys(),
+	}
+
+
+## Restaura un estado de get_state() (cargar partida). Debe llamarse antes de crear al jugador.
+func restore_state(state: Dictionary) -> void:
+	upgrades.clear()
+	for entry in state.get("upgrades", []):
+		if not entry is Dictionary:
+			continue
+		var icon: Texture2D = null
+		var icon_path := String(entry.get("icon", ""))
+		if icon_path != "" and ResourceLoader.exists(icon_path):
+			icon = load(icon_path) as Texture2D
+		upgrades[StringName(String(entry.get("id", "")))] = {
+			"name": String(entry.get("name", "")),
+			"description": String(entry.get("description", "")),
+			"icon": icon,
+		}
+
+	_collected.clear()
+	for key in state.get("collected", []):
+		_collected[String(key)] = true
+
+	# El Bow llama a setup_ammo() al aparecer el jugador y, la primera vez, reinicia las
+	# cantidades. Se marca como ya definido para que no pise las flechas cargadas.
+	_defined_by_bow = true
+	var saved_ammo: Array = state.get("ammo", [])
+	for i in SLOT_COUNT:
+		if i < saved_ammo.size():
+			ammo[i] = maxi(int(saved_ammo[i]), 0)
+		ammo_changed.emit(i, ammo[i])
+
+	selected_slot = clampi(int(state.get("selected_slot", 0)), 0, SLOT_COUNT - 1)
+	ammo_selected.emit(selected_slot)
+
+	umbrella_equipped = bool(state.get("umbrella_equipped", false))
+	umbrella_toggled.emit(umbrella_equipped)
+
+
 # ---------------------------------------------------------------------------
 # Internos
 # ---------------------------------------------------------------------------

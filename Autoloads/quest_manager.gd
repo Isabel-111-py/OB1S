@@ -517,6 +517,38 @@ func _on_inventory_changed() -> void:
 			check_quest_progress(q_id)
 
 
+## Estado serializable de las misiones (para guardar partida).
+func get_state() -> Dictionary:
+	return {
+		"statuses": _quest_statuses.duplicate(),
+		"delivery": _quest_delivery_done.duplicate(),
+		"flags": _event_flags.duplicate(),
+	}
+
+
+## Restaura un estado de get_state() (cargar partida). Las definiciones de misión las vuelven
+## a registrar los NPC al cargar el nivel; aquí solo se recupera el progreso.
+func restore_state(state: Dictionary) -> void:
+	_quest_statuses.clear()
+	_quest_delivery_done.clear()
+	_event_flags.clear()
+
+	var statuses = state.get("statuses", {})
+	if statuses is Dictionary:
+		for q_id in statuses:
+			_quest_statuses[String(q_id)] = int(statuses[q_id])
+	var delivery = state.get("delivery", {})
+	if delivery is Dictionary:
+		for q_id in delivery:
+			_quest_delivery_done[String(q_id)] = bool(delivery[q_id])
+	var flags = state.get("flags", {})
+	if flags is Dictionary:
+		for flag_name in flags:
+			_event_flags[String(flag_name)] = bool(flags[flag_name])
+
+	_refresh_all_quest_statuses()
+
+
 ## Reinicia el estado de misiones (para nueva partida)
 func reset() -> void:
 	_quest_statuses.clear()

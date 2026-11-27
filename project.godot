@@ -43,6 +43,10 @@ folder_colors={
 "res://missions/": "green"
 }
 
+[gui]
+
+theme/custom_font="uid://csk4lqe3cfern"
+
 [input]
 
 move_left={

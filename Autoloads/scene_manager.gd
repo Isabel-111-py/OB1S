@@ -36,6 +36,11 @@ var _saved_energy_exhausted: bool = false
 var _checkpoint_pos: Vector2 = Vector2.ZERO
 var _checkpoint_facing: float = 1.0
 
+# Posición exacta donde aparecer al cargar una partida guardada (en lugar de un SpawnPoint).
+var _has_pending_position: bool = false
+var _pending_position: Vector2 = Vector2.ZERO
+var _pending_facing: float = 1.0
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -75,6 +80,32 @@ func change_level(path: String, spawn_id: StringName = &"default") -> void:
 	# El resto ocurre en on_level_ready(), que llama el _ready() del nuevo Level.
 
 
+## Carga una partida guardada: entra al nivel `path` y deja al jugador en `pos` (su checkpoint)
+## con la vida y la energía guardadas. Lo usa SaveManager.load_game().
+func load_saved_game(path: String, pos: Vector2, facing: float, health: int, energy: float, exhausted: bool) -> void:
+	if _transitioning:
+		return
+	if not ResourceLoader.exists(path):
+		push_error("SceneManager: no existe el nivel '%s'." % path)
+		return
+	_transitioning = true
+	get_tree().paused = false
+	if is_instance_valid(player):
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+	await _fade(1.0)
+
+	_pending_spawn = &"default"
+	_has_pending_spawn = true # reutiliza el flujo que restaura vida y energía
+	_has_pending_position = true
+	_pending_position = pos
+	_pending_facing = facing
+	_saved_health = health
+	_saved_energy = energy
+	_saved_energy_exhausted = exhausted
+	get_tree().change_scene_to_file(path)
+	# El resto ocurre en on_level_ready(), que llama el _ready() del nuevo Level.
+
+
 ## Cambia al menú principal u otra escena que no sea un Level (sin requerir SpawnPoint).
 func change_to_menu(path: String = "res://UI/MainMenu/main_menu.tscn") -> void:
 	if _transitioning:
@@ -88,6 +119,7 @@ func change_to_menu(path: String = "res://UI/MainMenu/main_menu.tscn") -> void:
 		player = null
 	current_level = null
 	_has_pending_spawn = false
+	_has_pending_position = false
 	_saved_health = -1
 	_saved_energy = -1.0
 	await _fade(1.0)
@@ -146,7 +178,11 @@ func on_level_ready(level: Level) -> void:
 	var facing := 1.0
 	# Si se llegó desde otro nivel (o el nivel no traía Player) se usa un SpawnPoint.
 	# Si abres el nivel con F6 y el Player ya estaba colocado, se respeta su posición.
-	if _has_pending_spawn or created:
+	if _has_pending_position:
+		# Partida cargada: se aparece exactamente en el checkpoint guardado.
+		pos = _pending_position
+		facing = _pending_facing
+	elif _has_pending_spawn or created:
 		var id := _pending_spawn if _has_pending_spawn else level.default_spawn
 		var spawn := _find_spawn(level, id)
 		if spawn:
@@ -159,7 +195,7 @@ func on_level_ready(level: Level) -> void:
 		player.health = clampi(_saved_health, 1, player.max_health)
 		player.health_changed.emit(player.health, player.max_health)
 
-	if keep_energy_between_levels and _has_pending_spawn and _saved_energy >= 0.0:
+	if (keep_energy_between_levels or _has_pending_position) and _has_pending_spawn and _saved_energy >= 0.0:
 		player.restore_energy(_saved_energy, _saved_energy_exhausted)
 
 	set_checkpoint(pos, facing)
@@ -170,6 +206,7 @@ func on_level_ready(level: Level) -> void:
 		player.died.connect(_on_player_died)
 
 	_has_pending_spawn = false
+	_has_pending_position = false
 	_saved_health = -1
 	_saved_energy = -1.0
 	level_changed.emit(level)
