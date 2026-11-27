@@ -31,8 +31,8 @@ signal undocked_from_pedestal(pedestal: Node)
 ## Modo de conexión:
 ## - "Nodos Objetivo (Auto-Alinear)": Si asignas target_1/2/3, calcula el ángulo exacto al cristal objetivo
 ##   para garantizar una conexión perfecta sin fallos de puntería. Si está vacío, usa el ángulo numérico.
-## - "Ángulos Fijos (145°, 90°, 45°)": Usa estrictamente los grados configurados en angle_1, angle_2 y angle_3.
-@export_enum("Nodos Objetivo (Auto-Alinear)", "Ángulos Fijos (145°, 90°, 45°)") var connection_mode: String = "Nodos Objetivo (Auto-Alinear)":
+## - "Ángulos Fijos": Usa estrictamente los grados configurados en angle_1, angle_2 y angle_3 (145°, 90°, 45°).
+@export_enum("Nodos Objetivo (Auto-Alinear)", "Ángulos Fijos") var connection_mode: String = "Nodos Objetivo (Auto-Alinear)":
 	set(val):
 		connection_mode = val
 		_sync_three_angles()

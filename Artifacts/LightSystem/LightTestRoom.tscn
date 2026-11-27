@@ -1,12 +1,15 @@
 [gd_scene format=3 uid="uid://dpqwuofc874f3"]
 
-[ext_resource type="Script" path="res://Levels/scripts/level.gd" id="1_level"]
-[ext_resource type="PackedScene" path="res://Levels/spawn.tscn" id="2_spawn"]
-[ext_resource type="PackedScene" path="res://Levels/checkpoint.tscn" id="3_checkpoint"]
-[ext_resource type="PackedScene" path="res://Artifacts/LightSystem/LightCrystal.tscn" id="5_crystal"]
-[ext_resource type="PackedScene" path="res://Artifacts/LightSystem/CrystalPedestal.tscn" id="6_pedestal"]
-[ext_resource type="PackedScene" path="res://Artifacts/LightSystem/LightReceiver.tscn" id="7_receiver"]
+[ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="2_spawn"]
+[ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="3_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://btx171sjlngfo" path="res://Artifacts/LightSystem/LightCrystal.tscn" id="5_crystal"]
+[ext_resource type="PackedScene" uid="uid://bh7gkqeem4nfc" path="res://Artifacts/LightSystem/CrystalPedestal.tscn" id="6_pedestal"]
+[ext_resource type="PackedScene" uid="uid://dpqwsnwv0ftk3" path="res://Artifacts/LightSystem/LightReceiver.tscn" id="7_receiver"]
 [ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="8_gate"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(920, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground1"]
 size = Vector2(280, 24)
@@ -20,160 +23,134 @@ size = Vector2(50, 14)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_plat"]
 size = Vector2(120, 14)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
-size = Vector2(920, 24)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(24, 340)
 
-[node name="LightTestRoom" type="Node2D"]
+[node name="LightTestRoom" type="Node2D" unique_id=818079318]
 script = ExtResource("1_level")
-default_spawn = &"default"
 fall_limit_y = 600.0
 
-[node name="CavernDarkness" type="CanvasModulate" parent="."]
+[node name="CavernDarkness" type="CanvasModulate" parent="." unique_id=1117109218]
 color = Color(0.12, 0.14, 0.22, 1)
 
-[node name="SpawnPoint" parent="." instance=ExtResource("2_spawn")]
+[node name="SpawnPoint" parent="." unique_id=1536053788 instance=ExtResource("2_spawn")]
 position = Vector2(40, 240)
 
-[node name="Checkpoint" parent="." instance=ExtResource("3_checkpoint")]
+[node name="Checkpoint" parent="." unique_id=997824768 instance=ExtResource("3_checkpoint")]
 position = Vector2(40, 240)
+rotation = 0.011223555
 
-[node name="Ceiling" type="StaticBody2D" parent="."]
+[node name="Ceiling" type="StaticBody2D" parent="." unique_id=343064487]
 position = Vector2(450, 10)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling" unique_id=32646792]
 shape = SubResource("RectangleShape2D_ceiling")
 
-[node name="ColorRect" type="ColorRect" parent="Ceiling"]
+[node name="ColorRect" type="ColorRect" parent="Ceiling" unique_id=2123681748]
 offset_left = -460.0
 offset_top = -12.0
 offset_right = 460.0
 offset_bottom = 12.0
 color = Color(0.12, 0.1, 0.15, 1)
 
-[node name="FloorLeft" type="StaticBody2D" parent="."]
+[node name="FloorLeft" type="StaticBody2D" parent="." unique_id=362150217]
 position = Vector2(140, 260)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorLeft"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorLeft" unique_id=1684203631]
 shape = SubResource("RectangleShape2D_ground1")
 
-[node name="ColorRect" type="ColorRect" parent="FloorLeft"]
+[node name="ColorRect" type="ColorRect" parent="FloorLeft" unique_id=1527781867]
 offset_left = -140.0
 offset_top = -12.0
 offset_right = 140.0
 offset_bottom = 12.0
 color = Color(0.18, 0.14, 0.2, 1)
 
-[node name="FloorRight" type="StaticBody2D" parent="."]
+[node name="FloorRight" type="StaticBody2D" parent="." unique_id=542977605]
 position = Vector2(670, 260)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorRight"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorRight" unique_id=528820118]
 shape = SubResource("RectangleShape2D_ground2")
 
-[node name="ColorRect" type="ColorRect" parent="FloorRight"]
+[node name="ColorRect" type="ColorRect" parent="FloorRight" unique_id=2123699862]
 offset_left = -220.0
 offset_top = -12.0
 offset_right = 220.0
 offset_bottom = 12.0
 color = Color(0.18, 0.14, 0.2, 1)
 
-[node name="FloatingPlat1" type="StaticBody2D" parent="."]
+[node name="FloatingPlat1" type="StaticBody2D" parent="." unique_id=2027557136]
 position = Vector2(290, 175)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FloatingPlat1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloatingPlat1" unique_id=1547896334]
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="ColorRect" type="ColorRect" parent="FloatingPlat1"]
+[node name="ColorRect" type="ColorRect" parent="FloatingPlat1" unique_id=1634139292]
 offset_left = -25.0
 offset_top = -7.0
 offset_right = 25.0
 offset_bottom = 7.0
 color = Color(0.25, 0.2, 0.3, 1)
 
-[node name="UpperLedge" type="StaticBody2D" parent="."]
+[node name="UpperLedge" type="StaticBody2D" parent="." unique_id=1788782271]
 position = Vector2(380, 105)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperLedge"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperLedge" unique_id=1862069680]
 shape = SubResource("RectangleShape2D_upper_plat")
 
-[node name="ColorRect" type="ColorRect" parent="UpperLedge"]
+[node name="ColorRect" type="ColorRect" parent="UpperLedge" unique_id=650215384]
 offset_left = -60.0
 offset_top = -7.0
 offset_right = 60.0
 offset_bottom = 7.0
 color = Color(0.25, 0.2, 0.3, 1)
 
-[node name="WallLeft" type="StaticBody2D" parent="."]
+[node name="WallLeft" type="StaticBody2D" parent="." unique_id=1779012170]
 position = Vector2(-10, 150)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=9963017]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="WallRight" type="StaticBody2D" parent="."]
+[node name="WallRight" type="StaticBody2D" parent="." unique_id=1982489707]
 position = Vector2(890, 150)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=1028400940]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="Primer_Iluminado" parent="." node_paths=PackedStringArray("target_1", "target_2", "target_3") instance=ExtResource("5_crystal")]
+[node name="Primer_Iluminado" parent="." unique_id=111479733 node_paths=PackedStringArray("target_1", "target_2", "target_3") instance=ExtResource("5_crystal")]
 position = Vector2(380, 95)
 crystal_type = "Primer_Iluminado (Entrada de Luz)"
-use_three_rotations = true
-angle_1 = 145.0
-angle_2 = 90.0
-angle_3 = 45.0
 target_1 = NodePath("../Crystal_Left_Rotable")
 target_2 = NodePath("../Crystal_Mid_Rotable")
 target_3 = NodePath("../Crystal3_Empujable")
-current_angle_index = 0
 
-[node name="Crystal_Left_Rotable" parent="." node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
+[node name="Crystal_Left_Rotable" parent="." unique_id=1359580298 node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
 position = Vector2(160, 248)
-crystal_type = "Rotable por Jugador [E]"
-use_three_rotations = true
 angle_1 = 0.0
 angle_2 = 330.0
-angle_3 = 45.0
 target_1 = NodePath("../Crystal_Mid_Rotable")
-current_angle_index = 0
 
-[node name="Crystal_Mid_Rotable" parent="." node_paths=PackedStringArray("target_1", "target_2") instance=ExtResource("5_crystal")]
+[node name="Crystal_Mid_Rotable" parent="." unique_id=1989572584 node_paths=PackedStringArray("target_1", "target_2") instance=ExtResource("5_crystal")]
 position = Vector2(380, 248)
-crystal_type = "Rotable por Jugador [E]"
-use_three_rotations = true
 angle_1 = 0.0
 angle_2 = 330.0
-angle_3 = 45.0
 target_1 = NodePath("../Crystal3_Empujable")
 target_2 = NodePath("../Receiver")
-current_angle_index = 0
 
-[node name="PedestalSocket" parent="." instance=ExtResource("6_pedestal")]
+[node name="PedestalSocket" parent="." unique_id=600821490 instance=ExtResource("6_pedestal")]
 position = Vector2(540, 248)
 
-[node name="Crystal3_Empujable" parent="." node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
+[node name="Crystal3_Empujable" parent="." unique_id=522646008 node_paths=PackedStringArray("target_1") instance=ExtResource("5_crystal")]
 position = Vector2(470, 248)
 crystal_type = "Empujable (Pedestal)"
 use_three_rotations = false
 target_1 = NodePath("../Receiver")
-custom_rotation_angle = 0.0
 
-[node name="Receiver" parent="." node_paths=PackedStringArray("target_gate") instance=ExtResource("7_receiver")]
+[node name="Receiver" parent="." unique_id=305698168 node_paths=PackedStringArray("target_gate") instance=ExtResource("7_receiver")]
 position = Vector2(720, 248)
 target_gate = NodePath("../GateExit")
 
-[node name="GateExit" parent="." instance=ExtResource("8_gate")]
+[node name="GateExit" parent="." unique_id=1649385413 instance=ExtResource("8_gate")]
 position = Vector2(810, 208)
-gate_length = 96.0
 gate_thickness = 10.0
 gate_type = "Hojas Dobles (Split)"
-orientation = "Vertical"
