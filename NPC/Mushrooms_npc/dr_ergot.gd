@@ -3,8 +3,10 @@ extends NPCBase
 
 ## Controlador para DrErgot:
 ## 1. Gestiona su ubicación entre la entrada del nivel y su laboratorio según la misión de Munfy.
-## 2. Al hablar con él en su laboratorio (entregar la noticia de la cura), inicia una transformación.
-## 3. Pasa al estado enemigo mutado y comienza a atacar al jugador.
+## 2. Al llegar a la última misión (o cuando curar_fongo termina / Llevarle_a_ergot está disponible/activa),
+##    DrErgot se traslada automáticamente a su laboratorio (marcador Laboratorio_DrErgot).
+## 3. Al hablar con él en su laboratorio (entregar la noticia de la cura), inicia su transformación
+##    en la criatura y comienza a atacar al jugador.
 
 enum ErgotState {
 	NPC,
@@ -13,6 +15,16 @@ enum ErgotState {
 	ENEMY_ATTACK,
 	ENEMY_DEAD
 }
+
+signal boss_died()
+signal boss_transformed()
+
+var is_dead: bool:
+	get:
+		return ergot_state == ErgotState.ENEMY_DEAD or (QuestManager != null and QuestManager.has_event_flag(defeated_flag))
+
+func is_alive() -> bool:
+	return ergot_state != ErgotState.ENEMY_DEAD and not (QuestManager != null and QuestManager.has_event_flag(defeated_flag))
 
 @export_group("Ubicaciones de Misión")
 ## Posición original en la entrada del nivel (cuando la misión de Munfy no ha comenzado)
@@ -77,9 +89,15 @@ var _pending_transformation: bool = false
 
 
 func _ready() -> void:
+	add_to_group("boss")
+	add_to_group("enemies")
 	_default_patrol_radius = patrol_radius
 	current_health = enemy_max_health
 	super._ready()
+	
+	# Guardar la posición de spawn de la entrada
+	if entrance_position == Vector2(0, 341) and global_position != Vector2.ZERO:
+		entrance_position = global_position
 	
 	# Si ya fue derrotado anteriormente en esta partida, eliminarlo
 	if QuestManager and QuestManager.has_event_flag(defeated_flag):
@@ -97,25 +115,23 @@ func _ready() -> void:
 		if not hurtbox.hit_received.is_connected(_on_hurtbox_hit_received):
 			hurtbox.hit_received.connect(_on_hurtbox_hit_received)
 	
-	# Buscar marcador de laboratorio si no fue asignado en inspector
-	if lab_marker == null and get_parent() != null:
-		lab_marker = get_parent().get_node_or_null("Laboratorio_DrErgot") as Node2D
-		if lab_marker == null:
-			lab_marker = get_parent().get_node_or_null("LabMarker") as Node2D
-	
-	if lab_marker != null and is_instance_valid(lab_marker):
-		lab_position = lab_marker.global_position
-	
+	_resolve_lab_marker()
 	_update_ergot_location()
 	
-	# Conectar con QuestManager para enterarse de misiones y entregas
+	# Conectar con TODOS los eventos relevantes de QuestManager
 	if QuestManager:
-		if not QuestManager.quest_accepted.is_connected(_on_quest_status_changed):
-			QuestManager.quest_accepted.connect(_on_quest_status_changed)
-		if not QuestManager.quest_updated.is_connected(_on_quest_status_changed):
-			QuestManager.quest_updated.connect(_on_quest_status_changed)
-		if not QuestManager.quest_completed.is_connected(_on_quest_status_changed):
-			QuestManager.quest_completed.connect(_on_quest_status_changed)
+		if not QuestManager.quest_registered.is_connected(_on_quest_event):
+			QuestManager.quest_registered.connect(_on_quest_event)
+		if not QuestManager.quest_unlocked.is_connected(_on_quest_event):
+			QuestManager.quest_unlocked.connect(_on_quest_event)
+		if not QuestManager.quest_accepted.is_connected(_on_quest_event):
+			QuestManager.quest_accepted.connect(_on_quest_event)
+		if not QuestManager.quest_updated.is_connected(_on_quest_event):
+			QuestManager.quest_updated.connect(_on_quest_event)
+		if not QuestManager.quest_ready_to_turn_in.is_connected(_on_quest_event):
+			QuestManager.quest_ready_to_turn_in.connect(_on_quest_event)
+		if not QuestManager.quest_completed.is_connected(_on_quest_event):
+			QuestManager.quest_completed.connect(_on_quest_event)
 		if not QuestManager.quest_step_delivered.is_connected(_on_quest_step_delivered):
 			QuestManager.quest_step_delivered.connect(_on_quest_step_delivered)
 		
@@ -123,17 +139,83 @@ func _ready() -> void:
 		# iniciar directamente en forma enemiga dentro del laboratorio
 		if QuestManager.is_quest_completed(lab_quest_id):
 			_complete_transformation(true)
+	
+	# Sincronización diferida para garantizar que el árbol de nodos se haya posicionado
+	call_deferred("_post_ready_sync")
 
 
-func _on_quest_status_changed(quest_id: String) -> void:
-	if quest_id == lab_quest_id or QuestManager.normalize_id(quest_id) == QuestManager.normalize_id(lab_quest_id):
-		_update_ergot_location()
-		
-		# Si la misión se completó mientras estábamos presentes en el laboratorio
-		if QuestManager.is_quest_completed(lab_quest_id) and ergot_state == ErgotState.NPC:
-			var in_lab := global_position.distance_to(lab_position) < 300.0
-			if in_lab:
-				_prepare_transformation()
+func _post_ready_sync() -> void:
+	_resolve_lab_marker()
+	_update_ergot_location()
+
+
+## Busca activamente el marcador del laboratorio en la escena
+func _resolve_lab_marker() -> Node2D:
+	if lab_marker != null and is_instance_valid(lab_marker):
+		lab_position = lab_marker.global_position
+		return lab_marker
+	
+	# 1. Buscar en el padre directo (hermano de escena)
+	if get_parent() != null:
+		var m := get_parent().get_node_or_null("Laboratorio_DrErgot") as Node2D
+		if m != null:
+			lab_marker = m
+			lab_position = m.global_position
+			return m
+		var m2 := get_parent().get_node_or_null("LabMarker") as Node2D
+		if m2 != null:
+			lab_marker = m2
+			lab_position = m2.global_position
+			return m2
+	
+	# 2. Buscar en la escena actual
+	if get_tree() and get_tree().current_scene:
+		var found := get_tree().current_scene.find_child("Laboratorio_DrErgot", true, false) as Node2D
+		if found != null:
+			lab_marker = found
+			lab_position = found.global_position
+			return found
+	
+	return null
+
+
+## Determina si la historia ha llegado al punto en que Ergot debe estar en su laboratorio
+func _is_in_lab_phase() -> bool:
+	if not QuestManager:
+		return false
+	
+	# 1. ¿La misión de Ergot está disponible, activa, lista para entregar o completada?
+	if QuestManager.is_quest_available(lab_quest_id) \
+	or QuestManager.is_quest_active(lab_quest_id) \
+	or QuestManager.is_quest_ready_to_turn_in(lab_quest_id) \
+	or QuestManager.is_quest_completed(lab_quest_id):
+		return true
+	
+	# 2. ¿La misión previa de curar a Fongo ya está completada?
+	# Al completar 'curar_fongo', Munfy le dice al jugador que busque a Ergot en su laboratorio
+	if QuestManager.is_quest_completed("curar_fongo"):
+		return true
+	
+	# 3. Comprobar nombres normalizados para evitar discrepancias de mayúsculas/minúsculas
+	var norm_lab := QuestManager.normalize_id(lab_quest_id)
+	for q in QuestManager.get_active_quests():
+		if QuestManager.normalize_id(q.get("id", "")) == norm_lab:
+			return true
+	for q in QuestManager.get_completed_quests():
+		if QuestManager.normalize_id(q.get("id", "")) == norm_lab:
+			return true
+	
+	return false
+
+
+func _on_quest_event(quest_id: String = "") -> void:
+	_update_ergot_location()
+	
+	# Si la misión de entrega se completó estando presentes en el laboratorio
+	if QuestManager and QuestManager.is_quest_completed(lab_quest_id) and ergot_state == ErgotState.NPC:
+		var in_lab := global_position.distance_to(lab_position) < 400.0
+		if in_lab:
+			_prepare_transformation()
 
 
 func _on_quest_step_delivered(quest_id: String, target_npc: String) -> void:
@@ -146,14 +228,9 @@ func _update_ergot_location() -> void:
 	if ergot_state != ErgotState.NPC:
 		return
 		
-	if lab_marker != null and is_instance_valid(lab_marker):
-		lab_position = lab_marker.global_position
+	_resolve_lab_marker()
 	
-	var in_lab := false
-	if QuestManager:
-		in_lab = QuestManager.is_quest_active(lab_quest_id) or \
-		         QuestManager.is_quest_ready_to_turn_in(lab_quest_id) or \
-		         QuestManager.is_quest_completed(lab_quest_id)
+	var in_lab := _is_in_lab_phase()
 	
 	if only_appear_during_quest and not in_lab:
 		visible = false
@@ -229,6 +306,7 @@ func start_transformation() -> void:
 	
 	# Mirar al jugador
 	target_player = _get_player()
+	boss_transformed.emit()
 	if target_player:
 		_face_target(target_player.global_position)
 	
@@ -271,11 +349,12 @@ func _complete_transformation(instant: bool = false) -> void:
 		hurtbox.active = true
 	
 	target_player = _get_player()
+	boss_transformed.emit()
 	
 	if not instant:
-		# Pequeño rugido o efecto visual al transformarse
 		_play_anim("enemy_idle", "run")
 	else:
+		_resolve_lab_marker()
 		global_position = lab_position
 		_play_anim("enemy_idle", "idle")
 
@@ -416,6 +495,7 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 func die() -> void:
 	ergot_state = ErgotState.ENEMY_DEAD
 	velocity = Vector2.ZERO
+	boss_died.emit()
 	
 	if hitbox:
 		hitbox.active = false

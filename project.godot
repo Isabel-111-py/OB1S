@@ -36,6 +36,7 @@ mouse_cursor/custom_image_hotspot=Vector2(24, 24)
 [file_customization]
 
 folder_colors={
+"res://Decoration/": "orange",
 "res://Levels/": "teal",
 "res://NPC/": "pink",
 "res://Player/": "blue",

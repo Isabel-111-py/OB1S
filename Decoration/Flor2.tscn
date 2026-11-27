@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bamnprgyo4gvf"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_vvu8d"]
+
+[node name="Flor2" type="Sprite2D" unique_id=640222833]
+position = Vector2(0, 4)
+scale = Vector2(1, 1.05)
+texture = ExtResource("1_vvu8d")
+region_enabled = true
+region_rect = Rect2(148.39117, 48.620163, 23.54123, 15.877975)

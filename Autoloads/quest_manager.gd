@@ -166,7 +166,7 @@ func deliver_quest_step(quest_id: String) -> bool:
 	_quest_delivery_done[quest_id] = true
 	
 	# 2. Retirar el ítem de la mochila (sin provocar condiciones de carrera)
-	if q.completion_type == "Entregar Ítem / Mejora" and q.consume_item_on_complete:
+	if q.completion_type == "Entregar Ítem / Mejora" and q.consume_item_on_complete and not q.required_item_id.is_empty():
 		var inv = get_node_or_null("/root/Inventory")
 		if inv and inv.has_method("remove_upgrade"):
 			inv.remove_upgrade(q.required_item_id)
@@ -210,9 +210,12 @@ func check_quest_progress(quest_id: String) -> bool:
 		# Misión de un solo NPC (el giver y el objetivo son el mismo):
 		match q.completion_type:
 			"Entregar Ítem / Mejora":
-				var inv = get_node_or_null("/root/Inventory")
-				if inv and inv.has_method("has_upgrade"):
-					ready = inv.has_upgrade(q.required_item_id)
+				if q.required_item_id.is_empty():
+					ready = true
+				else:
+					var inv = get_node_or_null("/root/Inventory")
+					if inv and inv.has_method("has_upgrade"):
+						ready = inv.has_upgrade(q.required_item_id)
 			"Hablar con NPC":
 				# No auto-completar solo por aceptar: requiere que el objetivo sea visitado
 				ready = is_delivery_done(quest_id)
@@ -250,7 +253,7 @@ func complete_quest(quest_id: String) -> bool:
 	var inv = get_node_or_null("/root/Inventory")
 	
 	# 1. Consumir ítem si aún quedaba pendiente
-	if q.completion_type == "Entregar Ítem / Mejora" and q.consume_item_on_complete and not is_delivery_done(quest_id):
+	if q.completion_type == "Entregar Ítem / Mejora" and q.consume_item_on_complete and not is_delivery_done(quest_id) and not q.required_item_id.is_empty():
 		if inv and inv.has_method("remove_upgrade"):
 			inv.remove_upgrade(q.required_item_id)
 	
@@ -345,8 +348,11 @@ func get_npc_interaction_info(npc_id: String) -> Dictionary:
 		if has_separate_target and is_target and status == QuestStatus.ACTIVE and not is_delivery_done(q_id):
 			var has_item: bool = true
 			if q.completion_type == "Entregar Ítem / Mejora":
-				var inv = get_node_or_null("/root/Inventory")
-				has_item = inv.has_upgrade(q.required_item_id) if (inv and inv.has_method("has_upgrade")) else false
+				if q.required_item_id.is_empty():
+					has_item = true
+				else:
+					var inv = get_node_or_null("/root/Inventory")
+					has_item = inv.has_upgrade(q.required_item_id) if (inv and inv.has_method("has_upgrade")) else false
 			if has_item:
 				deliver_q = q
 			else:

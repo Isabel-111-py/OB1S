@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://1w48m8hxwx7u"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_pi7kx"]
+
+[node name="Girasol" type="Sprite2D" unique_id=419337417]
+texture = ExtResource("1_pi7kx")
+region_enabled = true
+region_rect = Rect2(63.39407, 14.151619, 17.342945, 34.032707)

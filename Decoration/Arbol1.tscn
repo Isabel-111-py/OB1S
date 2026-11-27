@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bb6fgynmvkdy0"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_qop87"]
+
+[node name="Arbol1" type="Sprite2D" unique_id=1373595445]
+texture = ExtResource("1_qop87")
+region_enabled = true
+region_rect = Rect2(258.03387, 0, 158.10693, 160)

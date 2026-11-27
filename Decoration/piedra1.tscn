@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dm7opwix2jm6a"]
+
+[ext_resource type="Texture2D" uid="uid://buc8kof2yl2h1" path="res://Tilesets/ilustrationobjects/trees (1).png" id="1_0b76p"]
+
+[node name="Piedra1" type="Sprite2D" unique_id=654647524]
+texture = ExtResource("1_0b76p")
+region_enabled = true
+region_rect = Rect2(112.10622, 26.111898, 32.23146, 22.221712)
