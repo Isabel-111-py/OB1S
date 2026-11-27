@@ -140,6 +140,14 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	
+	# Sincronizar automáticamente npc_name y npc_id con los hermanos bajo el mismo padre si no se definieron
+	for sibling in _get_sibling_givers():
+		if sibling != self:
+			if (npc_id == "npc_1" or npc_id.is_empty()) and not sibling.npc_id.is_empty() and sibling.npc_id != "npc_1":
+				npc_id = sibling.npc_id
+			if (npc_name == "NPC" or npc_name.is_empty()) and not sibling.npc_name.is_empty() and sibling.npc_name != "NPC":
+				npc_name = sibling.npc_name
+	
 	_register_or_update_quest()
 	
 	proximity_area.body_entered.connect(_on_proximity_entered)
@@ -225,7 +233,7 @@ func _get_sibling_givers() -> Array[NPCQuestGiver]:
 		result.append(self)
 		return result
 	for child in p.get_children():
-		if child is NPCQuestGiver and QuestManager.ids_match(child.npc_id, npc_id):
+		if child is NPCQuestGiver:
 			result.append(child)
 	if result.is_empty():
 		result.append(self)
@@ -249,13 +257,12 @@ func _get_active_handler(info: Dictionary) -> NPCQuestGiver:
 		
 		# 2. Si la acción es entrega hacia este NPC (DELIVER, WAITING_DELIVERY, DELIVERY_DONE):
 		if info.action_type in ["DELIVER", "WAITING_DELIVERY", "DELIVERY_DONE"]:
-			# Buscar un nodo marcado explícitamente como Receiver
-			for s in siblings:
-				if s.npc_role.begins_with("Receiver"):
-					return s
-			# O un nodo con diálogo de entrega configurado
+			# Buscar un nodo con diálogo de entrega configurado
 			for s in siblings:
 				if not s.dialogue_can_deliver.is_empty():
+					return s
+			for s in siblings:
+				if s.npc_role.begins_with("Receiver"):
 					return s
 		
 		# 3. Coincidencia directa por quest_id en cualquier caso
@@ -269,12 +276,25 @@ func _get_active_handler(info: Dictionary) -> NPCQuestGiver:
 				if s.quest_id == q_id:
 					return s
 	
+	# Si no hay misión activa, buscar el nodo que tenga nombre personalizado (no el genérico "NPC")
+	for s in siblings:
+		if not s.quest_id.is_empty() and s.npc_name != "NPC" and not s.npc_name.is_empty():
+			return s
+	
 	# Fallback: el primer hermano en la jerarquía
 	return siblings[0]
 
 
 ## Se llama cuando el jugador hace clic derecho o presiona [E]
 func interact_with_npc() -> void:
+	# Asegurarse de tener el npc_id y npc_name sincronizados
+	if npc_id == "npc_1" or npc_id.is_empty():
+		for s in _get_sibling_givers():
+			if s.npc_id != "npc_1" and not s.npc_id.is_empty():
+				npc_id = s.npc_id
+				npc_name = s.npc_name
+				break
+	
 	var info := QuestManager.get_npc_interaction_info(npc_id)
 	var active := _get_active_handler(info)
 	if active != self:

@@ -20,8 +20,8 @@
 [ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="15_kb5yf"]
 [ext_resource type="PackedScene" uid="uid://b7lqixxuknqs7" path="res://NPC/Mushrooms_npc/Mini_mushroom_3.tscn" id="15_w7m6m"]
 [ext_resource type="PackedScene" uid="uid://c1xedowhvtj4r" path="res://NPC/Mushrooms_npc/Mini_mushroom_2.tscn" id="16_s5age"]
-[ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="18_tqfyk"]
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="18_s5age"]
+[ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="18_tqfyk"]
 [ext_resource type="PackedScene" path="res://Artifacts/GateLever.tscn" id="19_cs0i1"]
 [ext_resource type="Texture2D" uid="uid://chb67pxiomidt" path="res://UI/mouse.png" id="19_g5f01"]
 
@@ -128,6 +128,7 @@ position = Vector2(3666, 377)
 [node name="Marker2" parent="." unique_id=1971252606 instance=ExtResource("8_3pc40")]
 position = Vector2(-592, 347)
 id = &"2"
+
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("10_m1glj")]
 position = Vector2(6954, 168)
 
@@ -391,8 +392,8 @@ quest_title = "Una nueva medicina"
 quest_description = "Munfy cree que algo anda mal con la medicina del Dr.Ergot y cree que puede hacer un antidoto alternativo para los honguipobladores y quizás con esto pueda impresionar a su maestro, el Dr.Ergot."
 quest_objective = "Consigue una Planta Medicinal para Munfy"
 target_npc_id = "munfy"
-prerequisite_quest_id = "algo_raro"
 required_item_id = "planta_medicinal"
+reward_ammo_slot = 0
 greeting_available = "¡Hey! ¿Qué haces por aquí?"
 greeting_in_progress = "¿Aún no encuentras la Planta Medicinal?"
 greeting_ready = "¡Has vuelto con la planta!"
@@ -415,6 +416,7 @@ quest_objective = "Dale la medicina a Fongo"
 target_npc_id = "fongo"
 return_to_giver = true
 return_objective = "Informale a Munfy que su medicina ha funcionado en Fongo."
+prerequisite_quest_id = "ingrediente_munfy"
 greeting_available = "¡Debemos probar la medicina!"
 greeting_in_progress = "¿Y bien? ¿Fongo tomó la medicina?"
 greeting_ready = "¡SIIII! ¡Debemos contarselo al Dr Ergot!"
@@ -425,6 +427,8 @@ dialogue_ready = "¡Funciona! ¡Funciona!
 El Dr.Ergot se setirá orgulloso de mi."
 
 [node name="Quest_3_LlevarlelanuevacuraErgot" parent="Munfy" unique_id=1766654068 instance=ExtResource("12_0dawo")]
+npc_name = "Munfy"
+npc_id = "munfy"
 quest_id = "Llevarle_a_ergot"
 quest_title = "¡Debemos decirle a Ergot!"
 quest_description = "Munfy quiere que busques al Dr. Ergot al Sur de la ciudad, en su laboratorio."
@@ -480,6 +484,7 @@ position = Vector2(1071, 8)
 target_floor = "Piso Destino (Destination)"
 elevator = NodePath("..")
 elevator_path = NodePath("..")
+
 [node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("18_s5age")]
 position = Vector2(-560, 358)
 target_level = "uid://d4bcducbmiexj"
