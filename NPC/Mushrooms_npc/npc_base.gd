@@ -26,6 +26,7 @@ var direction: int = 1 # 1 = derecha, -1 = izquierda
 var state_timer: float = 0.0
 
 func _ready() -> void:
+	add_to_group("npcs")
 	# Guardamos la coordenada exacta donde pusiste al NPC en el nivel
 	start_position = global_position
 	_enter_idle_state()

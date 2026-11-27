@@ -16,6 +16,8 @@ var is_dead: bool = false    # <--- NUEVO para saber si debe detenerse
 @onready var detection_zone: Area2D = $DetectionZone
 
 func _ready() -> void:
+	add_to_group("enemies")
+	add_to_group("boss")
 	current_health = max_health
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 func _physics_process(delta: float) -> void:

@@ -5,7 +5,7 @@ extends Node
 ##   y elige una ranura (ver Checkpoint y SaveSlotsMenu). No hay autoguardado.
 ## - Cada ranura es un archivo JSON en user://saves/slot_N.json (N = 1..SLOT_COUNT).
 ## - Se guarda: nivel, posición del checkpoint, vida, energía, inventario (munición, mejoras,
-##   objetos ya recogidos) y el estado de las misiones.
+##   objetos ya recogidos), el estado de las misiones y el estado del mundo.
 ##
 ## Registro: Proyecto > Configuración del proyecto > Globales (Autoload) > nombre "SaveManager".
 
@@ -95,6 +95,7 @@ func save_game(slot: int, checkpoint_pos: Vector2, checkpoint_facing: float = 1.
 		},
 		"inventory": Inventory.get_state(),
 		"quests": QuestManager.get_state(),
+		"world_state": SceneManager.capture_world_state(level),
 	}
 
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
@@ -114,7 +115,7 @@ func save_game(slot: int, checkpoint_pos: Vector2, checkpoint_facing: float = 1.
 # Cargar / partida nueva
 # ---------------------------------------------------------------------------
 
-## Carga la partida de `slot`: restaura inventario y misiones y lleva al jugador a su checkpoint.
+## Carga la partida de `slot`: restaura inventario, misiones y mundo y lleva al jugador a su checkpoint.
 ## Devuelve false si la ranura está vacía, dañada o el nivel guardado ya no existe.
 func load_game(slot: int) -> bool:
 	var data := _read_slot(slot)
@@ -128,6 +129,7 @@ func load_game(slot: int) -> bool:
 
 	var checkpoint := _as_dict(data.get("checkpoint"))
 	var player_data := _as_dict(data.get("player"))
+	var world_state := _as_dict(data.get("world_state"))
 
 	Inventory.restore_state(_as_dict(data.get("inventory")))
 	QuestManager.restore_state(_as_dict(data.get("quests")))
@@ -140,7 +142,8 @@ func load_game(slot: int) -> bool:
 		float(checkpoint.get("facing", 1.0)),
 		int(player_data.get("health", 0)),
 		float(player_data.get("energy", -1.0)),
-		bool(player_data.get("energy_exhausted", false))
+		bool(player_data.get("energy_exhausted", false)),
+		world_state
 	)
 	game_loaded.emit(slot)
 	return true

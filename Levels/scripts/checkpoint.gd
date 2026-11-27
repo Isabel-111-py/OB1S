@@ -43,8 +43,6 @@ func _on_body_entered(body: Node2D) -> void:
 	if refills_energy and (refill_every_time or not _activated):
 		player.refill_energy()
 
-	if _activated:
-		return
 	_activated = true
 	SceneManager.set_checkpoint(global_position, _facing_value())
 
