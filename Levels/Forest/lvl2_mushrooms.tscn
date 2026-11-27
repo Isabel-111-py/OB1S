@@ -89,7 +89,6 @@ region_rect = Rect2(24.03328, 0.5008774, 107.688446, 15.579756)
 
 [node name="Planta_Medicinal" parent="." unique_id=2127003346 instance=ExtResource("8_kb5yf")]
 position = Vector2(-575, -43)
-kind = 1
 
 [node name="Sprite2D5" type="Sprite2D" parent="." unique_id=1819466777]
 position = Vector2(7991, 817)
@@ -132,8 +131,8 @@ id = &"2"
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("10_m1glj")]
 position = Vector2(6954, 168)
 
-[node name="Laboratorio_DrErgot" type="Marker2D" parent="."]
-position = Vector2(7800, 810)
+[node name="Laboratorio_DrErgot" type="Marker2D" parent="." unique_id=1908635143]
+position = Vector2(8295, 468)
 
 [node name="DrErgot" parent="." unique_id=955745691 node_paths=PackedStringArray("lab_marker") instance=ExtResource("10_ibu38")]
 position = Vector2(0, 341)
@@ -177,11 +176,13 @@ npc_id = "dr_ergot"
 quest_id = "Llevarle_a_ergot"
 completion_type = "Hablar con NPC"
 greeting_can_deliver = "¡Por aquí, en mi laboratorio!"
-greeting_after_delivered = "Estoy muy orgulloso del avance de Munfy."
-dialogue_can_deliver = "¡Vaya, viajero! Has llegado hasta mi laboratorio al sur de la ciudad.
+greeting_after_delivered = "..."
+dialogue_can_deliver = "¡Vaya, viajero! Has llegado hasta mi laboratorio al sur de la ciudad...
 
-¿Dices que Munfy formuló un antídoto alternativo y logró salvar a Fongo? ¡Increíble! Sabía que mi aprendiz tenía un talento único. Me alegra saber que todos están a salvo."
-dialogue_after_delivered = "Gracias por traerme las buenas noticias hasta aquí. Quédate y descansa en mi laboratorio cuanto gustes."
+¿Dices que Munfy formuló un antídoto alternativo y logró salvar a Fongo? ¡¿Un antídoto que cura la infección de las esporas?! ¡Imposible! ¡Mi investigación... mis fórmulas!
+
+¡GAAAHHH! ¡¿Qué es este ardor en mi cuerpo?! ¡Las esporas están mutando dentro de mí! ¡ALÉJATE!"
+dialogue_after_delivered = "¡Gaaarrrrgh!"
 btn_deliver_text = "Hablar con Dr. Ergot"
 
 [node name="MiniMushroom1" parent="." unique_id=642685112 instance=ExtResource("13_mush1")]

@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://dgqhs5q2rx24m"]
 
 [ext_resource type="Script" uid="uid://civ03s6kvdsls" path="res://NPC/Mushrooms_npc/dr_ergot.gd" id="1_dr_ergot"]
+[ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="2_hitbox"]
 [ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_a0adu"]
+[ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="3_hurtbox"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_paclu"]
 atlas = ExtResource("2_a0adu")
@@ -78,7 +80,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_rt2qr")
 }],
-"loop": 1,
+"loop": true,
 "name": &"idle",
 "speed": 5.0
 }, {
@@ -95,22 +97,121 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_2c55e")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_paclu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j78fa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xs2xc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rt2qr")
+}],
+"loop": false,
+"name": &"transform",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_og8l7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q86wp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0t25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2c55e")
+}],
+"loop": true,
+"name": &"run",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xs2xc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_de18t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rt2qr")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_paclu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af4dj")
+}],
+"loop": false,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_paclu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af4dj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gmq0f")
+}],
+"loop": true,
+"name": &"enemy_idle",
 "speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iivr6"]
 size = Vector2(33, 39)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(34, 38)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox"]
+size = Vector2(30, 36)
+
 [node name="HealthMushroom2" type="CharacterBody2D" unique_id=955745691]
 script = ExtResource("1_dr_ergot")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1867809483]
 sprite_frames = SubResource("SpriteFrames_jso0p")
-animation = &"walk"
-frame_progress = 0.9367638
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=234324556]
 position = Vector2(-0.5, 4.5)
 shape = SubResource("RectangleShape2D_iivr6")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=892348123]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=459812398]
+position = Vector2(-0.5, 4.5)
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=129847120]
+collision_layer = 33
+collision_mask = 32
+monitorable = false
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=987123490]
+position = Vector2(-0.5, 4.5)
+shape = SubResource("RectangleShape2D_hurtbox")
+debug_color = Color(0.85, 0.2, 0.2, 0.42)
