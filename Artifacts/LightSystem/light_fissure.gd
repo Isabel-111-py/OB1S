@@ -55,6 +55,7 @@ var _glow_line: Line2D
 var _core_line: Line2D
 var _origin_light: PointLight2D
 var _impact_light: PointLight2D
+var _path_lights: Array[PointLight2D] = []
 
 var _current_target: Object = null
 var _current_hit_pos: Vector2 = Vector2.ZERO
@@ -102,6 +103,22 @@ func _setup_internal_nodes() -> void:
 		_impact_light.texture = _get_or_create_light_texture()
 		_impact_light.texture_scale = 1.4
 		add_child(_impact_light)
+	
+	# Pool de luces a lo largo del camino para iluminar el suelo y plataformas intermedias
+	_ensure_path_lights()
+
+
+func _ensure_path_lights() -> void:
+	var tex := _get_or_create_light_texture()
+	while _path_lights.size() < 12:
+		var l := PointLight2D.new()
+		l.name = "PathLight_%d" % _path_lights.size()
+		l.texture = tex
+		l.texture_scale = 1.3
+		l.energy = 1.1
+		l.visible = false
+		add_child(l)
+		_path_lights.append(l)
 
 
 func _get_or_create_light_texture() -> Texture2D:
@@ -110,8 +127,6 @@ func _get_or_create_light_texture() -> Texture2D:
 		var res = load(path)
 		if res is Texture2D:
 			return res
-	
-	# Fallback generado en memoria
 	var grad := Gradient.new()
 	grad.colors = PackedColorArray([Color(1, 1, 1, 1), Color(1, 1, 1, 0)])
 	var tex := GradientTexture2D.new()
@@ -158,6 +173,8 @@ func _physics_process(delta: float) -> void:
 		if _glow_line: _glow_line.clear_points()
 		if _core_line: _core_line.clear_points()
 		if _impact_light: _impact_light.visible = false
+		for pl in _path_lights:
+			pl.visible = false
 		return
 	
 	_cast_beam()
@@ -212,6 +229,19 @@ func _cast_beam() -> void:
 	if _origin_light:
 		_origin_light.visible = true
 		_origin_light.position = local_start
+	
+	# Iluminar el camino a lo largo del haz para que el jugador vea plataformas intermedias
+	var beam_dist := start_pos.distance_to(hit_pos)
+	var step := 75.0
+	var count := clampi(int(beam_dist / step), 0, _path_lights.size())
+	for i in range(_path_lights.size()):
+		if i < count and i > 0:
+			var light_pos := local_start + (local_end - local_start) * (float(i) / float(count + 1))
+			_path_lights[i].position = light_pos
+			_path_lights[i].color = beam_color
+			_path_lights[i].visible = true
+		else:
+			_path_lights[i].visible = false
 
 
 func _find_light_receiver(collider: Object) -> Object:

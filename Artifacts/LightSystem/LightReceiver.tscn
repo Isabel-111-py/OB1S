@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c8lightreceiver1"]
+[gd_scene format=3 uid="uid://dpqwsnwv0ftk3"]
 
 [ext_resource type="Script" path="res://Artifacts/LightSystem/light_receiver.gd" id="1_receiver"]
 

@@ -5,11 +5,11 @@ extends CharacterBody2D
 ## Cristal reflector y canalizador de luz para puzzles en cavernas.
 ## Soporta tres modalidades configurables desde el Inspector:
 ##   1. Empujable (Pedestal): El jugador lo empuja físicamente hacia pedestales o por el suelo.
-##   2. Rotable por Jugador [E]: El jugador presiona [E] para girar su ángulo de refracción.
+##   2. Rotable por Jugador [E]: El jugador presiona [E] para alternar entre 3 rotaciones definidas.
 ##   3. Fijo (Techo/Pared): Cristal fijo en techos/paredes como repetidor óptico.
 
 signal energized_changed(is_energized: bool)
-signal rotated(new_angle: float)
+signal rotated(new_angle: float, angle_index: int)
 signal docked_to_pedestal(pedestal: Node)
 signal undocked_from_pedestal(pedestal: Node)
 
@@ -20,15 +20,51 @@ signal undocked_from_pedestal(pedestal: Node)
 		_apply_crystal_type()
 		queue_redraw()
 
-@export_group("Orientación y Reflexión")
-## Ángulo hacia donde apunta el cristal (en grados: 0=Derecha, 90=Abajo, 180=Izquierda, 270=Arriba)
-@export_range(0.0, 360.0, 5.0) var rotation_angle: float = 0.0:
+@export_group("Rotaciones Permitidas (3 Posiciones)")
+## Si está activo, el cristal solo alterna entre 3 ángulos predefinidos (ideal para puzzles limpios y legibles)
+@export var use_three_rotations: bool = true:
 	set(val):
-		rotation_angle = wrapf(val, 0.0, 360.0)
-		_update_crystal_visual_rotation()
+		use_three_rotations = val
+		_sync_three_angles()
 		queue_redraw()
 
-## Cuántos grados gira cada vez que el jugador interactúa con [E] (45° = 8 direcciones, 90° = 4 direcciones)
+## Ángulo 1 (en grados: 0=Derecha, 45=Diagonal Arriba-Der, 90=Abajo, 180=Izq, 270=Arriba, 315=Diagonal Abajo-Der)
+@export_range(0.0, 360.0, 5.0) var angle_1: float = 0.0:
+	set(val):
+		angle_1 = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Ángulo 2
+@export_range(0.0, 360.0, 5.0) var angle_2: float = 45.0:
+	set(val):
+		angle_2 = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Ángulo 3
+@export_range(0.0, 360.0, 5.0) var angle_3: float = 315.0:
+	set(val):
+		angle_3 = val
+		_sync_three_angles()
+		queue_redraw()
+
+## Posición actual seleccionada entre las 3 rotaciones (0 = angle_1, 1 = angle_2, 2 = angle_3)
+@export_range(0, 2) var current_angle_index: int = 0:
+	set(val):
+		current_angle_index = clampi(val, 0, 2)
+		_sync_three_angles()
+		queue_redraw()
+
+@export_group("Orientación Continua (Solo si no usa 3 rotaciones)")
+## Ángulo libre si use_three_rotations está desactivado
+@export_range(0.0, 360.0, 5.0) var custom_rotation_angle: float = 0.0:
+	set(val):
+		custom_rotation_angle = wrapf(val, 0.0, 360.0)
+		if not use_three_rotations:
+			rotation_angle = custom_rotation_angle
+		queue_redraw()
+
 @export var rotation_step: float = 45.0
 
 ## Modo de redirección del haz de luz:
@@ -54,6 +90,7 @@ signal undocked_from_pedestal(pedestal: Node)
 @export var gravity: float = 980.0
 
 # --- Estado Interno ---
+var rotation_angle: float = 0.0
 var is_energized: bool = false
 var player_in_interaction_range: bool = false
 var is_docked: bool = false
@@ -71,23 +108,50 @@ var _prompt_anim: float = 0.0
 @onready var collision_shape: CollisionShape2D = get_node_or_null("CollisionShape2D")
 var _interaction_area: Area2D
 var _push_detect_area: Area2D
+var _hitbox_area: Area2D
 var _prompt_container: Node2D
 var _prompt_label: Label
 var _glow_line: Line2D
 var _core_line: Line2D
 var _ambient_light: PointLight2D
 var _impact_light: PointLight2D
+var _path_lights: Array[PointLight2D] = []
 
 
 func _ready() -> void:
 	_setup_internal_components()
+	_sync_three_angles()
 	_apply_crystal_type()
-	_update_crystal_visual_rotation()
 	_apply_beam_visuals()
 
 
+func _sync_three_angles() -> void:
+	if use_three_rotations:
+		var angles := [angle_1, angle_2, angle_3]
+		rotation_angle = angles[current_angle_index]
+	else:
+		rotation_angle = custom_rotation_angle
+	_visual_rotation = deg_to_rad(rotation_angle)
+	_update_prompt_text()
+
+
 func _setup_internal_components() -> void:
-	# Área de interacción para rotar
+	# Área receptora de luz (Hitbox para que los rayos la detecten sin fallo)
+	_hitbox_area = get_node_or_null("LightHitbox") as Area2D
+	if not _hitbox_area:
+		_hitbox_area = Area2D.new()
+		_hitbox_area.name = "LightHitbox"
+		_hitbox_area.collision_layer = 2 | 4
+		_hitbox_area.collision_mask = 0
+		var h_shape := CollisionShape2D.new()
+		var c_circle := CircleShape2D.new()
+		c_circle.radius = 16.0
+		h_shape.shape = c_circle
+		h_shape.position = Vector2(0, -10)
+		_hitbox_area.add_child(h_shape)
+		add_child(_hitbox_area)
+	
+	# Área de interacción para rotar con [E]
 	_interaction_area = get_node_or_null("InteractionArea") as Area2D
 	if not _interaction_area:
 		_interaction_area = Area2D.new()
@@ -96,7 +160,7 @@ func _setup_internal_components() -> void:
 		_interaction_area.collision_mask = 1 # Jugador
 		var col := CollisionShape2D.new()
 		var shape := CircleShape2D.new()
-		shape.radius = 32.0
+		shape.radius = 34.0
 		col.shape = shape
 		_interaction_area.add_child(col)
 		add_child(_interaction_area)
@@ -132,8 +196,8 @@ func _setup_internal_components() -> void:
 		
 		var panel := PanelContainer.new()
 		panel.name = "Panel"
-		panel.position = Vector2(-36, -12)
-		panel.custom_minimum_size = Vector2(72, 24)
+		panel.position = Vector2(-42, -12)
+		panel.custom_minimum_size = Vector2(84, 24)
 		
 		var s_style := StyleBoxFlat.new()
 		s_style.bg_color = Color(0.12, 0.14, 0.22, 0.92)
@@ -147,10 +211,10 @@ func _setup_internal_components() -> void:
 		
 		_prompt_label = Label.new()
 		_prompt_label.name = "Label"
-		_prompt_label.text = "[E] Rotar"
+		_prompt_label.text = "[E] Rotar (1/3)"
 		_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_prompt_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		_prompt_label.add_theme_font_size_override("font_size", 11)
+		_prompt_label.add_theme_font_size_override("font_size", 10)
 		_prompt_label.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
 		panel.add_child(_prompt_label)
 		
@@ -184,7 +248,7 @@ func _setup_internal_components() -> void:
 		_ambient_light.texture = _get_or_create_light_texture()
 		_ambient_light.texture_scale = 1.8
 		_ambient_light.energy = 1.6
-		_ambient_light.position = Vector2(0, -8)
+		_ambient_light.position = Vector2(0, -10)
 		add_child(_ambient_light)
 	
 	# Luz en el punto de impacto del haz saliente
@@ -196,6 +260,22 @@ func _setup_internal_components() -> void:
 		_impact_light.texture_scale = 1.3
 		_impact_light.energy = 1.4
 		add_child(_impact_light)
+	
+	# Luces a lo largo del camino del haz reflejado
+	_ensure_path_lights()
+
+
+func _ensure_path_lights() -> void:
+	var tex := _get_or_create_light_texture()
+	while _path_lights.size() < 12:
+		var l := PointLight2D.new()
+		l.name = "PathLight_%d" % _path_lights.size()
+		l.texture = tex
+		l.texture_scale = 1.3
+		l.energy = 1.1
+		l.visible = false
+		add_child(l)
+		_path_lights.append(l)
 
 
 func _get_or_create_light_texture() -> Texture2D:
@@ -242,8 +322,13 @@ func _apply_crystal_type() -> void:
 			if _prompt_container: _prompt_container.visible = false
 
 
-func _update_crystal_visual_rotation() -> void:
-	_visual_rotation = deg_to_rad(rotation_angle)
+func _update_prompt_text() -> void:
+	if not _prompt_label:
+		return
+	if use_three_rotations:
+		_prompt_label.text = "[E] Girar (%d/3)" % (current_angle_index + 1)
+	else:
+		_prompt_label.text = "[E] Rotar"
 
 
 func _apply_beam_visuals() -> void:
@@ -348,21 +433,27 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_crystal()
 
 
-## Gira el cristal al siguiente paso de rotación
+## Alterna al siguiente ángulo de rotación
 func rotate_crystal() -> void:
-	rotation_angle = wrapf(rotation_angle + rotation_step, 0.0, 360.0)
+	if use_three_rotations:
+		current_angle_index = (current_angle_index + 1) % 3
+		_sync_three_angles()
+	else:
+		rotation_angle = wrapf(rotation_angle + rotation_step, 0.0, 360.0)
 	
 	# Animación suave de giro con Tween
 	var tween := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "_visual_rotation", deg_to_rad(rotation_angle), 0.18)
 	
-	rotated.emit(rotation_angle)
+	_update_prompt_text()
+	rotated.emit(rotation_angle, current_angle_index)
 	queue_redraw()
 
 
 func _on_interaction_entered(body: Node2D) -> void:
 	if _is_player(body) and crystal_type == "Rotable por Jugador [E]":
 		player_in_interaction_range = true
+		_update_prompt_text()
 		if _prompt_container:
 			_prompt_container.visible = true
 
@@ -432,6 +523,8 @@ func _clear_outgoing_beam() -> void:
 	if _core_line: _core_line.clear_points()
 	if _impact_light: _impact_light.visible = false
 	if _ambient_light: _ambient_light.visible = false
+	for pl in _path_lights:
+		pl.visible = false
 
 
 func _cast_outgoing_beam() -> void:
@@ -468,7 +561,12 @@ func _cast_outgoing_beam() -> void:
 	var query := PhysicsRayQueryParameters2D.create(start_pos, end_pos)
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
-	query.exclude = [get_rid()]
+	
+	# Excluir a sí mismo y a su propia hitbox
+	var exclude_list := [get_rid()]
+	if _hitbox_area:
+		exclude_list.append(_hitbox_area.get_rid())
+	query.exclude = exclude_list
 	
 	var result := space.intersect_ray(query)
 	var hit_pos := end_pos
@@ -479,14 +577,14 @@ func _cast_outgoing_beam() -> void:
 		var collider = result.collider
 		new_target = _find_light_receiver(collider)
 	
-	# Si el objetivo aguas abajo cambió
+	# Si el objetivo aguas abajo cambió (ej. se rotó o movió a otro cristal)
 	if new_target != _downstream_target:
 		if _downstream_target != null and is_instance_valid(_downstream_target):
 			if _downstream_target.has_method("release_light"):
 				_downstream_target.release_light(self)
 		_downstream_target = new_target
 	
-	# Alimentar al objetivo aguas abajo
+	# Alimentar al nuevo objetivo
 	if _downstream_target != null and is_instance_valid(_downstream_target):
 		if _downstream_target.has_method("receive_light"):
 			_downstream_target.receive_light(self, hit_pos, out_dir, crystal_color, current_chain)
@@ -508,10 +606,23 @@ func _cast_outgoing_beam() -> void:
 		_impact_light.position = local_end
 	if _ambient_light:
 		_ambient_light.visible = true
+	
+	# Iluminar el camino a lo largo del haz reflejado
+	var beam_dist := start_pos.distance_to(hit_pos)
+	var step := 70.0
+	var count := clampi(int(beam_dist / step), 0, _path_lights.size())
+	for i in range(_path_lights.size()):
+		if i < count and i > 0:
+			var light_pos := local_start + (local_end - local_start) * (float(i) / float(count + 1))
+			_path_lights[i].position = light_pos
+			_path_lights[i].color = crystal_color
+			_path_lights[i].visible = true
+		else:
+			_path_lights[i].visible = false
 
 
 func _find_light_receiver(collider: Object) -> Object:
-	if collider == null or collider == self:
+	if collider == null or collider == self or collider == _hitbox_area:
 		return null
 	if collider.has_method("receive_light"):
 		return collider
@@ -562,7 +673,7 @@ func _draw_base() -> void:
 			]), trim_col)
 			
 		"Rotable por Jugador [E]":
-			# Pedestal ornado de bronce/piedra con dial de orientación
+			# Pedestal ornado de bronce/piedra con dial de 3 posiciones
 			var base_col := Color(0.28, 0.25, 0.32)
 			var bronze := Color(0.68, 0.52, 0.28)
 			
@@ -577,8 +688,19 @@ func _draw_base() -> void:
 			draw_rect(Rect2(-4, -6, 8, 9), bronze)
 			
 			# Aro selector / dial
-			draw_circle(Vector2(0, -8), 7.0, Color(0.18, 0.16, 0.24))
-			draw_arc(Vector2(0, -8), 7.0, 0, TAU, 16, bronze, 1.5)
+			draw_circle(Vector2(0, -8), 7.5, Color(0.16, 0.14, 0.22))
+			draw_arc(Vector2(0, -8), 7.5, 0, TAU, 16, bronze, 1.5)
+			
+			# Marcadores de las 3 rotaciones disponibles
+			if use_three_rotations:
+				var angles := [angle_1, angle_2, angle_3]
+				for i in range(3):
+					var a_rad := deg_to_rad(angles[i])
+					var dot_pos := Vector2(0, -8) + Vector2.from_angle(a_rad) * 6.0
+					var is_current := (i == current_angle_index)
+					var dot_col := Color(0.2, 0.9, 1.0, 1.0) if is_current else Color(0.45, 0.4, 0.35, 0.7)
+					var dot_rad := 2.0 if is_current else 1.2
+					draw_circle(dot_pos, dot_rad, dot_col)
 			
 		"Fijo (Techo/Pared)":
 			# Soporte de soporte de techo / estalactita metálica

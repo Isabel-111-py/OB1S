@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c8lighttestroom1"]
+[gd_scene format=3 uid="uid://dpqwuofc874f3"]
 
 [ext_resource type="Script" path="res://Levels/scripts/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://Levels/spawn.tscn" id="2_spawn"]
@@ -16,7 +16,7 @@ size = Vector2(340, 24)
 size = Vector2(400, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
-size = Vector2(90, 14)
+size = Vector2(100, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(900, 24)
@@ -81,16 +81,30 @@ offset_bottom = 12.0
 color = Color(0.18, 0.14, 0.2, 1)
 
 [node name="FloatingPlat1" type="StaticBody2D" parent="."]
-position = Vector2(400, 240)
+position = Vector2(390, 238)
 collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FloatingPlat1"]
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="ColorRect" type="ColorRect" parent="FloatingPlat1"]
-offset_left = -45.0
+offset_left = -50.0
 offset_top = -7.0
-offset_right = 45.0
+offset_right = 50.0
+offset_bottom = 7.0
+color = Color(0.25, 0.2, 0.3, 1)
+
+[node name="UpperLedge" type="StaticBody2D" parent="."]
+position = Vector2(400, 155)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperLedge"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="UpperLedge"]
+offset_left = -50.0
+offset_top = -7.0
+offset_right = 50.0
 offset_bottom = 7.0
 color = Color(0.25, 0.2, 0.3, 1)
 
@@ -115,21 +129,26 @@ beam_angle = 90.0
 [node name="Crystal1_Rotable" parent="." instance=ExtResource("5_crystal")]
 position = Vector2(180, 248)
 crystal_type = "Rotable por Jugador [E]"
-rotation_angle = 0.0
-rotation_step = 45.0
+use_three_rotations = true
+angle_1 = 0.0
+angle_2 = 338.0
+angle_3 = 20.0
+current_angle_index = 0
 
 [node name="Crystal2_Fijo" parent="." instance=ExtResource("5_crystal")]
-position = Vector2(400, 140)
+position = Vector2(400, 145)
 crystal_type = "Fijo (Techo/Pared)"
-rotation_angle = 0.0
+use_three_rotations = false
+custom_rotation_angle = 0.0
 
 [node name="PedestalSocket" parent="." instance=ExtResource("6_pedestal")]
-position = Vector2(620, 248)
+position = Vector2(600, 248)
 
 [node name="Crystal3_Empujable" parent="." instance=ExtResource("5_crystal")]
 position = Vector2(530, 248)
 crystal_type = "Empujable (Pedestal)"
-rotation_angle = 0.0
+use_three_rotations = false
+custom_rotation_angle = 0.0
 
 [node name="Receiver" parent="." node_paths=PackedStringArray("target_gate") instance=ExtResource("7_receiver")]
 position = Vector2(740, 248)
