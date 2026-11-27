@@ -132,8 +132,12 @@ id = &"2"
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("10_m1glj")]
 position = Vector2(6954, 168)
 
-[node name="DrErgot" parent="." unique_id=955745691 instance=ExtResource("10_ibu38")]
+[node name="Laboratorio_DrErgot" type="Marker2D" parent="."]
+position = Vector2(7800, 810)
+
+[node name="DrErgot" parent="." unique_id=955745691 node_paths=PackedStringArray("lab_marker") instance=ExtResource("10_ibu38")]
 position = Vector2(0, 341)
+lab_marker = NodePath("../Laboratorio_DrErgot")
 
 [node name="NPCQuestGiver" parent="DrErgot" unique_id=560244351 instance=ExtResource("12_0dawo")]
 position = Vector2(0, 6)
@@ -164,6 +168,21 @@ dialogue_in_progress = "¿Podrías llevarle un poco de medicina al pequeño Runr
 dialogue_ready = "Magnifico, espero que Runry se sienta ... mejor. "
 dialogue_completed = "Vuelve conmigo, quizás te pida otro favor. "
 dialogue_locked = "Shh, estoy pensando en mi próximo invento. "
+
+[node name="Quest_RecibirCuraErgot" parent="DrErgot" unique_id=741928371 instance=ExtResource("12_0dawo")]
+position = Vector2(0, 6)
+npc_role = "Receiver (Solo recibe ítem / entrega)"
+npc_name = "DrErgot"
+npc_id = "dr_ergot"
+quest_id = "Llevarle_a_ergot"
+completion_type = "Hablar con NPC"
+greeting_can_deliver = "¡Por aquí, en mi laboratorio!"
+greeting_after_delivered = "Estoy muy orgulloso del avance de Munfy."
+dialogue_can_deliver = "¡Vaya, viajero! Has llegado hasta mi laboratorio al sur de la ciudad.
+
+¿Dices que Munfy formuló un antídoto alternativo y logró salvar a Fongo? ¡Increíble! Sabía que mi aprendiz tenía un talento único. Me alegra saber que todos están a salvo."
+dialogue_after_delivered = "Gracias por traerme las buenas noticias hasta aquí. Quédate y descansa en mi laboratorio cuanto gustes."
+btn_deliver_text = "Hablar con Dr. Ergot"
 
 [node name="MiniMushroom1" parent="." unique_id=642685112 instance=ExtResource("13_mush1")]
 position = Vector2(1952, 375)
@@ -436,6 +455,13 @@ quest_objective = "Buscar a Ergot."
 target_npc_id = "dr_ergot"
 prerequisite_quest_id = "curar_fongo"
 completion_type = "Hablar con NPC"
+greeting_available = "¡Debemos avisarle al Dr. Ergot!"
+greeting_in_progress = "¿Lograste encontrar al Dr. Ergot en su laboratorio?"
+greeting_completed = "¡El Dr. Ergot sabe que mi medicina funciona!"
+dialogue_offer = "¡La medicina funcionó en Fongo! ¡No puedo creerlo! Debemos decírselo al Dr. Ergot de inmediato. Él debe estar en su laboratorio al sur de la ciudad. Por favor, ve a buscarlo y cuéntale las buenas noticias."
+dialogue_in_progress = "El laboratorio del Dr. Ergot está al sur de la ciudad, cruzando los elevadores inferiores. Por favor búscalo allí."
+dialogue_completed = "¡Gracias por todo! Nunca olvidaré tu ayuda."
+btn_accept_text = "Buscar a Ergot"
 
 [node name="Gate" parent="." unique_id=1020039836 instance=ExtResource("18_tqfyk")]
 position = Vector2(7815, 535)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dgqhs5q2rx24m"]
 
-[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_ymbq0"]
+[ext_resource type="Script" uid="uid://civ03s6kvdsls" path="res://NPC/Mushrooms_npc/dr_ergot.gd" id="1_dr_ergot"]
 [ext_resource type="Texture2D" uid="uid://dqdv46tvnd3mx" path="res://NPC/Mushrooms_npc/hongosnpc.png" id="2_a0adu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_paclu"]
@@ -104,7 +104,7 @@ animations = [{
 size = Vector2(33, 39)
 
 [node name="HealthMushroom2" type="CharacterBody2D" unique_id=955745691]
-script = ExtResource("1_ymbq0")
+script = ExtResource("1_dr_ergot")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1867809483]
 sprite_frames = SubResource("SpriteFrames_jso0p")
