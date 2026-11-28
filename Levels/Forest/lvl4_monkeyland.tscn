@@ -368,7 +368,7 @@ priority = 1
 position = Vector2(1881.9999, 137)
 scale = Vector2(1.525, 30.305)
 target_level = "uid://d4bcducbmiexj"
-target_spawn = &"2"
+target_spawn = &"1"
 
 [node name="Marker" parent="." unique_id=1911912859 instance=ExtResource("11_loiqw")]
 position = Vector2(1839, 359)

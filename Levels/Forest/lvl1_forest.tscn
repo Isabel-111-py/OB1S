@@ -119,13 +119,13 @@ position = Vector2(3321, 280)
 position = Vector2(6135, 667)
 scale = Vector2(25.31, 25.31)
 target_level = "uid://daen5hgfet5is"
-target_spawn = &"2"
+target_spawn = &"1"
 
 [node name="Exit2" parent="." unique_id=1579588787 instance=ExtResource("6_exit")]
 position = Vector2(-1959, 303.99997)
 scale = Vector2(25.31, 25.31)
-target_level = "uid://daen5hgfet5is"
-target_spawn = &"1"
+target_level = "uid://db055xnw3fius"
+target_spawn = &"2"
 
 [node name="pinchos" type="Sprite2D" parent="." unique_id=1438181188]
 position = Vector2(-735, 629)

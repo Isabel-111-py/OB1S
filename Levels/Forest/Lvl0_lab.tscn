@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="5_kkjiu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
-size = Vector2(968.5, 64)
+size = Vector2(2339, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_03gmy"]
 size = Vector2(43.75, 577.5)
@@ -19,7 +19,7 @@ script = ExtResource("1_ewsk4")
 position = Vector2(241, -45)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1709316331]
-position = Vector2(243.25, 325)
+position = Vector2(215.5, 325)
 shape = SubResource("RectangleShape2D_6673r")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=1510565275]
