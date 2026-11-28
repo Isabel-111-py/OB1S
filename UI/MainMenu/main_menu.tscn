@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dmqm7uynw5d4l"]
 
 [ext_resource type="Script" uid="uid://d36oymny3yqk3" path="res://UI/MainMenu/main_menu.gd" id="1_menu_script"]
+[ext_resource type="Texture2D" uid="uid://dxkgjd0vtd4w8" path="res://UI/MainMenu/bgfungi - copia.png" id="2_bddxb"]
 [ext_resource type="Texture2D" uid="uid://bsyyx8gfowm4h" path="res://Tilesets/paralaxLayers/bgfungi.png" id="2_bg1"]
 [ext_resource type="Texture2D" uid="uid://o4taixl6r0dh" path="res://Tilesets/paralaxLayers/bgfungi2.png" id="3_bg2"]
 [ext_resource type="Texture2D" uid="uid://b617i2xx73qrn" path="res://Tilesets/paralaxLayers/bgfungi3.png" id="4_bg3"]
@@ -185,7 +186,12 @@ grow_vertical = 2
 theme = SubResource("Theme_menu")
 script = ExtResource("1_menu_script")
 
+[node name="BgfungiCopia" type="Sprite2D" parent="." unique_id=1199402833]
+position = Vector2(319, 180)
+texture = ExtResource("2_bddxb")
+
 [node name="Background" type="Node2D" parent="." unique_id=1431773146]
+visible = false
 
 [node name="BgLayer1" type="Parallax2D" parent="Background" unique_id=892471841]
 unique_name_in_owner = true
@@ -232,6 +238,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -241,11 +249,12 @@ color = Color(0.039, 0.071, 0.098, 0.35)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 36.0
-offset_top = 22.0
-offset_right = 232.0
-offset_bottom = -22.0
+offset_left = 258.0
+offset_top = 47.000004
+offset_right = 454.0
+offset_bottom = 3.0
 grow_vertical = 2
+scale = Vector2(0.9297143, 0.85358655)
 
 [node name="VBox" type="VBoxContainer" parent="LeftSidebarCard" unique_id=675788196]
 layout_mode = 2

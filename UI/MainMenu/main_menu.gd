@@ -2,7 +2,7 @@ class_name MainMenu
 extends Control
 
 ## Ruta de la escena del primer nivel que se cargará al pulsar "Nueva partida".
-@export_file("*.tscn") var first_level_path: String = "res://Levels/Forest/lvl1_forest.tscn"
+@export_file("*.tscn") var first_level_path: String = "res://Levels/Forest/lvl0_lab.tscn"
 
 ## Velocidad de desplazamiento horizontal para cada capa de fondo parallax (px/segundo)
 @export var parallax_speed_layer1: float = 6.0

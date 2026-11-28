@@ -839,9 +839,9 @@ position = Vector2(-2659, 280)
 texture = ExtResource("9_5vbnj")
 
 [node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("10_00k47")]
-position = Vector2(-683, 143.00003)
+position = Vector2(-3055, 268)
 scale = Vector2(10, 10)
-target_level = "uid://db055xnw3fius"
+target_level = "uid://d4bcducbmiexj"
 target_spawn = &"2"
 
 [node name="Marker" parent="." unique_id=1418972355 instance=ExtResource("11_x0nwe")]
@@ -880,6 +880,7 @@ chase_speed = 180.0
 position = Vector2(-2737, 234)
 scale = Vector2(13.545, 13.545)
 target_level = "uid://6ab7dvgja3hr"
+target_spawn = &"2"
 
 [node name="Marker3" parent="." unique_id=1880903376 instance=ExtResource("11_x0nwe")]
 position = Vector2(-2534, 359)

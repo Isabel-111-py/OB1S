@@ -26,7 +26,7 @@
 [ext_resource type="PackedScene" path="res://Artifacts/Gate.tscn" id="18_tqfyk"]
 [ext_resource type="PackedScene" path="res://Artifacts/GateLever.tscn" id="19_cs0i1"]
 [ext_resource type="Texture2D" uid="uid://chb67pxiomidt" path="res://UI/mouse.png" id="19_g5f01"]
-[ext_resource type="PackedScene" path="res://Artifacts/BossRoomDetector.tscn" id="20_boss_detector"]
+[ext_resource type="PackedScene" uid="uid://cgxuqlpsym4wa" path="res://Artifacts/BossRoomDetector.tscn" id="20_boss_detector"]
 [ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="28_2t22c"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2t22c"]
@@ -501,11 +501,10 @@ position = Vector2(6997, 175)
 position = Vector2(3666, 377)
 
 [node name="Marker2" parent="." unique_id=1971252606 instance=ExtResource("8_3pc40")]
-position = Vector2(-592, 347)
-id = &"2"
+position = Vector2(-505, 358)
 
 [node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("10_m1glj")]
-position = Vector2(6954, 168)
+position = Vector2(6952, 182)
 
 [node name="Laboratorio_DrErgot" type="Marker2D" parent="." unique_id=1908635143]
 position = Vector2(8323, 424)
@@ -913,9 +912,10 @@ elevator = NodePath("..")
 elevator_path = NodePath("..")
 
 [node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("18_s5age")]
-position = Vector2(-560, 358)
+position = Vector2(-703, 311)
+scale = Vector2(10.855, 10.855)
 target_level = "uid://d4bcducbmiexj"
-target_spawn = &"1"
+target_spawn = &"2"
 
 [node name="Marker3" parent="." unique_id=113970895 instance=ExtResource("8_3pc40")]
 position = Vector2(-537, 358)
@@ -937,3 +937,16 @@ metadata/_custom_type_script = "uid://4wuwi0m57d31"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=24635487]
 shape = SubResource("RectangleShape2D_6673r")
+
+[node name="Exit2" parent="." unique_id=237529063 instance=ExtResource("18_s5age")]
+position = Vector2(9137.001, 453)
+scale = Vector2(7.245, 7.245)
+target_level = "uid://6ab7dvgja3hr"
+target_spawn = &"1"
+
+[node name="Marker" parent="." unique_id=298895395 instance=ExtResource("8_3pc40")]
+position = Vector2(9037, 479)
+id = &"2"
+
+[node name="Checkpoint2" parent="." unique_id=1816674617 instance=ExtResource("10_m1glj")]
+position = Vector2(1238, 278)

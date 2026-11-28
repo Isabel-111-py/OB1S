@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bukdnn3yjakil" path="res://Tilesets/paralaxLayers/caverns/cavernsbg3.png" id="12_cp3d6"]
 [ext_resource type="Texture2D" uid="uid://cbptrpoqwim34" path="res://Tilesets/paralaxLayers/caverns/cavernsbg4.png" id="13_xq4iw"]
 [ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="14_53y00"]
+[ext_resource type="PackedScene" uid="uid://due3psys8kv6t" path="res://Levels/checkpoint.tscn" id="15_cp3d6"]
 
 [node name="LvlCaverns" type="Node2D" unique_id=1550236972]
 script = ExtResource("1_ljwbt")
@@ -98,11 +99,11 @@ crystal_color = Color(1, 0.81960785, 0.34117648, 0.49803922)
 light_energy = 2.0
 
 [node name="Marker" parent="." unique_id=298895395 instance=ExtResource("7_rmgvj")]
-position = Vector2(-258, 260)
+position = Vector2(62, 260)
 id = &"1"
 
 [node name="Marker3" parent="." unique_id=21570600 instance=ExtResource("7_rmgvj")]
-position = Vector2(-238, 261)
+position = Vector2(84, 261)
 
 [node name="LightCrystal4" parent="." unique_id=1731743823 instance=ExtResource("6_vhaf8")]
 position = Vector2(1080, 98)
@@ -215,7 +216,7 @@ blend_mode = 2
 [node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("14_53y00")]
 position = Vector2(4342, -224.00002)
 scale = Vector2(1, 7.28)
-target_level = "uid://db055xnw3fius"
+target_level = "uid://dhp81jgp5txba"
 target_spawn = &"1"
 
 [node name="Marker2" parent="." unique_id=538118833 instance=ExtResource("7_rmgvj")]
@@ -223,7 +224,10 @@ position = Vector2(4316, -171)
 id = &"2"
 
 [node name="Exit2" parent="." unique_id=1555390425 instance=ExtResource("14_53y00")]
-position = Vector2(-284, 237)
+position = Vector2(31, 244)
 scale = Vector2(1, 4.279998)
 target_level = "uid://daen5hgfet5is"
 target_spawn = &"2"
+
+[node name="Checkpoint" parent="." unique_id=1364330684 instance=ExtResource("15_cp3d6")]
+position = Vector2(591, 582)
