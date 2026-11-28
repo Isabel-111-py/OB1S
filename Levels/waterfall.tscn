@@ -1,6 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cq1a3bcpq1m3i"]
 
-[ext_resource type="Script" path="res://Levels/scripts/waterfall.gd" id="1_waterfall"]
+[ext_resource type="Script" uid="uid://bwfwtpyp5xuwg" path="res://Levels/scripts/waterfall.gd" id="1_waterfall"]
 
-[node name="Waterfall" type="Node2D"]
+[node name="Waterfall" type="Node2D" unique_id=989214888]
 script = ExtResource("1_waterfall")
+damage_per_tick = 3
+tick_interval = 0.0

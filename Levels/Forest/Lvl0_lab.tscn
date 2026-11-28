@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" uid="uid://cs7yaf73hfdf5" path="res://Levels/scripts/level.gd" id="1_ewsk4"]
 [ext_resource type="Texture2D" uid="uid://b31yvevigxscb" path="res://Tilesets/paralaxLayers/Lab BG.png" id="2_txtvq"]
+[ext_resource type="Texture2D" uid="uid://bi1kml30k4618" path="res://Tilesets/cavern - copia.png" id="3_uirvn"]
+[ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="4_e544o"]
+[ext_resource type="PackedScene" uid="uid://70kcowhyjbqx" path="res://Levels/exit.tscn" id="5_kkjiu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
 size = Vector2(968.5, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_03gmy"]
+size = Vector2(43.75, 577.5)
 
 [node name="Lvl0Lab" type="Node2D" unique_id=2108927666]
 script = ExtResource("1_ewsk4")
@@ -16,6 +22,39 @@ position = Vector2(241, -45)
 position = Vector2(243.25, 325)
 shape = SubResource("RectangleShape2D_6673r")
 
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=1510565275]
+position = Vector2(-655, 50.25)
+shape = SubResource("RectangleShape2D_03gmy")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=1077499733]
+position = Vector2(417, 50.25)
+shape = SubResource("RectangleShape2D_03gmy")
+
 [node name="LabBg2" type="Sprite2D" parent="." unique_id=1453790317]
 position = Vector2(325, 180)
 texture = ExtResource("2_txtvq")
+
+[node name="LabBg4" type="Sprite2D" parent="." unique_id=884715338]
+position = Vector2(965, 180)
+texture = ExtResource("2_txtvq")
+
+[node name="LabBg3" type="Sprite2D" parent="." unique_id=412487125]
+position = Vector2(-315, 180)
+texture = ExtResource("2_txtvq")
+
+[node name="CavernCopia" type="Sprite2D" parent="." unique_id=965968502]
+position = Vector2(542, 160)
+texture = ExtResource("3_uirvn")
+
+[node name="Marker" parent="." unique_id=298895395 instance=ExtResource("4_e544o")]
+position = Vector2(-325, 228)
+
+[node name="Exit" parent="." unique_id=1579588787 instance=ExtResource("5_kkjiu")]
+position = Vector2(689, 98)
+scale = Vector2(14.94, 14.94)
+target_level = "uid://db055xnw3fius"
+target_spawn = &"1"
+
+[node name="Marker2" parent="." unique_id=1983254510 instance=ExtResource("4_e544o")]
+position = Vector2(505, 237)
+id = &"1"

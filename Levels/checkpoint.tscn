@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://due3psys8kv6t"]
 
 [ext_resource type="Script" uid="uid://b3di7dbbr33tx" path="res://Levels/scripts/checkpoint.gd" id="1_8x58w"]
+[ext_resource type="Texture2D" uid="uid://b7c5o0lyyvenm" path="res://Sprites/PlayerSprites/cristal.png" id="2_q33or"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6673r"]
 
@@ -9,3 +10,7 @@ script = ExtResource("1_8x58w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=90068266]
 shape = SubResource("RectangleShape2D_6673r")
+
+[node name="Cristal" type="Sprite2D" parent="." unique_id=1609214401]
+position = Vector2(0, -22)
+texture = ExtResource("2_q33or")
