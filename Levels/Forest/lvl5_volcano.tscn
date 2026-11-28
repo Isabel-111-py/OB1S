@@ -15,6 +15,9 @@
 [ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="11_sjwe0"]
 [ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="11_x0nwe"]
 [ext_resource type="PackedScene" uid="uid://n00ghgjmcewg" path="res://Enemies/finalboss.tscn" id="12_obw8o"]
+[ext_resource type="PackedScene" uid="uid://p1osnkok4kvg" path="res://NPC/LostCity_npc/mico1.tscn" id="16_pvnak"]
+[ext_resource type="PackedScene" uid="uid://dbsxfjh83qbag" path="res://NPC/LostCity_npc/Mico2.tscn" id="17_5vbnj"]
+[ext_resource type="PackedScene" uid="uid://mjx1dp7l6ai8" path="res://NPC/LostCity_npc/Mico3.tscn" id="18_00k47"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_apfi5"]
 size = Vector2(48.5, 20)
@@ -850,3 +853,36 @@ id = &"1"
 
 [node name="Marker2" parent="." unique_id=1429206514 instance=ExtResource("11_x0nwe")]
 position = Vector2(-368, 358)
+
+[node name="Mico1" parent="." unique_id=31589607 instance=ExtResource("16_pvnak")]
+position = Vector2(-2055, 350)
+
+[node name="Mico2" parent="." unique_id=1206488528 instance=ExtResource("17_5vbnj")]
+position = Vector2(-1659, 350)
+
+[node name="Mico3" parent="." unique_id=385372292 instance=ExtResource("18_00k47")]
+position = Vector2(-1344, 350)
+
+[node name="Mico4" parent="." unique_id=1102655491 instance=ExtResource("17_5vbnj")]
+modulate = Color(1, 0.6627451, 1, 1)
+position = Vector2(-2109, 349)
+
+[node name="Mico5" parent="." unique_id=2005770498 instance=ExtResource("18_00k47")]
+modulate = Color(0.7647059, 1, 1, 1)
+position = Vector2(-1620, 350)
+
+[node name="Mico6" parent="." unique_id=1584805297 instance=ExtResource("16_pvnak")]
+modulate = Color(1, 1, 0.6666667, 1)
+position = Vector2(-1377, 350)
+
+[node name="Exit2" parent="." unique_id=1730297355 instance=ExtResource("10_00k47")]
+position = Vector2(-2737, 234)
+scale = Vector2(13.545, 13.545)
+target_level = "uid://6ab7dvgja3hr"
+
+[node name="Marker3" parent="." unique_id=1880903376 instance=ExtResource("11_x0nwe")]
+position = Vector2(-2534, 359)
+
+[node name="Marker4" parent="." unique_id=582468287 instance=ExtResource("11_x0nwe")]
+position = Vector2(-2580, 360)
+id = &"1"

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://mjx1dp7l6ai8"]
 
 [ext_resource type="Texture2D" uid="uid://dn2dpqdh7fy4j" path="res://NPC/Sprites/MonkeysssSpriteSheet.png" id="1_26y0v"]
+[ext_resource type="Script" uid="uid://dner1qrouxdnq" path="res://NPC/Mushrooms_npc/npc_base.gd" id="1_kwggt"]
 [ext_resource type="Texture2D" uid="uid://b01a8o2wxq6r6" path="res://NPC/LostCity_npc/monkeydead.png" id="1_w61qw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1rpa3"]
@@ -186,6 +187,7 @@ animations = [{
 size = Vector2(20, 6)
 
 [node name="Mico3" type="CharacterBody2D" unique_id=385372292]
+script = ExtResource("1_kwggt")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1344838597]
 sprite_frames = SubResource("SpriteFrames_jso0p")
