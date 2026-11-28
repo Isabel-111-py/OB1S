@@ -518,8 +518,8 @@ position = Vector2(0, 6)
 npc_name = "DrErgot"
 npc_id = "dr_ergot"
 quest_id = "medicina_funry"
-quest_title = "Medicina para el pequeño Runry."
-quest_description = "El Dr Ergot quiere que le lleves medicina al pequeño Runry en lo más alto de la FungiCiudad."
+quest_title = "Medicina para el pequeño Funnry."
+quest_description = "El Dr Ergot quiere que le lleves medicina al pequeño Funry en lo más alto de la FungiCiudad."
 quest_objective = "Frasco de Medicina"
 target_npc_id = "funry"
 return_to_giver = true
@@ -538,8 +538,8 @@ greeting_ready = "¿Cómo está Ronry?"
 greeting_completed = "Ya veo quizás deba preparar más medicina."
 greeting_locked = "Pero que bonito dia para investigar. "
 dialogue_offer = "¿Que tal, estimado y extraño amigo? ¿Me harías ... un pequeño favor?"
-dialogue_in_progress = "¿Podrías llevarle un poco de medicina al pequeño Runry?"
-dialogue_ready = "Magnifico, espero que Runry se sienta ... mejor. "
+dialogue_in_progress = "¿Podrías llevarle un poco de medicina al pequeño Funry?"
+dialogue_ready = "Magnifico, espero que Funry se sienta ... mejor. "
 dialogue_completed = "Vuelve conmigo, quizás te pida otro favor. "
 dialogue_locked = "Shh, estoy pensando en mi próximo invento. "
 
@@ -550,13 +550,16 @@ npc_name = "DrErgot"
 npc_id = "dr_ergot"
 quest_id = "Llevarle_a_ergot"
 completion_type = "Hablar con NPC"
-greeting_can_deliver = "¡Por aquí, en mi laboratorio!"
+greeting_can_deliver = "¿Que haces aqui?"
 greeting_after_delivered = "..."
-dialogue_can_deliver = "¡Vaya, viajero! Has llegado hasta mi laboratorio al sur de la ciudad...
+dialogue_can_deliver = " al sur de la ciudad...
 
-¿Dices que Munfy formuló un antídoto alternativo y logró salvar a Fongo? ¡¿Un antídoto que cura la infección de las esporas?! ¡Imposible! ¡Mi investigación... mis fórmulas!
 
-¡GAAAHHH! ¡¿Qué es este ardor en mi cuerpo?! ¡Las esporas están mutando dentro de mí! ¡ALÉJATE!"
+
+No debiste venir aqui ... 
+Detesto a aquellos que se entrometen en mis asuntos ... 
+Pero no importa Je, je, je 
+Al fin y al cabo ... no vas a poder contarlo. Je, je , je "
 dialogue_after_delivered = "¡Gaaarrrrgh!"
 btn_deliver_text = "Hablar con Dr. Ergot"
 
@@ -725,12 +728,10 @@ position = Vector2(2381, -491)
 npc_name = "Funry"
 npc_id = "funry"
 quest_id = "askfor_fongo"
-quest_title = "Hechale un ojo a Fongo ... ¿ojo? ¿Qué supone que tienes tu?"
+quest_title = "Échale un ojo a Fongo ... ¿ojo? ¿Qué supone que tienes tu?"
 quest_description = "Funry quiere que visites a su amigo Fongo. "
 quest_objective = "Habla con Fongo"
 target_npc_id = "fongo"
-return_to_giver = true
-return_objective = "Regresa con Funry para contarle sobre Fongo"
 prerequisite_quest_id = "medicina_funry"
 completion_type = "Hablar con NPC"
 greeting_available = "Eyyyy, señor raro"
@@ -740,7 +741,7 @@ greeting_completed = "Que extraño ..."
 greeting_waiting_delivery = "Cof cof... me siento muy débil..."
 greeting_can_deliver = "¡Traes la medicina del DrErgot! ¡Por favor dámela!"
 greeting_after_delivered = "¡Gracias a la medicina ya me siento mucho mejor!"
-dialogue_offer = "Señor raro, como verás hemos estado un poquis enfermos, Ergot dice que es por unas esporas que no nos hacen bien. Estoy muy preocupado por Fongo, y quisiera que lo visitaras y me dijeras como está."
+dialogue_offer = "Señor raro, como verás hemos estado un poquis enfermos, Ergot dice que es por unas esporas que no nos hacen bien. Estoy muy preocupado por Fongo, y quisiera que lo visitaras."
 dialogue_in_progress = "Pobre Fongo, ¿estará mejor?"
 dialogue_ready = "Hmmm, que extraño. Conque Fongo esta malito, ¿Acaso el Dr Ergot no le dio la medicina?"
 dialogue_completed = "Vale, vale. Tienes cosas que hacer. ¿Puedes acompañar a Fongo?"

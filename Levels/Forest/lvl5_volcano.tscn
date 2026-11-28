@@ -15,9 +15,11 @@
 [ext_resource type="Script" uid="uid://4wuwi0m57d31" path="res://Player/Hitbox.gd" id="11_sjwe0"]
 [ext_resource type="PackedScene" uid="uid://b1tcop3huj5gc" path="res://Levels/spawn.tscn" id="11_x0nwe"]
 [ext_resource type="PackedScene" uid="uid://n00ghgjmcewg" path="res://Enemies/finalboss.tscn" id="12_obw8o"]
+[ext_resource type="PackedScene" uid="uid://b5dwr0bdm7k6y" path="res://missions/Flor_wissen.tscn" id="13_00k47"]
 [ext_resource type="PackedScene" uid="uid://p1osnkok4kvg" path="res://NPC/LostCity_npc/mico1.tscn" id="16_pvnak"]
 [ext_resource type="PackedScene" uid="uid://dbsxfjh83qbag" path="res://NPC/LostCity_npc/Mico2.tscn" id="17_5vbnj"]
 [ext_resource type="PackedScene" uid="uid://mjx1dp7l6ai8" path="res://NPC/LostCity_npc/Mico3.tscn" id="18_00k47"]
+[ext_resource type="PackedScene" path="res://NPC/NPCDialogueArea.tscn" id="18_x0nwe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_apfi5"]
 size = Vector2(48.5, 20)
@@ -295,6 +297,9 @@ scale = Vector2(-1, 1)
 texture = ExtResource("7_2wabp")
 region_enabled = true
 region_rect = Rect2(172.94493, 0, 82.10396, 160)
+
+[node name="FlorWissen" parent="." unique_id=480116486 instance=ExtResource("13_00k47")]
+position = Vector2(1391, 349)
 
 [node name="Trees17" type="Sprite2D" parent="." unique_id=1650792270]
 position = Vector2(-1522, 352)
@@ -854,11 +859,35 @@ position = Vector2(-368, 358)
 [node name="Mico1" parent="." unique_id=31589607 instance=ExtResource("16_pvnak")]
 position = Vector2(-2055, 350)
 
+[node name="NPCDialogueArea" parent="Mico1" unique_id=1036057214 instance=ExtResource("18_x0nwe")]
+frase_1 = "Quizás lo que buscas este en el volcan, al este de la aldea."
+frase_2 = "Cuidado, cosas buenas no hay en el volcán."
+frase_3 = "Deberiamos irnos pronto de aqui. "
+nombre_npc = "Longo"
+
 [node name="Mico2" parent="." unique_id=1206488528 instance=ExtResource("17_5vbnj")]
 position = Vector2(-1659, 350)
 
+[node name="NPCDialogueArea" parent="Mico2" unique_id=194716966 node_paths=PackedStringArray("target_npc") instance=ExtResource("18_x0nwe")]
+position = Vector2(1659, -350)
+frase_1 = "Mucho que hacer, mucho que hacer."
+frase_2 = "Si Munki está contigo, entonces podemos confiar en tí."
+frase_3 = "¿Jugamos?
+"
+target_npc = NodePath("..")
+nombre_npc = "Mongo"
+
 [node name="Mico3" parent="." unique_id=385372292 instance=ExtResource("18_00k47")]
-position = Vector2(-1344, 350)
+position = Vector2(-1222, 351)
+
+[node name="NPCDialogueArea" parent="Mico3" unique_id=1292634555 node_paths=PackedStringArray("target_npc") instance=ExtResource("18_x0nwe")]
+frase_1 = "Mik, mik"
+frase_2 = "Holi, holi, querido amigo"
+frase_3 = "Hay que trabajar, hay que trabajar
+"
+modo_alternancia = 1
+target_npc = NodePath("..")
+nombre_npc = "Pongo"
 
 [node name="Mico4" parent="." unique_id=1102655491 instance=ExtResource("17_5vbnj")]
 modulate = Color(1, 0.6627451, 1, 1)
@@ -873,7 +902,7 @@ modulate = Color(1, 1, 0.6666667, 1)
 position = Vector2(-1377, 350)
 
 [node name="Boss" parent="." unique_id=326541478 instance=ExtResource("12_obw8o")]
-position = Vector2(2071, 349)
+position = Vector2(2069, 348)
 chase_speed = 180.0
 
 [node name="Exit2" parent="." unique_id=1730297355 instance=ExtResource("10_00k47")]

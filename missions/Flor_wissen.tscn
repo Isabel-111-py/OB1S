@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://b5dwr0bdm7k6y"]
+
+[ext_resource type="Script" path="res://missions/flor_wissen.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c233vfopsi4jw" path="res://Decoration/flor.png" id="2_j7lqv"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jso0p"]
+height = 34.0
+
+[node name="FlorWissen" type="Area2D" unique_id=480116486]
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_script")
+kind = 1
+upgrade_id = &"flor_wissen"
+upgrade_name = "Flor Wissen"
+upgrade_description = "Una extraña y hermosa flor mística hallada en las profundidades volcánicas."
+icon = ExtResource("2_j7lqv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1495165345]
+position = Vector2(0, 2)
+shape = SubResource("CapsuleShape2D_jso0p")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=686999331]
+position = Vector2(0, 1)
+texture = ExtResource("2_j7lqv")
