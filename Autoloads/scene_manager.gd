@@ -464,6 +464,7 @@ func capture_world_state(level: Level = null) -> Dictionary:
 					"is_dr_ergot": false,
 					"pos_x": npc.global_position.x,
 					"pos_y": npc.global_position.y,
+					"is_dead": bool(npc.get("is_dead")),
 					"current_state": int(npc.get("current_state")) if "current_state" in npc else 0,
 					"direction": int(npc.get("direction")) if "direction" in npc else 1
 				}
@@ -604,10 +605,12 @@ func restore_world_state(level: Level, world_state: Dictionary) -> void:
 		elif npc is NPCBase:
 			if "pos_x" in npc_data and "pos_y" in npc_data:
 				npc.global_position = Vector2(float(npc_data.pos_x), float(npc_data.pos_y))
-			if "current_state" in npc_data:
-				npc.current_state = int(npc_data.current_state) as NPCBase.NPCState
 			if "direction" in npc_data:
 				npc.direction = int(npc_data.direction)
+			if bool(npc_data.get("is_dead", false)):
+				npc.die()
+			elif "current_state" in npc_data:
+				npc.current_state = int(npc_data.current_state) as NPCBase.NPCState
 
 	# 3. Compuertas (Gates)
 	var gates_dict: Dictionary = world_state.get("gates", {})

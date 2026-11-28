@@ -20,12 +20,19 @@ enum ErgotState {
 signal boss_died()
 signal boss_transformed()
 
-var is_dead: bool:
-	get:
-		return ergot_state == ErgotState.ENEMY_DEAD or (QuestManager != null and QuestManager.has_event_flag(defeated_flag))
+
+func _get_is_dead() -> bool:
+	return ergot_state == ErgotState.ENEMY_DEAD or (QuestManager != null and QuestManager.has_event_flag(defeated_flag)) or _is_dead_internal
+
+
+func _set_is_dead(value: bool) -> void:
+	_is_dead_internal = value
+	if value:
+		ergot_state = ErgotState.ENEMY_DEAD
+
 
 func is_alive() -> bool:
-	return ergot_state != ErgotState.ENEMY_DEAD and not (QuestManager != null and QuestManager.has_event_flag(defeated_flag))
+	return not is_dead
 
 @export_group("Ubicaciones de Misión")
 ## Posición original en la entrada del nivel (cuando la misión de Munfy no ha comenzado)
