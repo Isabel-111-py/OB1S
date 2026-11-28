@@ -8,6 +8,9 @@ const SLOT_COUNT: int = 3
 const DEFAULT_TINTS: Array[Color] = [Color(1.0, 1.0, 1.0), Color(1.0, 0.65, 0.25), Color(0.45, 0.85, 1.0)]
 ## Valores de prueba si no defines tipos de munición en el Bow.
 const DEFAULT_STARTING: Array[int] = [10, 5, 5]
+## Id de la mejora que desbloquea el paraguas. Sin ella el paraguas no se puede equipar.
+## El Pickup tipo Mejora que lo entrega debe usar este mismo id (ver Levels/umbrella_pickup.tscn).
+const UMBRELLA_UPGRADE_ID: StringName = &"paraguas"
 
 signal ammo_changed(slot: int, count: int)
 signal ammo_selected(slot: int)
@@ -24,6 +27,7 @@ var ammo: Array[int] = []
 var selected_slot: int = 0
 ## true mientras el paraguas está equipado: cubre del agua que cae y no deja disparar flechas.
 ## Para el agua (lluvia, cascadas) basta con preguntar `Inventory.umbrella_equipped`.
+## Solo puede ser true si el jugador ya recogió el paraguas (ver `has_umbrella`).
 var umbrella_equipped: bool = false
 
 ## id -> {"name": String, "description": String, "icon": Texture2D}
@@ -145,7 +149,15 @@ func cycle_ammo(direction: int) -> void:
 # Paraguas
 # ---------------------------------------------------------------------------
 
+## true si el jugador ya recogió el paraguas (aunque no lo tenga equipado).
+func has_umbrella() -> bool:
+	return has_upgrade(UMBRELLA_UPGRADE_ID)
+
+
+## Equipa o guarda el paraguas. Equiparlo solo funciona si ya lo recogiste.
 func set_umbrella_equipped(value: bool) -> void:
+	if value and not has_umbrella():
+		return
 	if value == umbrella_equipped:
 		return
 	umbrella_equipped = value
@@ -186,16 +198,19 @@ func remove_upgrade(id: Variant) -> bool:
 	if upgrades.has(key_sn):
 		upgrades.erase(key_sn)
 		upgrade_removed.emit(key_sn)
+		_unequip_umbrella_if_lost()
 		return true
 	elif upgrades.has(key_str):
 		upgrades.erase(key_str)
 		upgrade_removed.emit(key_sn)
+		_unequip_umbrella_if_lost()
 		return true
 	var target_str := str(id).strip_edges().to_lower()
 	for k in upgrades.keys():
 		if str(k).strip_edges().to_lower() == target_str:
 			upgrades.erase(k)
 			upgrade_removed.emit(StringName(k))
+			_unequip_umbrella_if_lost()
 			return true
 	return false
 
@@ -275,13 +290,19 @@ func restore_state(state: Dictionary) -> void:
 	selected_slot = clampi(int(state.get("selected_slot", 0)), 0, SLOT_COUNT - 1)
 	ammo_selected.emit(selected_slot)
 
-	umbrella_equipped = bool(state.get("umbrella_equipped", false))
+	umbrella_equipped = bool(state.get("umbrella_equipped", false)) and has_umbrella()
 	umbrella_toggled.emit(umbrella_equipped)
 
 
 # ---------------------------------------------------------------------------
 # Internos
 # ---------------------------------------------------------------------------
+
+## Si el paraguas estaba equipado y ya no está en el inventario, se guarda.
+func _unequip_umbrella_if_lost() -> void:
+	if umbrella_equipped and not has_umbrella():
+		set_umbrella_equipped(false)
+
 
 func _apply_types(types: Array) -> void:
 	var result: Array[AmmoType] = []

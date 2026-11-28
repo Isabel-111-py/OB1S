@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://by61ep05j4meq"]
+
+[ext_resource type="Script" uid="uid://bkb6v6kkxs5yr" path="res://Player/Scripts/Arrow.gd" id="1_nm125"]
+[ext_resource type="Texture2D" uid="uid://l0tyo1y63eq0" path="res://Sprites/PlayerSprites/fruits.png" id="2_urbul"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
+radius = 3.0
+
+[node name="Arrow" type="Area2D" unique_id=533443133]
+collision_layer = 0
+collision_mask = 34
+script = ExtResource("1_nm125")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=498283538]
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_dkpta")
+
+[node name="Fruits" type="Sprite2D" parent="." unique_id=1858367066]
+texture = ExtResource("2_urbul")
+hframes = 4
+vframes = 2

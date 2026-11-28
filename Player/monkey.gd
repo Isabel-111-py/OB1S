@@ -5,6 +5,8 @@ extends Sprite2D
 ##   - Cargando el arco   -> apunta con el arco.
 ##   - Acaba de disparar  -> pose de disparo durante un instante.
 ##   - Cualquier otra cosa -> idle.
+## Solo aparece sobre el robot cuando el mono ya decidió ayudarte (ver MonkeyNPC): antes de eso
+## está oculto, porque el mono es un NPC suelto en el mapa.
 ## También se voltea hacia donde mira el jugador. El balanceo (posición) lo siguen haciendo las
 ## animaciones del AnimationPlayer; este script solo cambia el frame y la orientación.
 ##
@@ -15,6 +17,9 @@ extends Sprite2D
 @export var player: Player
 ## Arco del jugador. Si lo dejas vacío busca el nodo hijo "Bow" del jugador.
 @export var bow: Bow
+## Bandera de eventos (QuestManager) que debe estar activa para que el mono se vea sobre el robot.
+## La activa el MonkeyNPC cuando el mono se sube. Vacío = siempre visible.
+@export var required_flag: String = "monkey_joined"
 
 @export_group("Idle")
 @export var idle_frames: PackedInt32Array = PackedInt32Array([11])
@@ -49,6 +54,8 @@ func _ready() -> void:
 		bow = player.get_node_or_null("Bow") as Bow
 	if bow:
 		bow.arrow_fired.connect(_on_arrow_fired)
+	QuestManager.event_flag_changed.connect(_on_flag_changed)
+	visible = _has_joined()
 	_apply_frame()
 
 
@@ -65,6 +72,22 @@ func _process(delta: float) -> void:
 	_apply_frame()
 	if player:
 		flip_h = player.facing < 0.0
+
+
+func _has_joined() -> bool:
+	return required_flag == "" or QuestManager.has_event_flag(required_flag)
+
+
+func _on_flag_changed(flag_name: String, _value: bool) -> void:
+	if flag_name != required_flag:
+		return
+	var was_visible := visible
+	visible = _has_joined()
+	if visible and not was_visible:
+		# Pequeño "salto" al aparecer, justo donde aterrizó el mono NPC.
+		scale = Vector2(1.4, 1.4)
+		create_tween().tween_property(self, "scale", Vector2.ONE, 0.2) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _on_arrow_fired(_ratio: float) -> void:

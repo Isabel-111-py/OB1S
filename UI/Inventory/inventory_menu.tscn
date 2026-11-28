@@ -1,16 +1,24 @@
 [gd_scene format=3 uid="uid://dyfjguw683ti8"]
 
 [ext_resource type="Script" uid="uid://x261hjas67xy" path="res://UI/Inventory/inventory_menu.gd" id="1_inv"]
+[ext_resource type="Texture2D" uid="uid://3kkq7m31xgf" path="res://UI/Inventory/TableroGUI.png" id="2_5yars"]
+[ext_resource type="Texture2D" uid="uid://ivx8gdrq5nvw" path="res://UI/Inventory/panel.png" id="3_he3id"]
 
 [node name="InventoryMenu" type="CanvasLayer" unique_id=622214746]
+process_mode = 3
 layer = 20
 script = ExtResource("1_inv")
-toggle_action = null
-fallback_key = null
-menu_scene_path = null
-reset_inventory_on_exit = null
-panel_width = null
-title_font_size = null
-body_font_size = null
-panel_color = Color(0.26770946, 0.07959583, 0.03660808, 0.9607843)
-border_color = Color(0.46977675, 0.37983263, 0.19980454, 1)
+slot_texture = ExtResource("3_he3id")
+slot_selected_texture = ExtResource("3_he3id")
+panel_color = Color(0.09803922, 0.15686275, 0.20392157, 0)
+border_color = Color(0.23529412, 0.38039216, 0.4392157, 0)
+selected_border_color = Color(0.30588236, 0.8862745, 0.65882355, 0)
+empty_count_color = Color(0.9019608, 0.2509804, 0.2509804, 0)
+
+[node name="TableroGui" type="Sprite2D" parent="." unique_id=1641122725]
+visible = false
+light_mask = 2
+visibility_layer = 2
+position = Vector2(315, 185)
+scale = Vector2(1.3878328, 1.3878328)
+texture = ExtResource("2_5yars")

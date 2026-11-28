@@ -6,6 +6,7 @@ extends CanvasLayer
 ## Uso: instancia `inventory_menu.tscn` como hijo del nodo Player (igual que HealthLayer).
 ## Se abre/cierra con la tecla I (o con la acción "inventory" del Input Map, si la creas) y con Esc.
 ## Requiere el autoload "Inventory" (ver inventory.gd).
+@onready var tablero_gui: Sprite2D = $TableroGui
 
 ## Jugador al que pertenece. Si lo dejas vacío usa el padre.
 @export var player: Player
@@ -16,9 +17,6 @@ extends CanvasLayer
 @export_file("*.tscn") var menu_scene_path: String = "res://UI/MainMenu/main_menu.tscn"
 ## Al volver al menú, el inventario se vacía (como una partida nueva).
 @export var reset_inventory_on_exit: bool = true
-## Mejora que hay que tener para poder equipar el paraguas (el `upgrade_id` de un Pickup tipo Mejora).
-## Vacío = el paraguas siempre está disponible.
-@export var umbrella_upgrade_id: StringName = &""
 
 @export_group("Texturas")
 ## Imagen del cuadro del menú. Se estira como un 9-patch: los bordes no se deforman.
@@ -132,12 +130,14 @@ func open() -> void:
 	_root.visible = true
 	get_tree().paused = true
 	_continue_button.grab_focus()
+	tablero_gui.visible = true
 
 
 func close() -> void:
 	_is_open = false
 	_root.visible = false
 	get_tree().paused = false
+	tablero_gui.visible = false
 
 
 func _switch_tab(tab_idx: int) -> void:
@@ -414,7 +414,8 @@ func _refresh() -> void:
 
 
 func _refresh_umbrella() -> void:
-	var available := umbrella_upgrade_id == &"" or Inventory.has_upgrade(umbrella_upgrade_id)
+	# El paraguas se desbloquea al recogerlo (mejora `Inventory.UMBRELLA_UPGRADE_ID`).
+	var available: bool = Inventory.has_umbrella()
 	_umbrella_button.disabled = not available
 	if not available:
 		_umbrella_button.text = "Paraguas (aún no lo tienes)"

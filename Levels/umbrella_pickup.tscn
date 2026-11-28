@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://bu74rlockqg55" path="res://Levels/pickup.tscn" id="1_pickup"]
+
+[node name="UmbrellaPickup" instance=ExtResource("1_pickup")]
+kind = 1
+upgrade_id = &"paraguas"
+upgrade_name = "Paraguas"
+upgrade_description = "Cubre del agua que cae. Mientras está abierto no puedes disparar. Equípalo desde el inventario."

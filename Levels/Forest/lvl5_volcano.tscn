@@ -26,7 +26,7 @@ size = Vector2(48.5, 20)
 size = Vector2(48, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5pl1k"]
-size = Vector2(3691, 32)
+size = Vector2(10305, 32)
 
 [node name="Lvl4Monkeyland" type="Node2D" unique_id=1596183351]
 script = ExtResource("1_sjwe0")
@@ -267,11 +267,8 @@ collision_layer = 128
 collision_mask = 128
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=806529061]
-position = Vector2(821.5, 384)
+position = Vector2(-386.5, 384)
 shape = SubResource("RectangleShape2D_5pl1k")
-
-[node name="Boss" parent="." unique_id=326541478 instance=ExtResource("12_obw8o")]
-position = Vector2(2071, 349)
 
 [node name="Trees2" type="Sprite2D" parent="." unique_id=763289753]
 position = Vector2(-1838, 288)
@@ -874,6 +871,10 @@ position = Vector2(-1620, 350)
 [node name="Mico6" parent="." unique_id=1584805297 instance=ExtResource("16_pvnak")]
 modulate = Color(1, 1, 0.6666667, 1)
 position = Vector2(-1377, 350)
+
+[node name="Boss" parent="." unique_id=326541478 instance=ExtResource("12_obw8o")]
+position = Vector2(2071, 349)
+chase_speed = 180.0
 
 [node name="Exit2" parent="." unique_id=1730297355 instance=ExtResource("10_00k47")]
 position = Vector2(-2737, 234)

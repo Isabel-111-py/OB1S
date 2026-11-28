@@ -2,12 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="1_5bscq"]
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="1_eoj1y"]
-[ext_resource type="Texture2D" uid="uid://d2eo0b5nnp6td" path="res://icon.svg" id="1_lem7s"]
+[ext_resource type="Texture2D" uid="uid://blerx0062g1n" path="res://Ammo/banana.png" id="2_eoj1y"]
 
 [resource]
 script = ExtResource("1_5bscq")
 display_name = "Banana"
-icon = ExtResource("1_lem7s")
+icon = ExtResource("2_eoj1y")
 arrow_scene = ExtResource("1_eoj1y")
-starting_amount = 10
 metadata/_custom_type_script = "uid://cvwa1e3sdoi3v"

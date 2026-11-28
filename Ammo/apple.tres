@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AmmoType" format=3 uid="uid://cdfl0cxsanevm"]
+
+[ext_resource type="PackedScene" uid="uid://by61ep05j4meq" path="res://Player/Arrow/arrow_sceneaple.tscn" id="1_7y2ek"]
+[ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="1_v7bm0"]
+[ext_resource type="Texture2D" uid="uid://27tc7xtlqn12" path="res://Ammo/apple.png" id="2_inwi1"]
+
+[resource]
+script = ExtResource("1_v7bm0")
+display_name = "Manzana"
+icon = ExtResource("2_inwi1")
+arrow_scene = ExtResource("1_7y2ek")
+metadata/_custom_type_script = "uid://cvwa1e3sdoi3v"

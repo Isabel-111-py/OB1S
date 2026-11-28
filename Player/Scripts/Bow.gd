@@ -27,6 +27,9 @@ signal charge_cancelled
 ## sin flechas de ese tipo, no se puede cargar el arco hasta cambiar de munición o conseguir más.
 ## Desactivado = flechas infinitas.
 @export var use_ammo: bool = true
+## Bandera de eventos (QuestManager) que debe estar activa para poder disparar. Disparar es cosa del
+## mono: hasta que se una al robot (ver MonkeyNPC) el arco no funciona. Vacío = siempre disponible.
+@export var required_flag: String = "monkey_joined"
 ## Los 3 tipos de munición (nombre, icono, flecha propia, cantidad inicial). Si no los defines,
 ## se usan 3 tipos de prueba.
 @export var ammo_types: Array[AmmoType] = []
@@ -86,6 +89,12 @@ func _physics_process(delta: float) -> void:
 	var pressed := Input.is_action_pressed(shoot_action)
 
 	if _player.is_dead:
+		if is_charging:
+			_cancel_charge()
+		return
+
+	# Sin el mono sobre el robot no se puede disparar (y se cancela cualquier carga en curso).
+	if not _monkey_joined():
 		if is_charging:
 			_cancel_charge()
 		return
@@ -162,6 +171,11 @@ func _start_charge() -> void:
 	_full_notified = false
 	visible = true
 	charge_started.emit()
+
+
+## true si el mono ya se unió al robot (o si no se exige ninguna bandera).
+func _monkey_joined() -> bool:
+	return required_flag == "" or QuestManager.has_event_flag(required_flag)
 
 
 func _cancel_charge() -> void:

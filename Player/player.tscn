@@ -20,11 +20,15 @@
 [ext_resource type="Script" uid="uid://diwjtr4f8pwon" path="res://Player/Scripts/StateMachine/hurt.gd" id="9_apopc"]
 [ext_resource type="Script" uid="uid://pgn5l737oxm3" path="res://Player/Scripts/StateMachine/dead.gd" id="10_5htga"]
 [ext_resource type="Script" uid="uid://bioyd5esrhued" path="res://Player/hurtbox.gd" id="10_x3vf3"]
+[ext_resource type="Script" uid="uid://cvwa1e3sdoi3v" path="res://UI/ammo_type.gd" id="12_755ss"]
 [ext_resource type="Script" uid="uid://ctpilm781pw1e" path="res://Player/Scripts/dash.gd" id="12_lfmf2"]
 [ext_resource type="Script" uid="uid://d0d60vw3tud3r" path="res://Player/monkey.gd" id="13_8viyr"]
 [ext_resource type="Script" uid="uid://cjlar54liudmr" path="res://Player/swing.gd" id="13_b1ygp"]
+[ext_resource type="Resource" uid="uid://cdfl0cxsanevm" path="res://Ammo/apple.tres" id="13_bbimk"]
 [ext_resource type="Script" uid="uid://c6y5cv0nac6it" path="res://Player/Scripts/Bow.gd" id="14_gu6f8"]
+[ext_resource type="Resource" uid="uid://chw1dhy6jdeyr" path="res://Ammo/banana.tres" id="14_m0h3t"]
 [ext_resource type="PackedScene" uid="uid://d1vs6k0gc3e4t" path="res://Player/Arrow/arrow_scene.tscn" id="15_dkpta"]
+[ext_resource type="Resource" uid="uid://bjb4cs5im08k7" path="res://Ammo/coco.tres" id="15_i4o1l"]
 [ext_resource type="Script" uid="uid://drace0wc1sa3k" path="res://Player/Scripts/grapple.gd" id="17_pisgm"]
 
 [sub_resource type="Animation" id="Animation_b1ygp"]
@@ -369,13 +373,6 @@ stripe_color = Color(0.9490196, 0.9490196, 0.9490196, 0)
 handle_color = Color(0.2509804, 0.14901961, 0.101960786, 0)
 
 [node name="InventoryMenu" parent="." unique_id=1043020156 instance=ExtResource("2_gpjlu")]
-toggle_action = &"inventory"
-fallback_key = 73
-menu_scene_path = "res://UI/MainMenu/main_menu.tscn"
-reset_inventory_on_exit = true
-panel_width = 300
-title_font_size = 16
-body_font_size = 12
 
 [node name="HealthLayer" parent="." unique_id=80746217 instance=ExtResource("2_n471f")]
 full_texture = ExtResource("3_hshwv")
@@ -398,6 +395,7 @@ scale = Vector2(0.375, 0.375)
 [node name="Bow" type="Node2D" parent="." unique_id=1260639363]
 script = ExtResource("14_gu6f8")
 arrow_scene = ExtResource("15_dkpta")
+ammo_types = Array[ExtResource("12_755ss")]([ExtResource("13_bbimk"), ExtResource("14_m0h3t"), ExtResource("15_i4o1l")])
 
 [node name="Mono" type="Sprite2D" parent="." unique_id=461304380]
 position = Vector2(0, -36)

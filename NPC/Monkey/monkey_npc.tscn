@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cf7hycjl5th4c"]
+
+[ext_resource type="Script" uid="uid://cyng4v8on7820" path="res://NPC/Monkey/monkey_npc.gd" id="1_mnpc"]
+[ext_resource type="Texture2D" uid="uid://be6h7338xpjge" path="res://Sprites/PlayerSprites/MonkeySpriteSheet.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mnpc"]
+radius = 56.0
+
+[node name="MonkeyNPC" type="Area2D" unique_id=1997475373]
+collision_layer = 0
+script = ExtResource("1_mnpc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1402586627]
+position = Vector2(0, -16)
+texture = ExtResource("2_tex")
+hframes = 7
+vframes = 2
+frame = 11
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=125731995]
+position = Vector2(0, -16)
+shape = SubResource("CircleShape2D_mnpc")

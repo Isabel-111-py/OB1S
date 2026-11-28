@@ -69,6 +69,8 @@ func _on_hit_landed(_hurtbox: Hurtbox) -> void:
 	queue_free()
 
 
+
+
 ## Dibujo de prueba: solo si la escena no tiene un Sprite2D / AnimatedSprite2D propio.
 func _draw() -> void:
 	for child in get_children():
